@@ -13,14 +13,12 @@ pytest-play
 .. image:: https://codecov.io/gh/tierratelematics/pytest-play/branch/develop/graph/badge.svg
           :target: https://codecov.io/gh/tierratelematics/pytest-play
 
-Selenium/Splinter play engine for your test scripts previously recorded.
+``pytest-play`` is a pytest_ plugin that let you **play** a json file containing previously
+recorded selenium splinter_ actions driving your browser.
 
 Given a json file (eg: ``login.json``)::
 
     {
-    	"type": "script",
-    	"seleniumVersion": "2",
-    	"formatVersion": 2,
     	"steps": [
     		{
     			"type": "get",
@@ -71,10 +69,13 @@ and a ``test_login.py`` with::
     def test_experimental(play_json):
         data = data_getter('/my/path/etc', 'login.json')
         play_json.execute(data)
+ 
 
 .. _`Apache Software License 2.0`: http://www.apache.org/licenses/LICENSE-2.0
 .. _`file an issue`: https://github.com/tierratelematics/pytest-play/issues
 .. _`pytest`: https://github.com/pytest-dev/pytest
+.. _`splinter`: https://splinter.readthedocs.io/en/latest/
+.. _`pytest-splinter`: https://github.com/pytest-dev/pytest-splinter
 .. _`tox`: https://tox.readthedocs.io/en/latest/
 .. _`pip`: https://pypi.python.org/pypi/pip/
 .. _`PyPI`: https://pypi.python.org/pypi
