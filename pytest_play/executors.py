@@ -164,7 +164,7 @@ class JSONExecutorSplinter(object):
     def command_assert_element_present(self, command):
         """ assertElementPresent """
         selector = self.locator_translate(command['locator'])
-        negated = command['negated']
+        negated = command.get('negated', False)
         element = self.page.find_element(*selector)
         assert not negated and element
 

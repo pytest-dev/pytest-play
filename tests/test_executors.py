@@ -213,3 +213,72 @@ def test_execute_select_bad(dummy_executor):
     }
     with pytest.raises(ValueError):
         dummy_executor.execute_command(command)
+
+
+def test_execute_assert_element_present_default(dummy_executor):
+    command = {
+        'type': 'assertElementPresent',
+        'locator': {
+             'type': 'css selector',
+             'value': 'body'
+        },
+    }
+    dummy_executor.execute_command(command)
+    dummy_executor \
+        .page \
+        .find_element \
+        .assert_called_once_with('css', 'body') is None
+
+
+def test_execute_assert_element_present_negated(dummy_executor):
+    command = {
+        'type': 'assertElementPresent',
+        'locator': {
+             'type': 'css selector',
+             'value': 'body'
+        },
+        'negated': False,
+    }
+    dummy_executor.execute_command(command)
+    dummy_executor \
+        .page \
+        .find_element \
+        .assert_called_once_with('css', 'body') is None
+
+
+def test_execute_assert_element_present_negated_false(dummy_executor):
+    command = {
+        'type': 'assertElementPresent',
+        'locator': {
+             'type': 'css selector',
+             'value': 'body'
+        },
+        'negated': False,
+    }
+    dummy_executor.page.find_element.return_value = None
+    with pytest.raises(AssertionError):
+        dummy_executor.execute_command(command)
+
+    dummy_executor \
+        .page \
+        .find_element \
+        .assert_called_once_with('css', 'body') is None
+
+
+def test_execute_assert_element_present_negated_true(dummy_executor):
+    command = {
+        'type': 'assertElementPresent',
+        'locator': {
+             'type': 'css selector',
+             'value': 'body'
+        },
+        'negated': True,
+    }
+    dummy_executor.page.find_element.return_value = 1
+    with pytest.raises(AssertionError):
+        dummy_executor.execute_command(command)
+
+    dummy_executor \
+        .page \
+        .find_element \
+        .assert_called_once_with('css', 'body') is None
