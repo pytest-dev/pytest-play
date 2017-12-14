@@ -1,5 +1,9 @@
 import pytest
 import mock
+from datetime import (
+    datetime,
+    timedelta,
+)
 from pytest_play.executors import JSONExecutorSplinter
 
 
@@ -306,3 +310,49 @@ def test_execute_send_keys(dummy_executor):
         ._element \
         .send_keys \
         .assert_called_once_with(getattr(Keys, 'ENTER'))
+
+
+def test_execute_send_keys_bad(dummy_executor):
+    command = {
+        'type': 'sendKeysToElement',
+        'locator': {
+             'type': 'css selector',
+             'value': 'body'
+        },
+        'text': 'ENTERxxx',
+    }
+    with pytest.raises(ValueError):
+        dummy_executor.execute_command(command)
+
+
+def test_execute_pause(dummy_executor):
+    command = {
+        'type': 'pause',
+        'waitTime': '1500',
+    }
+    now = datetime.now()
+    dummy_executor.execute_command(command)
+    now_now = datetime.now()
+    future_date = now + timedelta(milliseconds=1500)
+    assert now_now >= future_date
+
+
+def test_execute_pause_int(dummy_executor):
+    command = {
+        'type': 'pause',
+        'waitTime': 1500,
+    }
+    now = datetime.now()
+    dummy_executor.execute_command(command)
+    now_now = datetime.now()
+    future_date = now + timedelta(milliseconds=1500)
+    assert now_now >= future_date
+
+
+def test_execute_pause_bad(dummy_executor):
+    command = {
+        'type': 'pause',
+        'waitTime': 'adsf',
+    }
+    with pytest.raises(ValueError):
+        dummy_executor.execute_command(command)
