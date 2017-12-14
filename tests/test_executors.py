@@ -464,3 +464,83 @@ def test_execute_wait_until_condition(dummy_executor):
         .wait \
         .until \
         .called
+
+
+def test_execute_verify_text_default(dummy_executor):
+    command = {
+        'type': 'verifyText',
+        'locator': {
+             'type': 'css selector',
+             'value': '.my-item'
+        },
+        'text': 'a text',
+    }
+
+    dummy_executor \
+        .page \
+        .find_element \
+        .return_value \
+        .text = 'hi, this is a text!'
+
+    dummy_executor.execute_command(command)
+
+
+def test_execute_verify_text(dummy_executor):
+    command = {
+        'type': 'verifyText',
+        'locator': {
+             'type': 'css selector',
+             'value': '.my-item'
+        },
+        'text': 'a text',
+        'negated': False
+    }
+
+    dummy_executor \
+        .page \
+        .find_element \
+        .return_value \
+        .text = 'hi, this is a text!'
+
+    dummy_executor.execute_command(command)
+
+
+def test_execute_verify_text_negated(dummy_executor):
+    command = {
+        'type': 'verifyText',
+        'locator': {
+             'type': 'css selector',
+             'value': '.my-item'
+        },
+        'text': 'a text',
+        'negated': True
+    }
+
+    dummy_executor \
+        .page \
+        .find_element \
+        .return_value \
+        .text = 'hi, this is a text!'
+
+    with pytest.raises(AssertionError):
+        dummy_executor.execute_command(command)
+
+
+def test_execute_verify_text_false(dummy_executor):
+    command = {
+        'type': 'verifyText',
+        'locator': {
+             'type': 'css selector',
+             'value': '.my-item'
+        },
+        'text': 'a text',
+    }
+
+    dummy_executor \
+        .page \
+        .find_element \
+        .return_value \
+        .text = 'hi, this is another text!'
+
+    with pytest.raises(AssertionError):
+        dummy_executor.execute_command(command)

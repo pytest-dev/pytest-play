@@ -193,7 +193,7 @@ class JSONExecutorSplinter(object):
         self.command_wait_for_element_present(command)
 
         selector = self.locator_translate(command['locator'])
-        negated = command['negated']
+        negated = command.get('negated', False)
         pattern = self.parametrizer.parametrize(command['text'])
         element = self.page.find_element(*selector)
         match = re.search(pattern, element.text)
