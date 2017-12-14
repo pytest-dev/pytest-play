@@ -448,3 +448,19 @@ def test_execute_verify_eval_param(dummy_executor):
         .driver \
         .evaluate_script \
         .assert_called_once_with('"res" + "ult" + "bar"')
+
+
+def test_execute_wait_until_condition(dummy_executor):
+    command = {
+        'type': 'waitUntilCondition',
+        'value': 'id1',
+        'script': "document.body.getAttribute('id')",
+    }
+
+    dummy_executor.execute_command(command)
+
+    dummy_executor \
+        .page \
+        .wait \
+        .until \
+        .called
