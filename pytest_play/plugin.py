@@ -5,22 +5,6 @@ import pytest
 from .executors import JSONExecutorSplinter
 
 
-@pytest.fixture(scope='session')
-def skin():
-    """ This fixture provides the skin associated with the application
-        on which starts the test session.
-
-
-        For example:
-
-            @pytest.fixture(scope='session',
-                            params=mypackage.DEFAULT_PAGES.keys())
-            def skin(request):
-                return request.param
-    """
-    return 'skin1'
-
-
 @pytest.fixture
 def json_executor_splinter_class():
     """ Splinter based json executor class """
@@ -55,9 +39,15 @@ def pypom_page_class():
 
 
 @pytest.fixture
-def page(pypom_page_class, browser):
+def page_timeout():
+    """ Default page timeout """
+    return 20
+
+
+@pytest.fixture
+def page(pypom_page_class, browser, page_timeout):
     """ Basic page implementation based on pypom_page_class"""
-    return Page(browser, timeout=30)
+    return Page(browser, timeout=page_timeout)
 
 
 @pytest.fixture
