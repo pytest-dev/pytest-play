@@ -171,7 +171,7 @@ class JSONExecutorSplinter(object):
         assert result
 
     def command_send_keys_to_element(self, command):
-        """ send_keys_to_element """
+        """ sendKeysToElement """
         self.command_wait_for_element_present(command)
 
         key = command['text']

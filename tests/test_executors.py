@@ -282,3 +282,27 @@ def test_execute_assert_element_present_negated_true(dummy_executor):
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
+
+
+def test_execute_send_keys(dummy_executor):
+    from selenium.webdriver.common.keys import Keys
+    command = {
+        'type': 'sendKeysToElement',
+        'locator': {
+             'type': 'css selector',
+             'value': 'body'
+        },
+        'text': 'ENTER',
+    }
+    dummy_executor.execute_command(command)
+    dummy_executor \
+        .page \
+        .find_element \
+        .assert_called_once_with('css', 'body') is None
+    dummy_executor \
+        .page \
+        .find_element \
+        .return_value \
+        ._element \
+        .send_keys \
+        .assert_called_once_with(getattr(Keys, 'ENTER'))
