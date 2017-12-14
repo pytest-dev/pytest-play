@@ -2,7 +2,6 @@ sudo: false
 language: python
 python:
 - '2.7'
-- '3.5'
 - '3.6'
 - pypy
 install:
@@ -26,4 +25,4 @@ deploy:
     tags: true
     branch: master
     distributions: sdist bdist_wheel
-    repo: tierratelematics/pytest-pypom-navigation
+    repo: tierratelematics/pytest-play
