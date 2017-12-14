@@ -1,0 +1,29 @@
+sudo: false
+language: python
+python:
+- '2.7'
+- '3.5'
+- '3.6'
+- pypy
+install:
+- pip install codecov
+- pip install tox
+- TOX_ENV=${TRAVIS_PYTHON_VERSION/[0-9].[0-9]/py${TRAVIS_PYTHON_VERSION/.}}
+script: tox -e $TOX_ENV
+after_success:
+- codecov
+before_cache:
+- rm -rf $HOME/.cache/pip/log
+cache:
+  directories:
+  - "$HOME/.cache/pip"
+deploy:
+  provider: pypi
+  user: davidemoro
+  password:
+    secure: DhWfYnIZSop+Hp+cpQnC1B3C8/nkcZx8lCRNiMQ5MctYdVEEYsIi0ahxbpr7vp+MIUe73WZh1kjK8UoM0gktOR9ger/IvpcW2hgBf7mC1QvLcWqmTnXSDCKfx97hEri/Rp1ocIrRE6BHgxaxxBRkccsyKqHVGeBUQdqJ4R+hjnuGMUHUj6wXmPkedQDzcVWIx0QFe+ZL5nXYqG8B3XMgQ+Au5VlLW9CsBfyc0QMNFo2gwWPoNPKrJ3/sV9Ek4QmhT1V/rxkznBmDB5h8oZ6hQ5oLj9/bXI/TI+gme/mlYcMhxqiDeiP/vW1c9Lj2hh2QvNJGVO+DOZwZm+ZvjCxII6K4H2R/TPtEZm37EH+UIdu7F5HfaBVhdIsumjFl6siuzlqCY6uj232XepVBA6ZV61C0QNttily7P+vPCE7xmd2BbG975y2BJKgxWBiQhO3oVGhEZoVTd/JzQn4AncG7edbHQg5zOtx4LPE+Z8gWp1H61iOnVioL8pOAFe0xhy8Oe/MPx5SiCCnStzZYudichcbMsarMze6et6/qDrwjrxwfEh8vKZ7MPCtMrWR3rz8BIkoMxipkQc9gEq83beYjMzYf4yOtTjA5MC/1XmVtmCOUKGCYL25ncMq3YIr+7z/FUie63L3nPVW7L+ewDjdovIjV1rUK7Aic01B/0WmHu70=
+  on:
+    tags: true
+    branch: master
+    distributions: sdist bdist_wheel
+    repo: tierratelematics/pytest-pypom-navigation
