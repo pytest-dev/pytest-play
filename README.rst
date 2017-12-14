@@ -84,7 +84,7 @@ Given a json file (eg: ``login.json``)::
 
 you define a test ``test_login.py`` like this::
 
-    def test_experimental(play_json):
+    def test_login(play_json):
         data = data_getter('/my/path/etc', 'login.json')
         play_json.execute(data)
 
