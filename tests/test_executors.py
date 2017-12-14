@@ -55,3 +55,161 @@ def test_splinter_execute(dummy_executor):
     ]
     assert dummy_executor.execute_command.assert_has_calls(
         calls, any_order=False) is None
+
+
+def test_execute_bad_type(dummy_executor):
+    command = {'typeXX': 'get', 'url': 'http://1'}
+    with pytest.raises(KeyError):
+        dummy_executor.execute_command(command)
+
+
+def test_execute_bad_command(dummy_executor):
+    command = {'type': 'get', 'urlXX': 'http://1'}
+    with pytest.raises(KeyError):
+        dummy_executor.execute_command(command)
+
+
+def test_execute_not_implemented_command(dummy_executor):
+    command = {'type': 'new_command', 'urlXX': 'http://1'}
+    dummy_executor.COMMANDS = ['new_command']
+    with pytest.raises(NotImplementedError):
+        dummy_executor.execute_command(command)
+
+
+def test_execute_get(dummy_executor):
+    command = {'type': 'get', 'url': 'http://1'}
+    dummy_executor.execute_command(command)
+    dummy_executor \
+        .page \
+        .driver_adapter \
+        .open \
+        .assert_called_once_with(command['url']) is None
+
+
+def test_execute_click(dummy_executor):
+    command = {
+        'type': 'clickElement',
+        'locator': {
+             'type': 'css selector',
+             'value': 'body'
+        }
+    }
+    dummy_executor.execute_command(command)
+    dummy_executor \
+        .page \
+        .find_element \
+        .assert_called_once_with('css', 'body') is None
+    dummy_executor \
+        .page \
+        .find_element \
+        .return_value \
+        .click \
+        .assert_called_once_with() is None
+
+
+def test_execute_fill(dummy_executor):
+    command = {
+        'type': 'setElementText',
+        'locator': {
+             'type': 'css selector',
+             'value': 'body'
+        },
+        'text': 'text value',
+    }
+    dummy_executor.execute_command(command)
+    dummy_executor \
+        .page \
+        .find_element \
+        .assert_called_once_with('css', 'body') is None
+    dummy_executor \
+        .page \
+        .find_element \
+        .return_value \
+        .fill \
+        .assert_called_once_with('text value') is None
+
+
+def test_execute_select_text(dummy_executor):
+    command = {
+        'type': 'select',
+        'locator': {
+             'type': 'css selector',
+             'value': 'body'
+        },
+        'text': 'text value',
+    }
+    dummy_executor.execute_command(command)
+    dummy_executor \
+        .page \
+        .find_element \
+        .assert_called_once_with('css', 'body') is None
+    dummy_executor \
+        .page \
+        .find_element \
+        .assert_called_once_with('css', 'body')
+    dummy_executor \
+        .page \
+        .find_element \
+        .return_value \
+        ._element \
+        .find_element_by_xpath \
+        .assert_called_once_with('./option[text()="{0}"]'.format('text value'))
+    dummy_executor \
+        .page \
+        .find_element \
+        .return_value \
+        ._element \
+        .find_element_by_xpath \
+        .return_value \
+        .click \
+        .assert_called_once_with()
+
+
+def test_execute_select_value(dummy_executor):
+    command = {
+        'type': 'select',
+        'locator': {
+             'type': 'css selector',
+             'value': 'body'
+        },
+        'value': '1',
+    }
+    dummy_executor.execute_command(command)
+    dummy_executor \
+        .page \
+        .find_element \
+        .assert_called_once_with('css', 'body') is None
+    dummy_executor \
+        .page \
+        .find_element \
+        .assert_called_once_with('css', 'body')
+    dummy_executor \
+        .page \
+        .find_element \
+        .return_value \
+        ._element \
+        .find_element_by_xpath \
+        .assert_called_once_with('./option[@value="{0}"]'.format('1'))
+    dummy_executor \
+        .page \
+        .find_element \
+        .return_value \
+        ._element \
+        .find_element_by_xpath \
+        .return_value \
+        .click \
+        .assert_called_once_with()
+
+
+def test_execute_select_bad(dummy_executor):
+    command = {
+        'type': 'select',
+        'locator': {
+             'type': 'css selector',
+             'value': 'body'
+        },
+        'value': '1',
+        'text': 'text',
+    }
+    with pytest.raises(ValueError):
+        dummy_executor.execute_command(command)
