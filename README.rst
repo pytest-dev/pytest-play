@@ -14,8 +14,22 @@ pytest-play
           :target: https://codecov.io/gh/tierratelematics/pytest-play
 
 ``pytest-play`` is a pytest_ plugin that let you **play** a json file containing previously
-recorded selenium splinter_ actions driving your browser.
+recorded selenium splinter_ actions driving your browser for your UI test.
 
+``pytest-play`` is your friend when the best practice Page Object approach (like pypom_form_), considered best practice,
+like pypom_form_, 
+
+A more robust Page Object approach like pypom_form_ is considered best practice but not always is
+possibile for many reasons:
+
+* limited time, and/or
+* lack of programming skils
+
+and in such cases ``pytest-play`` is your friend.
+
+
+How it works
+------------
 Given a json file (eg: ``login.json``)::
 
     {
@@ -64,18 +78,34 @@ Given a json file (eg: ``login.json``)::
     	]
     }
 
-and a ``test_login.py`` with::
+you define a test ``test_login.py`` like this::
 
     def test_experimental(play_json):
         data = data_getter('/my/path/etc', 'login.json')
         play_json.execute(data)
+
+you get things moving on your browser!
+
+Commands syntax
+===============
+
+...
+
+Twitter
+=======
+
+cookiecutter-qa tweets happens here:
+
+* `@davidemoro`_
  
 
 .. _`Apache Software License 2.0`: http://www.apache.org/licenses/LICENSE-2.0
 .. _`file an issue`: https://github.com/tierratelematics/pytest-play/issues
 .. _`pytest`: https://github.com/pytest-dev/pytest
+.. _`pypom_form`: http://pypom-form.readthedocs.io/en/latest/
 .. _`splinter`: https://splinter.readthedocs.io/en/latest/
 .. _`pytest-splinter`: https://github.com/pytest-dev/pytest-splinter
 .. _`tox`: https://tox.readthedocs.io/en/latest/
 .. _`pip`: https://pypi.python.org/pypi/pip/
 .. _`PyPI`: https://pypi.python.org/pypi
+.. _`@davidemoro`: https://twitter.com/davidemoro
