@@ -19,6 +19,10 @@ recorded selenium splinter_ actions driving your browser for your UI test.
 ``pytest-play`` is your friend when the best practice Page Object approach (like pypom_form_), considered best practice,
 like pypom_form_, 
 
+``pytest-play`` supports automatic waiting that should help to keep your tests more reliable with implicit waits before
+moving on. By default it waits for node availability and visibility but it supports also some wait commands and
+wait until a given Javascript expression is ok. So it is at the same time user friendly and flexible.
+
 A more robust Page Object approach like pypom_form_ is considered best practice but not always is
 possibile for many reasons:
 
