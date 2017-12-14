@@ -98,7 +98,7 @@ Commands syntax
 Twitter
 =======
 
-cookiecutter-qa tweets happens here:
+``pytest-play`` tweets happens here:
 
 * `@davidemoro`_
  
