@@ -24,6 +24,7 @@ install_requires = [
 tests_require = [
     'pytest-cov',
     'mock',
+    'zope.interface'
 ]
 
 docs_require = [

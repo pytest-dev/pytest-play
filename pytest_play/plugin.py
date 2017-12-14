@@ -12,7 +12,7 @@ def json_executor_splinter_class():
 
 
 @pytest.fixture
-def json_executor_data_getter(json_data_base_path, parametrizer):
+def data_getter(parametrizer):
     """ Fixture that returns a callable that returns the files contents
         for a given name
     """
@@ -51,13 +51,13 @@ def page(pypom_page_class, browser, page_timeout):
 
 
 @pytest.fixture
-def json_executor(default_json_executor_class, page, bdd_vars,
-                  parametrizer_class):
+def play_json(default_json_executor_class, page, bdd_vars,
+              parametrizer_class):
     """
-        How to use json_executor:
+        How to use json_executor::
 
-        def test_experimental(json_executor, json_executor_data_getter):
-            data = json_executor_data_getter('login.json')
-            json_executor.execute(data)
+            def test_experimental(play_json):
+                data = data_getter('/my/path/etc', 'login.json')
+                play_json.execute(data)
     """
     return default_json_executor_class(page, bdd_vars, parametrizer_class)

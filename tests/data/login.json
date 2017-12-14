@@ -1,0 +1,48 @@
+{
+	"type": "script",
+	"seleniumVersion": "2",
+	"formatVersion": 2,
+	"steps": [
+		{
+			"type": "get",
+			"url": "$base_url"
+		},
+		{
+			"type": "setElementText",
+			"locator": {
+				"type": "css selector",
+				"value": "input[name=\"email\"]"
+			},
+			"text": "$root_name"
+		},
+		{
+			"type": "setElementText",
+			"locator": {
+				"type": "css selector",
+				"value": "input[name=\"password\"]"
+			},
+			"text": "$root_pwd"
+		},
+		{
+			"type": "clickElement",
+			"locator": {
+				"type": "css selector",
+				"value": ".label-submit"
+			}
+		},
+		{
+			"type": "waitForElementPresent",
+			"locator": {
+				"type": "css selector",
+				"value": ".logged"
+			}
+		},
+		{
+			"type": "assertElementPresent",
+			"locator": {
+				"type": "css selector",
+				"value": ".user-info"
+			}
+		}
+	]
+}
