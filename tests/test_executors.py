@@ -356,3 +356,95 @@ def test_execute_pause_bad(dummy_executor):
     }
     with pytest.raises(ValueError):
         dummy_executor.execute_command(command)
+
+
+def test_execute_store_eval(dummy_executor):
+    command = {
+        'type': 'storeEval',
+        'variable': 'TAG_NAME',
+        'script': 'document.body.tagName',
+    }
+    assert 'TAG_NAME' not in dummy_executor.variables
+    dummy_executor \
+        .page \
+        .driver \
+        .evaluate_script \
+        .return_value = 'BODY'
+
+    dummy_executor.execute_command(command)
+    assert dummy_executor.variables['TAG_NAME'] == 'BODY'
+
+
+def test_execute_store_eval_param(dummy_executor):
+    command = {
+        'type': 'storeEval',
+        'variable': 'DYNAMIC',
+        'script': '"$foo" + "$foo"',
+    }
+    assert 'DYNAMIC' not in dummy_executor.variables
+    assert 'foo' in dummy_executor.variables
+    assert dummy_executor.variables['foo'] == 'bar'
+
+    dummy_executor.execute_command(command)
+
+    dummy_executor \
+        .page \
+        .driver \
+        .evaluate_script \
+        .assert_called_once_with('"bar" + "bar"')
+
+
+def test_execute_verify_eval(dummy_executor):
+    command = {
+        'type': 'verifyEval',
+        'value': 'result',
+        'script': '"res" + "ult"',
+    }
+    dummy_executor \
+        .page \
+        .driver \
+        .evaluate_script \
+        .return_value = 'result'
+
+    dummy_executor.execute_command(command)
+    dummy_executor \
+        .page \
+        .driver \
+        .evaluate_script \
+        .assert_called_once_with('"res" + "ult"')
+
+
+def test_execute_verify_eval_false(dummy_executor):
+    command = {
+        'type': 'verifyEval',
+        'value': 'result',
+        'script': '"res" + "ult"',
+    }
+    dummy_executor \
+        .page \
+        .driver \
+        .evaluate_script \
+        .return_value = 'resultXXX'
+
+    with pytest.raises(AssertionError):
+        dummy_executor.execute_command(command)
+
+
+def test_execute_verify_eval_param(dummy_executor):
+    command = {
+        'type': 'verifyEval',
+        'value': 'resultbar',
+        'script': '"res" + "ult" + "$foo"',
+    }
+    dummy_executor \
+        .page \
+        .driver \
+        .evaluate_script \
+        .return_value = 'resultbar'
+
+    dummy_executor.execute_command(command)
+    dummy_executor \
+        .page \
+        .driver \
+        .evaluate_script \
+        .assert_called_once_with('"res" + "ult" + "bar"')
