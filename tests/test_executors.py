@@ -466,6 +466,42 @@ def test_execute_wait_until_condition(dummy_executor):
         .called
 
 
+def test_execute_wait_for_element_present(dummy_executor):
+    command = {
+        'type': 'waitForElementPresent',
+        'locator': {
+             'type': 'css selector',
+             'value': 'body'
+        },
+    }
+
+    def _until(func):
+        func(dummy_executor.page.driver)
+
+    dummy_executor \
+        .page \
+        .find_element \
+        .return_value \
+        .visible = True
+    dummy_executor \
+        .page \
+        .wait \
+        .until \
+        .side_effect = _until
+
+    dummy_executor.execute_command(command)
+
+    dummy_executor \
+        .page \
+        .wait \
+        .until \
+        .called
+    dummy_executor \
+        .page \
+        .find_element \
+        .assert_called_once_with('css', 'body')
+
+
 def test_execute_verify_text_default(dummy_executor):
     command = {
         'type': 'verifyText',
