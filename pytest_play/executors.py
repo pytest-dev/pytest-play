@@ -19,7 +19,6 @@ class JSONExecutorSplinter(object):
         'verifyEval',
         'waitUntilCondition',
         'select',
-        'verifyElementPresent',
     ]
     SELECTOR_TYPES = [
         'css selector',
@@ -104,8 +103,6 @@ class JSONExecutorSplinter(object):
             method_name = command_prefix.format('wait_until_condition')
         elif command_type == 'select':
             method_name = command_prefix.format('select')
-        elif command_type == 'verifyElementPresent':
-            method_name = command_prefix.format('verify_element_present')
         else:
             raise NotImplementedError(
                 'Command not implemented', command_type)
@@ -166,7 +163,12 @@ class JSONExecutorSplinter(object):
         selector = self.locator_translate(command['locator'])
         negated = command.get('negated', False)
         element = self.page.find_element(*selector)
-        assert not negated and element
+        result = False
+        if negated:
+            result = not element
+        else:
+            result = element
+        assert result
 
     def command_send_keys_to_element(self, command):
         """ send_keys_to_element """
@@ -216,10 +218,3 @@ class JSONExecutorSplinter(object):
         script = self.parametrizer.parametrize(command['script'])
         self.page.wait.until(
             lambda s: self.page.driver.evaluate_script(script) == value)
-
-    def command_verify_element_present(self, command):
-        """ assertElementPresent """
-        selector = self.locator_translate(command['locator'])
-        negated = command['negated']
-        element = self.page.find_element(*selector)
-        assert negated and not element or element
