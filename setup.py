@@ -17,6 +17,7 @@ def read(fname):
 install_requires = [
     'pytest>=3.0.7',
     'pytest-variables[yaml]',
+    'pytest-pypom-navigation',
 ]
 
 tests_require = [
