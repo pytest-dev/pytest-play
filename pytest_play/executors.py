@@ -49,7 +49,7 @@ class JSONExecutorSplinter(object):
         """ Parametrizer engine """
         return self.parametrizer_class(self.variables)
 
-    def _locator(self, locator):
+    def locator_translate(self, locator):
         """ Translates json locator to splinter selector
             format
         """
@@ -120,14 +120,14 @@ class JSONExecutorSplinter(object):
         """ clickElement """
         self.command_wait_for_element_present(command)
 
-        selector = self._locator(command['locator'])
+        selector = self.locator_translate(command['locator'])
         self.page.find_element(*selector).click()
 
     def command_fill(self, command):
         """ setElementText """
         self.command_wait_for_element_present(command)
 
-        selector = self._locator(command['locator'])
+        selector = self.locator_translate(command['locator'])
         text = command['text']
         self.page.find_element(*selector).fill(text)
 
@@ -135,7 +135,7 @@ class JSONExecutorSplinter(object):
         """ select """
         self.command_wait_for_element_present(command)
 
-        selector = self._locator(command['locator'])
+        selector = self.locator_translate(command['locator'])
 
         text = command.get('text', None)
         value = command.get('value', None)
@@ -154,7 +154,7 @@ class JSONExecutorSplinter(object):
 
     def command_wait_for_element_present(self, command):
         """ waitForElementPresent """
-        selector = self._locator(command['locator'])
+        selector = self.locator_translate(command['locator'])
 
         def _wait(driver):
             element = self.page.find_element(*selector)
@@ -163,7 +163,7 @@ class JSONExecutorSplinter(object):
 
     def command_assert_element_present(self, command):
         """ assertElementPresent """
-        selector = self._locator(command['locator'])
+        selector = self.locator_translate(command['locator'])
         negated = command['negated']
         element = self.page.find_element(*selector)
         assert not negated and element
@@ -176,7 +176,7 @@ class JSONExecutorSplinter(object):
         if key not in self.KEYS:
             raise ValueError('Key not allowed', key)
 
-        selector = self._locator(command['locator'])
+        selector = self.locator_translate(command['locator'])
         self.page.find_element(*selector) \
             ._element \
             .send_keys(getattr(Keys, key))
@@ -190,7 +190,7 @@ class JSONExecutorSplinter(object):
         """ verifyText """
         self.command_wait_for_element_present(command)
 
-        selector = self._locator(command['locator'])
+        selector = self.locator_translate(command['locator'])
         negated = command['negated']
         pattern = self.parametrizer.parametrize(command['text'])
         element = self.page.find_element(*selector)
@@ -219,7 +219,7 @@ class JSONExecutorSplinter(object):
 
     def command_verify_element_present(self, command):
         """ assertElementPresent """
-        selector = self._locator(command['locator'])
+        selector = self.locator_translate(command['locator'])
         negated = command['negated']
         element = self.page.find_element(*selector)
         assert negated and not element or element
