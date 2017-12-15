@@ -200,7 +200,7 @@ The value of the Javascript expression will be stored in
     {
       "type": "storeEval",
       "variable": "count",
-      "script": "document.getElementById('cound')[0].textContent"
+      "script": "document.getElementById('count')[0].textContent"
     }
 
 Assert if a Javascript expression matches
@@ -212,7 +212,7 @@ will be raised and the test will fail::
     {
       "type": "verifyEval",
       "value": "3",
-      "script": "document.getElementById('cound')[0].textContent"
+      "script": "document.getElementById('count')[0].textContent"
     }
 
 
