@@ -89,17 +89,134 @@ you get things moving on your browser!
 Commands syntax
 ===============
 
-Project status is pre-alpha so commands could change.
+Project status is pre-alpha so commands could change and the
+following list will be extended.
+
+Conditional commands
+--------------------
+::
+
+    {
+      "type": "clickElement",
+      "locator": {
+           "type": "css selector",
+           "value": "body"
+           },
+      "condition": "'$foo' === 'bar'"
+    }
 
 Open a page
 -----------
 
-::
+With parametrization::
 
     {
       "type": "get",
       "url": "$base_url"
     }
+
+or with a regular url::
+
+    {
+      "type": "get",
+      "url": "https://google.com"
+    }
+
+Pause
+-----
+::
+
+    {
+      "type": "pause",
+      "waitTime": "1500"
+    }
+
+Click an element
+----------------
+::
+
+    {
+      "type": "clickElement",
+      "locator": {
+           "type": "css selector",
+           "value": "body"
+           }
+    }
+
+Fill in a text
+--------------
+::
+
+    {
+      "type": "setElementText",
+      "locator": {
+         "type": "css selector",
+         "value": "input.title"
+         },
+      "text": "text value"
+    }
+
+Interact with select input elements
+-----------------------------------
+
+Select by label::
+
+    {
+      "type": "select",
+      "locator": {
+           "type": "css selector",
+           "value": "select.city"
+      },
+      "text": "Turin"
+    }
+
+or select by value::
+
+    {
+      "type": "select",
+      "locator": {
+           "type": "css selector",
+           "value": "select.city"
+      },
+      "value": "1"
+    }
+
+Eval a Javascript expression
+----------------------------
+
+::
+
+    {
+      "type": "eval",
+      "script": "alert("Hello world!")"
+    }
+
+Create a variable starting from a Javascript expression
+-------------------------------------------------------
+
+The value of the Javascript expression will be stored in
+``pytest_play.variables`` under the name ``count``::
+
+    {
+      "type": "storeEval",
+      "variable": "count",
+      "script": "document.getElementById('cound')[0].textContent"
+    }
+
+Assert if a Javascript expression matches
+-----------------------------------------
+
+If the result of the expression does not match an AssertionError
+will be raised and the test will fail::
+
+    {
+      "type": "verifyEval",
+      "value": "3",
+      "script": "document.getElementById('cound')[0].textContent"
+    }
+
+
+
 
 Twitter
 =======
