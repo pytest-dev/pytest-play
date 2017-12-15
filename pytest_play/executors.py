@@ -71,9 +71,9 @@ class JSONExecutorSplinter(object):
 
         return (selector_type, selector,)
 
-    def execute(self, json_data):
+    def execute(self, data):
         """ Execute parsed json-like file contents """
-        steps = json_data['steps']
+        steps = data['steps']
         for step in steps:
             self.execute_command(step)
 

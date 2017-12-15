@@ -22,21 +22,13 @@ def data_base_path():
     return os.path.join(here, 'data')
 
 
-@pytest.fixture
-def bdd_vars():
-    return {'base_url': 'http://',
-            'root_name': 'me@email.com',
-            'root_pwd': 'robust pwd',
-            }
-
-
 def test_executor_splinter_class(json_executor_splinter_class):
     assert json_executor_splinter_class is JSONExecutorSplinter
 
 
 def test_data_getter(data_base_path, data_getter):
     contents = data_getter(data_base_path, 'login.json')
-    assert contents['steps'][0]['url'] == 'http://'
+    assert '$base_url' in contents
 
 
 def test_default_executor(default_json_executor_class):
@@ -46,5 +38,7 @@ def test_default_executor(default_json_executor_class):
 def test_play_json(play_json, navigation, bdd_vars, parametrizer_class):
     assert play_json.navigation is navigation
     assert play_json.navigation.page is navigation.page
-    assert play_json.variables == bdd_vars
+    assert play_json.variables != bdd_vars
+    assert 'base_url' in play_json.variables
+    assert 'base_url' not in bdd_vars
     assert play_json.parametrizer_class is parametrizer_class
