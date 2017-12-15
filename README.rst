@@ -92,6 +92,14 @@ Commands syntax
 Project status is pre-alpha so commands could change and the
 following list will be extended.
 
+Some useful commands is missing, for example:
+
+* url assertions
+
+* text in page
+
+* interaction with other input elements like radio buttons
+
 Conditional commands
 --------------------
 ::
