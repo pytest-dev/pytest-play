@@ -80,6 +80,42 @@ def test_execute_not_implemented_command(dummy_executor):
         dummy_executor.execute_command(command)
 
 
+def test_execute_condition_true(dummy_executor):
+    command = {'type': 'get',
+               'url': 'http://1',
+               'condition': '"$foo" === "bar"'}
+    dummy_executor.page.driver.evaluate_script.return_value = True
+    dummy_executor.execute_command(command)
+    dummy_executor \
+        .page \
+        .driver \
+        .evaluate_script \
+        .assert_called_once_with('"bar" === "bar"') is None
+    dummy_executor \
+        .page \
+        .driver_adapter \
+        .open \
+        .assert_called_once_with(command['url']) is None
+
+
+def test_execute_condition_false(dummy_executor):
+    command = {'type': 'get',
+               'url': 'http://1',
+               'condition': '"$foo" === "bar1"'}
+    dummy_executor.page.driver.evaluate_script.return_value = False
+    dummy_executor.execute_command(command)
+    dummy_executor \
+        .page \
+        .driver \
+        .evaluate_script \
+        .assert_called_once_with('"bar" === "bar1"') is None
+    dummy_executor \
+        .page \
+        .driver_adapter \
+        .open \
+        .called is False
+
+
 def test_execute_get(dummy_executor):
     command = {'type': 'get', 'url': 'http://1'}
     dummy_executor.execute_command(command)

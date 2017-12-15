@@ -113,25 +113,43 @@ class JSONExecutorSplinter(object):
 
     # decorators
     def wait_for_element_present(func):
-        """ Wait for element present decorator"""
+        """ Wait for element present decorator and
+            wait for element visible) """
         def wrapper(*args):
             command = args[1]
             args[0].command_wait_for_element_present(command)
             return func(*args)
         return wrapper
 
+    def condition(func):
+        """ Skip command if condition script returns False """
+        def wrapper(*args):
+            command = args[1]
+            condition = command.get('condition', None)
+            skip = False
+            if condition is not None:
+                expr = args[0].parametrizer.parametrize(condition)
+                if not args[0].page.driver.evaluate_script(expr):
+                    skip = True
+            if not skip:
+                return func(*args)
+        return wrapper
+
     # commands
+    @condition
     def command_get(self, command):
         """ get """
         self.page.driver_adapter.open(command['url'])
 
     @wait_for_element_present
+    @condition
     def command_click(self, command):
         """ clickElement """
         selector = self.locator_translate(command['locator'])
         self.page.find_element(*selector).click()
 
     @wait_for_element_present
+    @condition
     def command_fill(self, command):
         """ setElementText """
         selector = self.locator_translate(command['locator'])
@@ -139,6 +157,7 @@ class JSONExecutorSplinter(object):
         self.page.find_element(*selector).fill(text)
 
     @wait_for_element_present
+    @condition
     def command_select(self, command):
         """ select """
         selector = self.locator_translate(command['locator'])
@@ -158,6 +177,7 @@ class JSONExecutorSplinter(object):
                 './option[@value="{0}"]'.format(value))
         option.click()
 
+    @condition
     def command_wait_for_element_present(self, command):
         """ waitForElementPresent """
         selector = self.locator_translate(command['locator'])
@@ -167,6 +187,7 @@ class JSONExecutorSplinter(object):
             return element is not None and element.visible
         self.page.wait.until(_wait)
 
+    @condition
     def command_assert_element_present(self, command):
         """ assertElementPresent """
         selector = self.locator_translate(command['locator'])
@@ -180,6 +201,7 @@ class JSONExecutorSplinter(object):
         assert result
 
     @wait_for_element_present
+    @condition
     def command_send_keys_to_element(self, command):
         """ sendKeysToElement """
         key = command['text']
@@ -191,12 +213,14 @@ class JSONExecutorSplinter(object):
             ._element \
             .send_keys(getattr(Keys, key))
 
+    @condition
     def command_pause(self, command):
         """ pause """
         wait_time = float(command['waitTime'])
         sleep(wait_time/1000.0)
 
     @wait_for_element_present
+    @condition
     def command_verify_text(self, command):
         """ verifyText """
         selector = self.locator_translate(command['locator'])
@@ -206,6 +230,7 @@ class JSONExecutorSplinter(object):
         match = re.search(pattern, element.text)
         assert not negated and match
 
+    @condition
     def command_store_eval(self, command):
         """ storeEval """
         variable = command['variable']
@@ -213,17 +238,20 @@ class JSONExecutorSplinter(object):
         value = self.page.driver.evaluate_script(script)
         self.variables[variable] = value
 
+    @condition
     def command_verify_eval(self, command):
         """ verifyEval """
         value = command['value']
         script = self.parametrizer.parametrize(command['script'])
         assert value == self.page.driver.evaluate_script(script)
 
+    @condition
     def command_eval(self, command):
         """ eval """
         script = self.parametrizer.parametrize(command['script'])
         self.page.driver.evaluate_script(script)
 
+    @condition
     def command_wait_until_condition(self, command):
         """ waitUntilCondition  """
         value = command['value']
