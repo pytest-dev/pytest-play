@@ -6,6 +6,7 @@ from pypom_navigation.parametrizer import Parametrizer
 
 
 class JSONExecutorSplinter(object):
+    """ JSON executor """
 
     COMMANDS = [
         'get',
