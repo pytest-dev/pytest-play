@@ -16,20 +16,16 @@ pytest-play
 ``pytest-play`` is a pytest_ plugin that let you **play** a json file containing previously
 recorded selenium splinter_ actions driving your browser for your UI test.
 
-``pytest-play`` is your friend when the best practice Page Object approach (like pypom_form_), considered best practice,
-like pypom_form_, 
+``pytest-play`` is your friend when page object approach (considered best practice) is not possible. For example:
+
+* limited time, and/or
+* lack of programming skills
+
+Instead if you are interested in a page object pattern have a look at pypom_form_ or pypom_.
 
 ``pytest-play`` supports automatic waiting that should help to keep your tests more reliable with implicit waits before
 moving on. By default it waits for node availability and visibility but it supports also some wait commands and
 wait until a given Javascript expression is ok. So it is at the same time user friendly and flexible.
-
-A more robust Page Object approach like pypom_form_ is considered best practice but not always is
-possibile for many reasons:
-
-* limited time, and/or
-* lack of programming skils
-
-and in such cases ``pytest-play`` is your friend.
 
 
 How it works
@@ -111,5 +107,6 @@ Twitter
 .. _`pytest-splinter`: https://github.com/pytest-dev/pytest-splinter
 .. _`tox`: https://tox.readthedocs.io/en/latest/
 .. _`pip`: https://pypi.python.org/pypi/pip/
+.. _`pypom`: http://pypom.readthedocs.io/en/latest/
 .. _`PyPI`: https://pypi.python.org/pypi
 .. _`@davidemoro`: https://twitter.com/davidemoro
