@@ -91,7 +91,15 @@ Commands syntax
 
 Project status is pre-alpha so commands could change.
 
-...
+Open a page
+-----------
+
+::
+
+    {
+      "type": "get",
+      "url": "$base_url"
+    }
 
 Twitter
 =======
