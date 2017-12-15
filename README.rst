@@ -358,6 +358,18 @@ or not present::
       "negated": true
     }
 
+How to install pytest-play
+--------------------------
+
+You can see ``pytest-play`` in action creating a pytest project
+using the cookiecutter-qa_ scaffolding tool:
+
+* play.json_
+* test_play.py_
+
+
+This is the easiest way, otherwise you'll need to setup a pytest
+project by your own and install ``pytest-play``.
 
 Twitter
 =======
@@ -378,3 +390,6 @@ Twitter
 .. _`pypom`: http://pypom.readthedocs.io/en/latest/
 .. _`PyPI`: https://pypi.python.org/pypi
 .. _`@davidemoro`: https://twitter.com/davidemoro
+.. _`cookiecutter-qa`: https://github.com/tierratelematics/cookiecutter-qa
+.. _`play.json`: https://github.com/tierratelematics/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/data/play.json
+.. _`test_play.py`: https://github.com/tierratelematics/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/test_play.py
