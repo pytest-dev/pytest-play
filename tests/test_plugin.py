@@ -30,10 +30,6 @@ def bdd_vars():
             }
 
 
-def test_page_timeout(page_timeout):
-    assert page_timeout == 20
-
-
 def test_executor_splinter_class(json_executor_splinter_class):
     assert json_executor_splinter_class is JSONExecutorSplinter
 
@@ -43,20 +39,12 @@ def test_data_getter(data_base_path, data_getter):
     assert contents['steps'][0]['url'] == 'http://'
 
 
-def test_pypom_page_class(pypom_page_class):
-    from pypom import Page
-    assert pypom_page_class is Page
-
-
-def test_page(page, page_timeout):
-    assert page.timeout == page_timeout
-
-
 def test_default_executor(default_json_executor_class):
     assert default_json_executor_class is JSONExecutorSplinter
 
 
-def test_play_json(play_json, page, bdd_vars, parametrizer_class):
-    assert play_json.page is page
+def test_play_json(play_json, navigation, bdd_vars, parametrizer_class):
+    assert play_json.navigation is navigation
+    assert play_json.navigation.page is navigation.page
     assert play_json.variables == bdd_vars
     assert play_json.parametrizer_class is parametrizer_class

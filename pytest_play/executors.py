@@ -43,8 +43,8 @@ class JSONExecutorSplinter(object):
         'SUBTRACT', 'TAB', 'UP',
     ]
 
-    def __init__(self, page, variables, parametrizer_class=None):
-        self.page = page
+    def __init__(self, navigation, variables, parametrizer_class=None):
+        self.navigation = navigation
         self.variables = variables
         self.parametrizer_class = parametrizer_class and \
             parametrizer_class or Parametrizer
@@ -138,7 +138,7 @@ class JSONExecutorSplinter(object):
             skip = False
             if condition is not None:
                 expr = args[0].parametrizer.parametrize(condition)
-                if not args[0].page.driver.evaluate_script(expr):
+                if not args[0].navigation.page.driver.evaluate_script(expr):
                     skip = True
             if not skip:
                 return func(*args)
@@ -148,14 +148,14 @@ class JSONExecutorSplinter(object):
     @condition
     def command_get(self, command):
         """ get """
-        self.page.driver_adapter.open(command['url'])
+        self.navigation.page.driver_adapter.open(command['url'])
 
     @wait_for_element_present
     @condition
     def command_click(self, command):
         """ clickElement """
         selector = self.locator_translate(command['locator'])
-        self.page.find_element(*selector).click()
+        self.navigation.page.find_element(*selector).click()
 
     @wait_for_element_present
     @condition
@@ -163,7 +163,7 @@ class JSONExecutorSplinter(object):
         """ setElementText """
         selector = self.locator_translate(command['locator'])
         text = command['text']
-        self.page.find_element(*selector).fill(text)
+        self.navigation.page.find_element(*selector).fill(text)
 
     @wait_for_element_present
     @condition
@@ -176,7 +176,7 @@ class JSONExecutorSplinter(object):
         if text is not None and value is not None:
             raise ValueError('You cannot specify both text and value')
 
-        raw_element = self.page.find_element(*selector)._element
+        raw_element = self.navigation.page.find_element(*selector)._element
         raw_element.click()
         if text is not None:
             option = raw_element.find_element_by_xpath(
@@ -192,9 +192,9 @@ class JSONExecutorSplinter(object):
         selector = self.locator_translate(command['locator'])
 
         def _wait(driver):
-            element = self.page.find_element(*selector)
+            element = self.navigation.page.find_element(*selector)
             return element is not None
-        self.page.wait.until(_wait)
+        self.navigation.page.wait.until(_wait)
 
     @condition
     def command_wait_for_element_visible(self, command):
@@ -202,16 +202,16 @@ class JSONExecutorSplinter(object):
         selector = self.locator_translate(command['locator'])
 
         def _wait(driver):
-            element = self.page.find_element(*selector)
+            element = self.navigation.page.find_element(*selector)
             return element is not None and element.visible
-        self.page.wait.until(_wait)
+        self.navigation.page.wait.until(_wait)
 
     @condition
     def command_assert_element_present(self, command):
         """ assertElementPresent """
         selector = self.locator_translate(command['locator'])
         negated = command.get('negated', False)
-        element = self.page.find_element(*selector)
+        element = self.navigation.page.find_element(*selector)
         result = False
         if negated:
             result = not element
@@ -224,7 +224,7 @@ class JSONExecutorSplinter(object):
         """ assertElementVisible """
         selector = self.locator_translate(command['locator'])
         negated = command.get('negated', False)
-        element = self.page.find_element(*selector)
+        element = self.navigation.page.find_element(*selector)
         result = False
         if negated:
             result = not element.visible
@@ -241,7 +241,7 @@ class JSONExecutorSplinter(object):
             raise ValueError('Key not allowed', key)
 
         selector = self.locator_translate(command['locator'])
-        self.page.find_element(*selector) \
+        self.navigation.page.find_element(*selector) \
             ._element \
             .send_keys(getattr(Keys, key))
 
@@ -258,7 +258,7 @@ class JSONExecutorSplinter(object):
         selector = self.locator_translate(command['locator'])
         negated = command.get('negated', False)
         pattern = self.parametrizer.parametrize(command['text'])
-        element = self.page.find_element(*selector)
+        element = self.navigation.page.find_element(*selector)
         match = re.search(pattern, element.text)
         assert not negated and match
 
@@ -267,7 +267,7 @@ class JSONExecutorSplinter(object):
         """ storeEval """
         variable = command['variable']
         script = self.parametrizer.parametrize(command['script'])
-        value = self.page.driver.evaluate_script(script)
+        value = self.navigation.page.driver.evaluate_script(script)
         self.variables[variable] = value
 
     @condition
@@ -275,17 +275,17 @@ class JSONExecutorSplinter(object):
         """ verifyEval """
         value = command['value']
         script = self.parametrizer.parametrize(command['script'])
-        assert value == self.page.driver.evaluate_script(script)
+        assert value == self.navigation.page.driver.evaluate_script(script)
 
     @condition
     def command_eval(self, command):
         """ eval """
         script = self.parametrizer.parametrize(command['script'])
-        self.page.driver.evaluate_script(script)
+        self.navigation.page.driver.evaluate_script(script)
 
     @condition
     def command_wait_until_condition(self, command):
         """ waitUntilCondition  """
         script = self.parametrizer.parametrize(command['script'])
-        self.page.wait.until(
-            lambda s: self.page.driver.evaluate_script(script))
+        self.navigation.page.wait.until(
+            lambda s: self.navigation.page.driver.evaluate_script(script))

@@ -8,19 +8,19 @@ from pytest_play.executors import JSONExecutorSplinter
 
 
 @pytest.fixture
-def page():
+def page_instance():
     return mock.MagicMock()
 
 
 @pytest.fixture
-def dummy_executor(parametrizer_class, page):
-    return JSONExecutorSplinter(page, {'foo': 'bar'}, parametrizer_class)
+def dummy_executor(parametrizer_class, navigation):
+    return JSONExecutorSplinter(navigation, {'foo': 'bar'}, parametrizer_class)
 
 
 def test_splinter_executor_constructor(bdd_vars, parametrizer_class):
     executor = JSONExecutorSplinter(None, bdd_vars, parametrizer_class)
     assert executor.parametrizer_class is parametrizer_class
-    assert executor.page is None
+    assert executor.navigation is None
     assert executor.variables == bdd_vars
 
 
@@ -84,14 +84,16 @@ def test_execute_condition_true(dummy_executor):
     command = {'type': 'get',
                'url': 'http://1',
                'condition': '"$foo" === "bar"'}
-    dummy_executor.page.driver.evaluate_script.return_value = True
+    dummy_executor.navigation.page.driver.evaluate_script.return_value = True
     dummy_executor.execute_command(command)
     dummy_executor \
+        .navigation \
         .page \
         .driver \
         .evaluate_script \
         .assert_called_once_with('"bar" === "bar"') is None
     dummy_executor \
+        .navigation \
         .page \
         .driver_adapter \
         .open \
@@ -102,14 +104,16 @@ def test_execute_condition_false(dummy_executor):
     command = {'type': 'get',
                'url': 'http://1',
                'condition': '"$foo" === "bar1"'}
-    dummy_executor.page.driver.evaluate_script.return_value = False
+    dummy_executor.navigation.page.driver.evaluate_script.return_value = False
     dummy_executor.execute_command(command)
     dummy_executor \
+        .navigation \
         .page \
         .driver \
         .evaluate_script \
         .assert_called_once_with('"bar" === "bar1"') is None
     dummy_executor \
+        .navigation \
         .page \
         .driver_adapter \
         .open \
@@ -120,6 +124,7 @@ def test_execute_get(dummy_executor):
     command = {'type': 'get', 'url': 'http://1'}
     dummy_executor.execute_command(command)
     dummy_executor \
+        .navigation \
         .page \
         .driver_adapter \
         .open \
@@ -136,16 +141,18 @@ def test_execute_click(dummy_executor):
     }
     dummy_executor.execute_command(command)
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .return_value \
         .click \
         .assert_called_once_with() is None
-    assert dummy_executor.page.wait.until.called is True
+    assert dummy_executor.navigation.page.wait.until.called is True
 
 
 def test_execute_fill(dummy_executor):
@@ -159,10 +166,12 @@ def test_execute_fill(dummy_executor):
     }
     dummy_executor.execute_command(command)
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .return_value \
@@ -181,14 +190,17 @@ def test_execute_select_text(dummy_executor):
     }
     dummy_executor.execute_command(command)
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .return_value \
@@ -197,6 +209,7 @@ def test_execute_select_text(dummy_executor):
         .assert_called_once_with(
             './option[text()="{0}"]'.format('text value')) is None
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .return_value \
@@ -218,14 +231,17 @@ def test_execute_select_value(dummy_executor):
     }
     dummy_executor.execute_command(command)
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .return_value \
@@ -234,6 +250,7 @@ def test_execute_select_value(dummy_executor):
         .assert_called_once_with(
             './option[@value="{0}"]'.format('1')) is None
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .return_value \
@@ -268,6 +285,7 @@ def test_execute_assert_element_present_default(dummy_executor):
     }
     dummy_executor.execute_command(command)
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
@@ -284,6 +302,7 @@ def test_execute_assert_element_present_negated(dummy_executor):
     }
     dummy_executor.execute_command(command)
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
@@ -298,11 +317,12 @@ def test_execute_assert_element_present_negated_false(dummy_executor):
         },
         'negated': False,
     }
-    dummy_executor.page.find_element.return_value = None
+    dummy_executor.navigation.page.find_element.return_value = None
     with pytest.raises(AssertionError):
         dummy_executor.execute_command(command)
 
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
@@ -317,11 +337,12 @@ def test_execute_assert_element_present_negated_true(dummy_executor):
         },
         'negated': True,
     }
-    dummy_executor.page.find_element.return_value = 1
+    dummy_executor.navigation.page.find_element.return_value = 1
     with pytest.raises(AssertionError):
         dummy_executor.execute_command(command)
 
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
@@ -335,9 +356,10 @@ def test_execute_assert_element_visible_default(dummy_executor):
              'value': 'body'
         },
     }
-    dummy_executor.page.find_element.return_value.visible = True
+    dummy_executor.navigation.page.find_element.return_value.visible = True
     dummy_executor.execute_command(command)
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
@@ -352,9 +374,10 @@ def test_execute_assert_element_visible_negated(dummy_executor):
         },
         'negated': False,
     }
-    dummy_executor.page.find_element.return_value.visible = True
+    dummy_executor.navigation.page.find_element.return_value.visible = True
     dummy_executor.execute_command(command)
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
@@ -369,11 +392,12 @@ def test_execute_assert_element_visible_negated_false(dummy_executor):
         },
         'negated': False,
     }
-    dummy_executor.page.find_element.return_value.visible = False
+    dummy_executor.navigation.page.find_element.return_value.visible = False
     with pytest.raises(AssertionError):
         dummy_executor.execute_command(command)
 
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
@@ -388,11 +412,12 @@ def test_execute_assert_element_visible_negated_true(dummy_executor):
         },
         'negated': True,
     }
-    dummy_executor.page.find_element.return_value.visible = True
+    dummy_executor.navigation.page.find_element.return_value.visible = True
     with pytest.raises(AssertionError):
         dummy_executor.execute_command(command)
 
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
@@ -410,10 +435,12 @@ def test_execute_send_keys(dummy_executor):
     }
     dummy_executor.execute_command(command)
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .return_value \
@@ -476,6 +503,7 @@ def test_execute_store_eval(dummy_executor):
     }
     assert 'TAG_NAME' not in dummy_executor.variables
     dummy_executor \
+        .navigation \
         .page \
         .driver \
         .evaluate_script \
@@ -498,6 +526,7 @@ def test_execute_store_eval_param(dummy_executor):
     dummy_executor.execute_command(command)
 
     dummy_executor \
+        .navigation \
         .page \
         .driver \
         .evaluate_script \
@@ -514,6 +543,7 @@ def test_execute_eval(dummy_executor):
     dummy_executor.execute_command(command)
 
     dummy_executor \
+        .navigation \
         .page \
         .driver \
         .evaluate_script \
@@ -527,6 +557,7 @@ def test_execute_verify_eval(dummy_executor):
         'script': '"res" + "ult"',
     }
     dummy_executor \
+        .navigation \
         .page \
         .driver \
         .evaluate_script \
@@ -534,6 +565,7 @@ def test_execute_verify_eval(dummy_executor):
 
     dummy_executor.execute_command(command)
     dummy_executor \
+        .navigation \
         .page \
         .driver \
         .evaluate_script \
@@ -547,6 +579,7 @@ def test_execute_verify_eval_false(dummy_executor):
         'script': '"res" + "ult"',
     }
     dummy_executor \
+        .navigation \
         .page \
         .driver \
         .evaluate_script \
@@ -563,6 +596,7 @@ def test_execute_verify_eval_param(dummy_executor):
         'script': '"res" + "ult" + "$foo"',
     }
     dummy_executor \
+        .navigation \
         .page \
         .driver \
         .evaluate_script \
@@ -570,6 +604,7 @@ def test_execute_verify_eval_param(dummy_executor):
 
     dummy_executor.execute_command(command)
     dummy_executor \
+        .navigation \
         .page \
         .driver \
         .evaluate_script \
@@ -585,6 +620,7 @@ def test_execute_wait_until_condition(dummy_executor):
     dummy_executor.execute_command(command)
 
     dummy_executor \
+        .navigation \
         .page \
         .wait \
         .until \
@@ -601,14 +637,16 @@ def test_execute_wait_for_element_present(dummy_executor):
     }
 
     def _until(func):
-        func(dummy_executor.page.driver)
+        func(dummy_executor.navigation.page.driver)
 
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .return_value \
         .visible = True
     dummy_executor \
+        .navigation \
         .page \
         .wait \
         .until \
@@ -617,11 +655,13 @@ def test_execute_wait_for_element_present(dummy_executor):
     dummy_executor.execute_command(command)
 
     dummy_executor \
+        .navigation \
         .page \
         .wait \
         .until \
         .called
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
@@ -637,14 +677,16 @@ def test_execute_wait_for_element_visible(dummy_executor):
     }
 
     def _until(func):
-        func(dummy_executor.page.driver)
+        func(dummy_executor.navigation.page.driver)
 
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .return_value \
         .visible = True
     dummy_executor \
+        .navigation \
         .page \
         .wait \
         .until \
@@ -653,11 +695,13 @@ def test_execute_wait_for_element_visible(dummy_executor):
     dummy_executor.execute_command(command)
 
     dummy_executor \
+        .navigation \
         .page \
         .wait \
         .until \
         .called
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .assert_called_once_with('css', 'body') is None
@@ -674,6 +718,7 @@ def test_execute_verify_text_default(dummy_executor):
     }
 
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .return_value \
@@ -694,6 +739,7 @@ def test_execute_verify_text(dummy_executor):
     }
 
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .return_value \
@@ -714,6 +760,7 @@ def test_execute_verify_text_negated(dummy_executor):
     }
 
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .return_value \
@@ -734,6 +781,7 @@ def test_execute_verify_text_false(dummy_executor):
     }
 
     dummy_executor \
+        .navigation \
         .page \
         .find_element \
         .return_value \

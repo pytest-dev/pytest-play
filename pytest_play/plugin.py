@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-from pypom import Page
 import pytest
 from .executors import JSONExecutorSplinter
 
@@ -33,26 +32,8 @@ def default_json_executor_class(json_executor_splinter_class):
 
 
 @pytest.fixture
-def pypom_page_class():
-    """ PyPOM page class """
-    return Page
-
-
-@pytest.fixture
-def page_timeout():
-    """ Default page timeout """
-    return 20
-
-
-@pytest.fixture
-def page(pypom_page_class, browser, page_timeout):
-    """ Basic page implementation based on pypom_page_class"""
-    return Page(browser, timeout=page_timeout)
-
-
-@pytest.fixture
-def play_json(default_json_executor_class, page, bdd_vars,
-              parametrizer_class):
+def play_json(default_json_executor_class, bdd_vars,
+              parametrizer_class, navigation):
     """
         How to use json_executor::
 
@@ -60,4 +41,5 @@ def play_json(default_json_executor_class, page, bdd_vars,
                 data = data_getter('/my/path/etc', 'login.json')
                 play_json.execute(data)
     """
-    return default_json_executor_class(page, bdd_vars, parametrizer_class)
+    return default_json_executor_class(
+        navigation, bdd_vars, parametrizer_class)
