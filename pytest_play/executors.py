@@ -11,9 +11,11 @@ class JSONExecutorSplinter(object):
     COMMANDS = [
         'get',
         'waitForElementPresent',
+        'waitForElementVisible',
         'setElementText',
         'clickElement',
         'assertElementPresent',
+        'assertElementVisible',
         'sendKeysToElement',
         'pause',
         'verifyText',
@@ -91,8 +93,12 @@ class JSONExecutorSplinter(object):
             method_name = command_prefix.format('fill')
         elif command_type == 'waitForElementPresent':
             method_name = command_prefix.format('wait_for_element_present')
+        elif command_type == 'waitForElementVisible':
+            method_name = command_prefix.format('wait_for_element_visible')
         elif command_type == 'assertElementPresent':
             method_name = command_prefix.format('assert_element_present')
+        elif command_type == 'assertElementVisible':
+            method_name = command_prefix.format('assert_element_visible')
         elif command_type == 'sendKeysToElement':
             method_name = command_prefix.format('send_keys_to_element')
         elif command_type == 'pause':
@@ -187,6 +193,16 @@ class JSONExecutorSplinter(object):
 
         def _wait(driver):
             element = self.page.find_element(*selector)
+            return element is not None
+        self.page.wait.until(_wait)
+
+    @condition
+    def command_wait_for_element_visible(self, command):
+        """ waitForElementVisible """
+        selector = self.locator_translate(command['locator'])
+
+        def _wait(driver):
+            element = self.page.find_element(*selector)
             return element is not None and element.visible
         self.page.wait.until(_wait)
 
@@ -201,6 +217,19 @@ class JSONExecutorSplinter(object):
             result = not element
         else:
             result = element
+        assert result
+
+    @condition
+    def command_assert_element_visible(self, command):
+        """ assertElementVisible """
+        selector = self.locator_translate(command['locator'])
+        negated = command.get('negated', False)
+        element = self.page.find_element(*selector)
+        result = False
+        if negated:
+            result = not element.visible
+        else:
+            result = element.visible
         assert result
 
     @wait_for_element_present

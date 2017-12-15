@@ -327,6 +327,77 @@ def test_execute_assert_element_present_negated_true(dummy_executor):
         .assert_called_once_with('css', 'body') is None
 
 
+def test_execute_assert_element_visible_default(dummy_executor):
+    command = {
+        'type': 'assertElementVisible',
+        'locator': {
+             'type': 'css selector',
+             'value': 'body'
+        },
+    }
+    dummy_executor.page.find_element.return_value.visible = True
+    dummy_executor.execute_command(command)
+    dummy_executor \
+        .page \
+        .find_element \
+        .assert_called_once_with('css', 'body') is None
+
+
+def test_execute_assert_element_visible_negated(dummy_executor):
+    command = {
+        'type': 'assertElementVisible',
+        'locator': {
+             'type': 'css selector',
+             'value': 'body'
+        },
+        'negated': False,
+    }
+    dummy_executor.page.find_element.return_value.visible = True
+    dummy_executor.execute_command(command)
+    dummy_executor \
+        .page \
+        .find_element \
+        .assert_called_once_with('css', 'body') is None
+
+
+def test_execute_assert_element_visible_negated_false(dummy_executor):
+    command = {
+        'type': 'assertElementVisible',
+        'locator': {
+             'type': 'css selector',
+             'value': 'body'
+        },
+        'negated': False,
+    }
+    dummy_executor.page.find_element.return_value.visible = False
+    with pytest.raises(AssertionError):
+        dummy_executor.execute_command(command)
+
+    dummy_executor \
+        .page \
+        .find_element \
+        .assert_called_once_with('css', 'body') is None
+
+
+def test_execute_assert_element_visible_negated_true(dummy_executor):
+    command = {
+        'type': 'assertElementVisible',
+        'locator': {
+             'type': 'css selector',
+             'value': 'body'
+        },
+        'negated': True,
+    }
+    dummy_executor.page.find_element.return_value.visible = True
+    with pytest.raises(AssertionError):
+        dummy_executor.execute_command(command)
+
+    dummy_executor \
+        .page \
+        .find_element \
+        .assert_called_once_with('css', 'body') is None
+
+
 def test_execute_send_keys(dummy_executor):
     from selenium.webdriver.common.keys import Keys
     command = {
@@ -553,7 +624,43 @@ def test_execute_wait_for_element_present(dummy_executor):
     dummy_executor \
         .page \
         .find_element \
-        .assert_called_once_with('css', 'body')
+        .assert_called_once_with('css', 'body') is None
+
+
+def test_execute_wait_for_element_visible(dummy_executor):
+    command = {
+        'type': 'waitForElementVisible',
+        'locator': {
+             'type': 'css selector',
+             'value': 'body'
+        },
+    }
+
+    def _until(func):
+        func(dummy_executor.page.driver)
+
+    dummy_executor \
+        .page \
+        .find_element \
+        .return_value \
+        .visible = True
+    dummy_executor \
+        .page \
+        .wait \
+        .until \
+        .side_effect = _until
+
+    dummy_executor.execute_command(command)
+
+    dummy_executor \
+        .page \
+        .wait \
+        .until \
+        .called
+    dummy_executor \
+        .page \
+        .find_element \
+        .assert_called_once_with('css', 'body') is None
 
 
 def test_execute_verify_text_default(dummy_executor):
