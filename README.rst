@@ -89,6 +89,8 @@ you get things moving on your browser!
 Commands syntax
 ===============
 
+Project status is pre-alpha so commands could change.
+
 ...
 
 Twitter
