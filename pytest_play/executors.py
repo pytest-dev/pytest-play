@@ -19,6 +19,7 @@ class JSONExecutorSplinter(object):
         'verifyEval',
         'waitUntilCondition',
         'select',
+        'eval',
     ]
     SELECTOR_TYPES = [
         'css selector',
@@ -99,6 +100,8 @@ class JSONExecutorSplinter(object):
             method_name = command_prefix.format('store_eval')
         elif command_type == 'verifyEval':
             method_name = command_prefix.format('verify_eval')
+        elif command_type == 'eval':
+            method_name = command_prefix.format('eval')
         elif command_type == 'waitUntilCondition':
             method_name = command_prefix.format('wait_until_condition')
         elif command_type == 'select':
@@ -108,30 +111,36 @@ class JSONExecutorSplinter(object):
                 'Command not implemented', command_type)
         getattr(self, method_name)(command)
 
+    # decorators
+    def wait_for_element_present(func):
+        """ Wait for element present decorator"""
+        def wrapper(*args):
+            command = args[1]
+            args[0].command_wait_for_element_present(command)
+            return func(*args)
+        return wrapper
+
     # commands
     def command_get(self, command):
         """ get """
         self.page.driver_adapter.open(command['url'])
 
+    @wait_for_element_present
     def command_click(self, command):
         """ clickElement """
-        self.command_wait_for_element_present(command)
-
         selector = self.locator_translate(command['locator'])
         self.page.find_element(*selector).click()
 
+    @wait_for_element_present
     def command_fill(self, command):
         """ setElementText """
-        self.command_wait_for_element_present(command)
-
         selector = self.locator_translate(command['locator'])
         text = command['text']
         self.page.find_element(*selector).fill(text)
 
+    @wait_for_element_present
     def command_select(self, command):
         """ select """
-        self.command_wait_for_element_present(command)
-
         selector = self.locator_translate(command['locator'])
 
         text = command.get('text', None)
@@ -170,10 +179,9 @@ class JSONExecutorSplinter(object):
             result = element
         assert result
 
+    @wait_for_element_present
     def command_send_keys_to_element(self, command):
         """ sendKeysToElement """
-        self.command_wait_for_element_present(command)
-
         key = command['text']
         if key not in self.KEYS:
             raise ValueError('Key not allowed', key)
@@ -188,10 +196,9 @@ class JSONExecutorSplinter(object):
         wait_time = float(command['waitTime'])
         sleep(wait_time/1000.0)
 
+    @wait_for_element_present
     def command_verify_text(self, command):
         """ verifyText """
-        self.command_wait_for_element_present(command)
-
         selector = self.locator_translate(command['locator'])
         negated = command.get('negated', False)
         pattern = self.parametrizer.parametrize(command['text'])
@@ -211,6 +218,11 @@ class JSONExecutorSplinter(object):
         value = command['value']
         script = self.parametrizer.parametrize(command['script'])
         assert value == self.page.driver.evaluate_script(script)
+
+    def command_eval(self, command):
+        """ eval """
+        script = self.parametrizer.parametrize(command['script'])
+        self.page.driver.evaluate_script(script)
 
     def command_wait_until_condition(self, command):
         """ waitUntilCondition  """

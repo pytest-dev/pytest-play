@@ -109,6 +109,7 @@ def test_execute_click(dummy_executor):
         .return_value \
         .click \
         .assert_called_once_with() is None
+    assert dummy_executor.page.wait.until.called is True
 
 
 def test_execute_fill(dummy_executor):
@@ -150,14 +151,15 @@ def test_execute_select_text(dummy_executor):
     dummy_executor \
         .page \
         .find_element \
-        .assert_called_once_with('css', 'body')
+        .assert_called_once_with('css', 'body') is None
     dummy_executor \
         .page \
         .find_element \
         .return_value \
         ._element \
         .find_element_by_xpath \
-        .assert_called_once_with('./option[text()="{0}"]'.format('text value'))
+        .assert_called_once_with(
+            './option[text()="{0}"]'.format('text value')) is None
     dummy_executor \
         .page \
         .find_element \
@@ -166,7 +168,7 @@ def test_execute_select_text(dummy_executor):
         .find_element_by_xpath \
         .return_value \
         .click \
-        .assert_called_once_with()
+        .assert_called_once_with() is None
 
 
 def test_execute_select_value(dummy_executor):
@@ -186,14 +188,15 @@ def test_execute_select_value(dummy_executor):
     dummy_executor \
         .page \
         .find_element \
-        .assert_called_once_with('css', 'body')
+        .assert_called_once_with('css', 'body') is None
     dummy_executor \
         .page \
         .find_element \
         .return_value \
         ._element \
         .find_element_by_xpath \
-        .assert_called_once_with('./option[@value="{0}"]'.format('1'))
+        .assert_called_once_with(
+            './option[@value="{0}"]'.format('1')) is None
     dummy_executor \
         .page \
         .find_element \
@@ -202,7 +205,7 @@ def test_execute_select_value(dummy_executor):
         .find_element_by_xpath \
         .return_value \
         .click \
-        .assert_called_once_with()
+        .assert_called_once_with() is None
 
 
 def test_execute_select_bad(dummy_executor):
@@ -383,6 +386,22 @@ def test_execute_store_eval_param(dummy_executor):
     }
     assert 'DYNAMIC' not in dummy_executor.variables
     assert 'foo' in dummy_executor.variables
+    assert dummy_executor.variables['foo'] == 'bar'
+
+    dummy_executor.execute_command(command)
+
+    dummy_executor \
+        .page \
+        .driver \
+        .evaluate_script \
+        .assert_called_once_with('"bar" + "bar"')
+
+
+def test_execute_eval(dummy_executor):
+    command = {
+        'type': 'eval',
+        'script': '"$foo" + "$foo"',
+    }
     assert dummy_executor.variables['foo'] == 'bar'
 
     dummy_executor.execute_command(command)
