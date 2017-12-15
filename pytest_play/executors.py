@@ -2,6 +2,7 @@
 import re
 from time import sleep
 from selenium.webdriver.common.keys import Keys
+from pypom_navigation.parametrizer import Parametrizer
 
 
 class JSONExecutorSplinter(object):
@@ -39,10 +40,11 @@ class JSONExecutorSplinter(object):
         'SUBTRACT', 'TAB', 'UP',
     ]
 
-    def __init__(self, page, variables, parametrizer_class):
+    def __init__(self, page, variables, parametrizer_class=None):
         self.page = page
         self.variables = variables
-        self.parametrizer_class = parametrizer_class
+        self.parametrizer_class = parametrizer_class and \
+            parametrizer_class or Parametrizer
 
     @property
     def parametrizer(self):
