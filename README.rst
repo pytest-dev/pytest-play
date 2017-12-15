@@ -258,6 +258,106 @@ you will be able to override it on command basis::
       "script": "document.body.getAttribute("class") === 'ready'"
     }
 
+Wait for element present in DOM
+-------------------------------
+
+Present::
+
+    {
+      "type": "waitForElementPresent",
+      "locator": {
+         "type": "css selector",
+         "value": "body"
+      }
+    }
+
+or not present::
+
+    {
+      "type": "waitForElementPresent",
+      "locator": {
+         "type": "css selector",
+         "value": "body"
+      },
+      "negated": true
+    }
+
+Wait for element visible
+------------------------
+
+Visible::
+
+    {
+      "type": "waitForElementVisible",
+      "locator": {
+         "type": "css selector",
+         "value": "body"
+      }
+    }
+
+or not visible::
+
+    {
+      "type": "waitForElementVisible",
+      "locator": {
+         "type": "css selector",
+         "value": "body"
+      },
+      "negated": true
+    }
+
+Assert element is present in DOM
+--------------------------------
+
+An ``AssertionError`` will be raised if assertion fails.
+
+Present::
+
+    {
+      "type": "assertElementPresent",
+      "locator": {
+         "type": "css selector",
+         "value": "div.elem"
+         }
+    }
+
+or not present::
+
+    {
+      "type": "assertElementPresent",
+      "locator": {
+         "type": "css selector",
+         "value": "div.elem"
+         },
+      "negated": true
+    }
+
+Assert element is visible
+-------------------------
+
+An ``AssertionError`` will be raised if assertion fails.
+
+Present::
+
+    {
+      "type": "assertElementVisible",
+      "locator": {
+         "type": "css selector",
+         "value": "div.elem"
+         }
+    }
+
+or not present::
+
+    {
+      "type": "assertElementVisible",
+      "locator": {
+         "type": "css selector",
+         "value": "div.elem"
+         },
+      "negated": true
+    }
+
 
 Twitter
 =======
