@@ -206,7 +206,7 @@ The value of the Javascript expression will be stored in
 Assert if a Javascript expression matches
 -----------------------------------------
 
-If the result of the expression does not match an AssertionError
+If the result of the expression does not match an ``AssertionError``
 will be raised and the test will fail::
 
     {
@@ -215,7 +215,48 @@ will be raised and the test will fail::
       "script": "document.getElementById('count')[0].textContent"
     }
 
+Verify that the text of one element contains a string
+-----------------------------------------------------
 
+If the element text does not contain the provided text an
+``AssertionError`` will be raised and the test will fail::
+
+    {
+      "type": "verifyText",
+      "locator": {
+         "type": "css selector",
+         "value": ".my-item"
+      },
+      "text": "a text"
+    }
+
+Send keys to an element
+-----------------------
+
+All ``selenium.webdriver.common.keys.Keys`` are supported::
+
+    {
+      "type": "sendKeysToElement",
+      "locator": {
+         "type": "css selector",
+         "value": ".confirm"
+      },
+      "text": "ENTER"
+    }
+
+Wait until a Javascript expression matches
+------------------------------------------
+
+Wait until the given expression matches or raise a 
+``selenium.common.exceptions.TimeoutException`` if takes too time.
+
+At this time of writing there is a global timeout (20s) but in future releases
+you will be able to override it on command basis::
+
+    {
+      "type": "waitUntilCondition",
+      "script": "document.body.getAttribute("class") === 'ready'"
+    }
 
 
 Twitter

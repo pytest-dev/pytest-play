@@ -257,7 +257,6 @@ class JSONExecutorSplinter(object):
     @condition
     def command_wait_until_condition(self, command):
         """ waitUntilCondition  """
-        value = command['value']
         script = self.parametrizer.parametrize(command['script'])
         self.page.wait.until(
-            lambda s: self.page.driver.evaluate_script(script) == value)
+            lambda s: self.page.driver.evaluate_script(script))

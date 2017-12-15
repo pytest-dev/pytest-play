@@ -508,7 +508,6 @@ def test_execute_verify_eval_param(dummy_executor):
 def test_execute_wait_until_condition(dummy_executor):
     command = {
         'type': 'waitUntilCondition',
-        'value': 'id1',
         'script': "document.body.getAttribute('id')",
     }
 
