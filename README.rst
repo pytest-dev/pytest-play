@@ -8,7 +8,8 @@ pytest-play
     :alt: See Build Status on Travis CI
 
 .. image:: https://readthedocs.org/projects/pytest-play/badge/?version=latest
-          :target: http://pytest-play.readthedocs.io
+          :target: http://pytest-play.readthedocs.io/en/latest/?badge=latest
+          :alt: Documentation Status
 
 .. image:: https://codecov.io/gh/tierratelematics/pytest-play/branch/develop/graph/badge.svg
           :target: https://codecov.io/gh/tierratelematics/pytest-play
