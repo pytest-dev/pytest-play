@@ -128,7 +128,7 @@ Pause
 
     {
       "type": "pause",
-      "waitTime": "1500"
+      "waitTime": 1500
     }
 
 Click an element
