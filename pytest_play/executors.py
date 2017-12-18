@@ -135,7 +135,7 @@ class JSONExecutorSplinter(object):
         getattr(self, method_name)(command)
 
     # decorators
-    def wait_for_element_present(func):
+    def wait_for_element_visible(func):
         """ Wait for element present decorator and
             wait for element visible) """
         def wrapper(*args):
@@ -164,14 +164,14 @@ class JSONExecutorSplinter(object):
         """ get """
         self.navigation.page.driver_adapter.open(command['url'])
 
-    @wait_for_element_present
+    @wait_for_element_visible
     @condition
     def command_click(self, command):
         """ clickElement """
         selector = self.locator_translate(command['locator'])
         self.navigation.page.find_element(*selector).click()
 
-    @wait_for_element_present
+    @wait_for_element_visible
     @condition
     def command_fill(self, command):
         """ setElementText """
@@ -179,7 +179,7 @@ class JSONExecutorSplinter(object):
         text = command['text']
         self.navigation.page.find_element(*selector).fill(text)
 
-    @wait_for_element_present
+    @wait_for_element_visible
     @condition
     def command_select(self, command):
         """ select """
@@ -246,7 +246,7 @@ class JSONExecutorSplinter(object):
             result = element.visible
         assert result
 
-    @wait_for_element_present
+    @wait_for_element_visible
     @condition
     def command_send_keys_to_element(self, command):
         """ sendKeysToElement """
@@ -265,7 +265,7 @@ class JSONExecutorSplinter(object):
         wait_time = float(command['waitTime'])
         sleep(wait_time/1000.0)
 
-    @wait_for_element_present
+    @wait_for_element_visible
     @condition
     def command_verify_text(self, command):
         """ verifyText """
