@@ -131,6 +131,17 @@ def test_execute_get(dummy_executor):
         .assert_called_once_with(command['url']) is None
 
 
+def test_execute_get_basestring(dummy_executor):
+    command = """{"type": "get", "url": "http://1"}"""
+    dummy_executor.execute_command(command)
+    dummy_executor \
+        .navigation \
+        .page \
+        .driver_adapter \
+        .open \
+        .assert_called_once_with('http://1') is None
+
+
 def test_execute_click(dummy_executor):
     command = {
         'type': 'clickElement',

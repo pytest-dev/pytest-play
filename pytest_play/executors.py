@@ -2,6 +2,7 @@
 import json
 import re
 from time import sleep
+from builtins import str
 from selenium.webdriver.common.keys import Keys
 from pypom_navigation.parametrizer import Parametrizer
 
@@ -72,22 +73,22 @@ class JSONExecutorSplinter(object):
 
         return (selector_type, selector,)
 
-    def _json_dumps(self, data):
+    def _json_loads(self, data):
         """ If data is a string returns json dumps """
         if isinstance(data, str):
-            data = json.dumps(data)
+            data = json.loads(data)
         return data
 
     def execute(self, data):
         """ Execute parsed json-like file contents """
-        data = self._json_dumps(data)
+        data = self._json_loads(data)
         steps = data['steps']
         for step in steps:
             self.execute_command(step)
 
     def execute_command(self, command):
         """ Execute single command """
-        command = self._json_dumps(command)
+        command = self._json_loads(command)
         command_type = command['type']
 
         if command_type not in self.COMMANDS:
