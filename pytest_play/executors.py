@@ -74,7 +74,6 @@ class JSONExecutorSplinter(object):
 
     def _json_dumps(self, data):
         """ If data is a string returns json dumps """
-        data = data.copy()
         if isinstance(data, str):
             data = json.dumps(data)
         return data
