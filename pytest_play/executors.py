@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import re
 from time import sleep
 from selenium.webdriver.common.keys import Keys
@@ -71,14 +72,23 @@ class JSONExecutorSplinter(object):
 
         return (selector_type, selector,)
 
+    def _json_dumps(self, data):
+        """ If data is a string returns json dumps """
+        data = data.copy()
+        if isinstance(data, str):
+            data = json.dumps(data)
+        return data
+
     def execute(self, data):
         """ Execute parsed json-like file contents """
+        data = self._json_dumps(data)
         steps = data['steps']
         for step in steps:
             self.execute_command(step)
 
     def execute_command(self, command):
         """ Execute single command """
+        command = self._json_dumps(command)
         command_type = command['type']
 
         if command_type not in self.COMMANDS:
