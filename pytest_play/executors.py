@@ -2,7 +2,12 @@
 import json
 import re
 from time import sleep
-from builtins import str
+try:
+    # python3
+    from builtins import str as basestring
+except ImportError:
+    # python2
+    pass
 from selenium.webdriver.common.keys import Keys
 from pypom_navigation.parametrizer import Parametrizer
 
@@ -75,7 +80,7 @@ class JSONExecutorSplinter(object):
 
     def _json_loads(self, data):
         """ If data is a string returns json dumps """
-        if isinstance(data, str):
+        if isinstance(data, basestring):
             data = json.loads(data)
         return data
 
