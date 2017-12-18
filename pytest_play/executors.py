@@ -140,7 +140,7 @@ class JSONExecutorSplinter(object):
             wait for element visible) """
         def wrapper(*args):
             command = args[1]
-            args[0].command_wait_for_element_present(command)
+            args[0].command_wait_for_element_visible(command)
             return func(*args)
         return wrapper
 
