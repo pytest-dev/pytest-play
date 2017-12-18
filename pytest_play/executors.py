@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import json
 import re
 from time import sleep
 try:
@@ -81,7 +80,7 @@ class JSONExecutorSplinter(object):
     def _json_loads(self, data):
         """ If data is a string returns json dumps """
         if isinstance(data, basestring):
-            data = json.loads(data)
+            data = self.parametrizer.json_loads(data)
         return data
 
     def execute(self, data):
