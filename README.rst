@@ -114,6 +114,20 @@ Conditional commands
       "condition": "'$foo' === 'bar'"
     }
 
+
+Supported locators
+------------------
+
+Supported selector types:
+
+* css
+* xpath
+* tag
+* name
+* text
+* id
+* value
+
 Open a page
 -----------
 
