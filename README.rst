@@ -267,6 +267,24 @@ All ``selenium.webdriver.common.keys.Keys`` are supported::
       "text": "ENTER"
     }
 
+
+Supported keys::
+
+    KEYS = [
+        'ADD', 'ALT', 'ARROW_DOWN', 'ARROW_LEFT', 'ARROW_RIGHT',
+        'ARROW_UP', 'BACKSPACE', 'BACK_SPACE', 'CANCEL', 'CLEAR',
+        'COMMAND', 'CONTROL', 'DECIMAL', 'DELETE', 'DIVIDE',
+        'DOWN', 'END', 'ENTER', 'EQUALS', 'ESCAPE', 'F1', 'F10',
+        'F11', 'F12', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8',
+        'F9', 'HELP', 'HOME', 'INSERT', 'LEFT', 'LEFT_ALT',
+        'LEFT_CONTROL', 'LEFT_SHIFT', 'META', 'MULTIPLY',
+        'NULL', 'NUMPAD0', 'NUMPAD1', 'NUMPAD2', 'NUMPAD3',
+        'NUMPAD4', 'NUMPAD5', 'NUMPAD6', 'NUMPAD7', 'NUMPAD8',
+        'NUMPAD9', 'PAGE_DOWN', 'PAGE_UP', 'PAUSE', 'RETURN',
+        'RIGHT', 'SEMICOLON', 'SEPARATOR', 'SHIFT', 'SPACE',
+        'SUBTRACT', 'TAB', 'UP',
+    ]
+
 Wait until a Javascript expression matches
 ------------------------------------------
 
