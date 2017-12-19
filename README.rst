@@ -380,6 +380,14 @@ using the cookiecutter-qa_ scaffolding tool:
 This is the easiest way, otherwise you'll need to setup a pytest
 project by your own and install ``pytest-play``.
 
+Future
+======
+
+One of the ``pytest-play`` goals is flexibility: it will let you to plug
+your own commands or support non UI commands like making raw post/get/etc
+calls, simulate IoT devices activities, interact with queues, provide
+easy interaction with complex UI widgets like calendar widgets and so on.
+
 Twitter
 =======
 
