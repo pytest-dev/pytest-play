@@ -42,7 +42,7 @@ Given a json file (eg: ``login.json``)::
     		{
     			"type": "setElementText",
     			"locator": {
-    				"type": "css selector",
+    				"type": "css",
     				"value": "input[name=\"email\"]"
     			},
     			"text": "$root_name"
@@ -50,7 +50,7 @@ Given a json file (eg: ``login.json``)::
     		{
     			"type": "setElementText",
     			"locator": {
-    				"type": "css selector",
+    				"type": "css",
     				"value": "input[name=\"password\"]"
     			},
     			"text": "$root_pwd"
@@ -58,21 +58,21 @@ Given a json file (eg: ``login.json``)::
     		{
     			"type": "clickElement",
     			"locator": {
-    				"type": "css selector",
+    				"type": "css",
     				"value": ".label-submit"
     			}
     		},
     		{
     			"type": "waitForElementPresent",
     			"locator": {
-    				"type": "css selector",
+    				"type": "css",
     				"value": ".logged"
     			}
     		},
     		{
     			"type": "assertElementPresent",
     			"locator": {
-    				"type": "css selector",
+    				"type": "css",
     				"value": ".user-info"
     			}
     		}
@@ -108,7 +108,7 @@ Conditional commands
     {
       "type": "clickElement",
       "locator": {
-           "type": "css selector",
+           "type": "css",
            "value": "body"
            },
       "condition": "'$foo' === 'bar'"
@@ -147,7 +147,7 @@ Click an element
     {
       "type": "clickElement",
       "locator": {
-           "type": "css selector",
+           "type": "css",
            "value": "body"
            }
     }
@@ -159,7 +159,7 @@ Fill in a text
     {
       "type": "setElementText",
       "locator": {
-         "type": "css selector",
+         "type": "css",
          "value": "input.title"
          },
       "text": "text value"
@@ -173,7 +173,7 @@ Select by label::
     {
       "type": "select",
       "locator": {
-           "type": "css selector",
+           "type": "css",
            "value": "select.city"
       },
       "text": "Turin"
@@ -184,7 +184,7 @@ or select by value::
     {
       "type": "select",
       "locator": {
-           "type": "css selector",
+           "type": "css",
            "value": "select.city"
       },
       "value": "1"
@@ -233,7 +233,7 @@ If the element text does not contain the provided text an
     {
       "type": "verifyText",
       "locator": {
-         "type": "css selector",
+         "type": "css",
          "value": ".my-item"
       },
       "text": "a text"
@@ -247,7 +247,7 @@ All ``selenium.webdriver.common.keys.Keys`` are supported::
     {
       "type": "sendKeysToElement",
       "locator": {
-         "type": "css selector",
+         "type": "css",
          "value": ".confirm"
       },
       "text": "ENTER"
@@ -275,7 +275,7 @@ Present::
     {
       "type": "waitForElementPresent",
       "locator": {
-         "type": "css selector",
+         "type": "css",
          "value": "body"
       }
     }
@@ -285,7 +285,7 @@ or not present::
     {
       "type": "waitForElementPresent",
       "locator": {
-         "type": "css selector",
+         "type": "css",
          "value": "body"
       },
       "negated": true
@@ -299,7 +299,7 @@ Visible::
     {
       "type": "waitForElementVisible",
       "locator": {
-         "type": "css selector",
+         "type": "css",
          "value": "body"
       }
     }
@@ -309,7 +309,7 @@ or not visible::
     {
       "type": "waitForElementVisible",
       "locator": {
-         "type": "css selector",
+         "type": "css",
          "value": "body"
       },
       "negated": true
@@ -325,7 +325,7 @@ Present::
     {
       "type": "assertElementPresent",
       "locator": {
-         "type": "css selector",
+         "type": "css",
          "value": "div.elem"
          }
     }
@@ -335,7 +335,7 @@ or not present::
     {
       "type": "assertElementPresent",
       "locator": {
-         "type": "css selector",
+         "type": "css",
          "value": "div.elem"
          },
       "negated": true
@@ -351,7 +351,7 @@ Present::
     {
       "type": "assertElementVisible",
       "locator": {
-         "type": "css selector",
+         "type": "css",
          "value": "div.elem"
          }
     }
@@ -361,7 +361,7 @@ or not present::
     {
       "type": "assertElementVisible",
       "locator": {
-         "type": "css selector",
+         "type": "css",
          "value": "div.elem"
          },
       "negated": true

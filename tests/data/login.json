@@ -10,7 +10,7 @@
 		{
 			"type": "setElementText",
 			"locator": {
-				"type": "css selector",
+				"type": "css",
 				"value": "input[name=\"email\"]"
 			},
 			"text": "$root_name"
@@ -18,7 +18,7 @@
 		{
 			"type": "setElementText",
 			"locator": {
-				"type": "css selector",
+				"type": "css",
 				"value": "input[name=\"password\"]"
 			},
 			"text": "$root_pwd"
@@ -26,21 +26,21 @@
 		{
 			"type": "clickElement",
 			"locator": {
-				"type": "css selector",
+				"type": "css",
 				"value": ".label-submit"
 			}
 		},
 		{
 			"type": "waitForElementPresent",
 			"locator": {
-				"type": "css selector",
+				"type": "css",
 				"value": ".logged"
 			}
 		},
 		{
 			"type": "assertElementPresent",
 			"locator": {
-				"type": "css selector",
+				"type": "css",
 				"value": ".user-info"
 			}
 		}

@@ -30,14 +30,14 @@ def test_splinter_executor_parametrizer(dummy_executor):
 
 def test_splinter_executor_locator(dummy_executor):
     assert dummy_executor.locator_translate(
-        {'type': 'css selector',
+        {'type': 'css',
          'value': 'body'}) == ('css', 'body')
 
 
 def test_splinter_executor_locator_bad(dummy_executor):
     with pytest.raises(ValueError):
         dummy_executor.locator_translate(
-            {'type': 'css selectorXX',
+            {'type': 'cssXX',
              'value': 'body'}) == ('css', 'body')
 
 
@@ -157,7 +157,7 @@ def test_execute_click(dummy_executor):
     command = {
         'type': 'clickElement',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': 'body'
         }
     }
@@ -181,7 +181,7 @@ def test_execute_fill(dummy_executor):
     command = {
         'type': 'setElementText',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': 'body'
         },
         'text': 'text value',
@@ -205,7 +205,7 @@ def test_execute_select_text(dummy_executor):
     command = {
         'type': 'select',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': 'body'
         },
         'text': 'text value',
@@ -246,7 +246,7 @@ def test_execute_select_value(dummy_executor):
     command = {
         'type': 'select',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': 'body'
         },
         'value': '1',
@@ -287,7 +287,7 @@ def test_execute_select_bad(dummy_executor):
     command = {
         'type': 'select',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': 'body'
         },
         'value': '1',
@@ -301,7 +301,7 @@ def test_execute_assert_element_present_default(dummy_executor):
     command = {
         'type': 'assertElementPresent',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': 'body'
         },
     }
@@ -317,7 +317,7 @@ def test_execute_assert_element_present_negated(dummy_executor):
     command = {
         'type': 'assertElementPresent',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': 'body'
         },
         'negated': False,
@@ -334,7 +334,7 @@ def test_execute_assert_element_present_negated_false(dummy_executor):
     command = {
         'type': 'assertElementPresent',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': 'body'
         },
         'negated': False,
@@ -354,7 +354,7 @@ def test_execute_assert_element_present_negated_true(dummy_executor):
     command = {
         'type': 'assertElementPresent',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': 'body'
         },
         'negated': True,
@@ -374,7 +374,7 @@ def test_execute_assert_element_visible_default(dummy_executor):
     command = {
         'type': 'assertElementVisible',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': 'body'
         },
     }
@@ -391,7 +391,7 @@ def test_execute_assert_element_visible_negated(dummy_executor):
     command = {
         'type': 'assertElementVisible',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': 'body'
         },
         'negated': False,
@@ -409,7 +409,7 @@ def test_execute_assert_element_visible_negated_false(dummy_executor):
     command = {
         'type': 'assertElementVisible',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': 'body'
         },
         'negated': False,
@@ -429,7 +429,7 @@ def test_execute_assert_element_visible_negated_true(dummy_executor):
     command = {
         'type': 'assertElementVisible',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': 'body'
         },
         'negated': True,
@@ -450,7 +450,7 @@ def test_execute_send_keys(dummy_executor):
     command = {
         'type': 'sendKeysToElement',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': 'body'
         },
         'text': 'ENTER',
@@ -475,7 +475,7 @@ def test_execute_send_keys_bad(dummy_executor):
     command = {
         'type': 'sendKeysToElement',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': 'body'
         },
         'text': 'ENTERxxx',
@@ -653,7 +653,7 @@ def test_execute_wait_for_element_present(dummy_executor):
     command = {
         'type': 'waitForElementPresent',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': 'body'
         },
     }
@@ -693,7 +693,7 @@ def test_execute_wait_for_element_visible(dummy_executor):
     command = {
         'type': 'waitForElementVisible',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': 'body'
         },
     }
@@ -733,7 +733,7 @@ def test_execute_verify_text_default(dummy_executor):
     command = {
         'type': 'verifyText',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': '.my-item'
         },
         'text': 'a text',
@@ -753,7 +753,7 @@ def test_execute_verify_text(dummy_executor):
     command = {
         'type': 'verifyText',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': '.my-item'
         },
         'text': 'a text',
@@ -774,7 +774,7 @@ def test_execute_verify_text_negated(dummy_executor):
     command = {
         'type': 'verifyText',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': '.my-item'
         },
         'text': 'a text',
@@ -796,7 +796,7 @@ def test_execute_verify_text_false(dummy_executor):
     command = {
         'type': 'verifyText',
         'locator': {
-             'type': 'css selector',
+             'type': 'css',
              'value': '.my-item'
         },
         'text': 'a text',

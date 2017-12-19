@@ -32,7 +32,7 @@ class JSONExecutorSplinter(object):
         'eval',
     ]
     SELECTOR_TYPES = [
-        'css selector',
+        'css',
     ]
     KEYS = [
         'ADD', 'ALT', 'ARROW_DOWN', 'ARROW_LEFT', 'ARROW_RIGHT',
@@ -71,7 +71,7 @@ class JSONExecutorSplinter(object):
         if locator_type not in self.SELECTOR_TYPES:
             raise ValueError('Not allowed selector type')
 
-        if locator_type == 'css selector':
+        if locator_type == 'css':
             selector_type = 'css'
         # TODO: add more conditions for supported locator types
 
