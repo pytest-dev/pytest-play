@@ -14,10 +14,13 @@ pytest-play
 .. image:: https://codecov.io/gh/tierratelematics/pytest-play/branch/develop/graph/badge.svg
           :target: https://codecov.io/gh/tierratelematics/pytest-play
 
-``pytest-play`` is a pytest_ plugin that let you **play** a json file containing previously
-recorded selenium splinter_ actions driving your browser for your UI test.
+``pytest-play`` is a pytest_ plugin that let you **play** a json file describing some actions and assertions.
+You can extend ``pytest-play`` with your own commands thanks to its pluggable architecture and by default it supports
+browser interactions. For example it can be used for running previously recorded selenium splinter_ actions driving your
+browser for your UI test.
 
-``pytest-play`` is your friend when page object approach (considered best practice) is not possible. For example:
+
+``pytest-play`` is also your friend when page object approach (considered best practice) is not possible. For example:
 
 * limited time, and/or
 * lack of programming skills
