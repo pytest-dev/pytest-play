@@ -788,3 +788,22 @@ def test_execute_verify_text_false(dummy_executor):
 
     with pytest.raises(AssertionError):
         dummy_executor.execute_command(command)
+
+
+def test_new_provider_custom_command(dummy_executor):
+    command = {'type': 'newCommand', 'provider': 'newprovider'}
+    dummy_provider = mock.MagicMock()
+
+    with pytest.raises(ValueError):
+        dummy_executor.execute_command(command)
+    dummy_executor.register_command_provider(
+        dummy_provider, 'newprovider')
+
+    # execute new custom command
+    dummy_executor.execute_command(command)
+
+    assert dummy_provider.assert_called_once_with(dummy_executor) is None
+    assert dummy_provider \
+        .return_value \
+        .command_newCommand \
+        .assert_called_once_with(command)
