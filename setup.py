@@ -18,6 +18,8 @@ install_requires = [
     'pytest>=3.0.7',
     'pytest-variables[yaml]',
     'pytest-pypom-navigation',
+    'pytest-splinter',
+    'zope.interface'
 ]
 
 tests_require = [
@@ -63,7 +65,7 @@ setup(
     ],
     entry_points={
         'pytest11': [
-            'pytest_play = pytest_play.plugin',
+            'pytest-play = pytest_play.plugin',
         ],
     },
     extras_require={

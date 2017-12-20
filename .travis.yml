@@ -2,7 +2,6 @@ sudo: false
 language: python
 python:
 - '2.7'
-- '3.5'
 - '3.6'
 - pypy
 install:
@@ -21,9 +20,9 @@ deploy:
   provider: pypi
   user: davidemoro
   password:
-    secure: DhWfYnIZSop+Hp+cpQnC1B3C8/nkcZx8lCRNiMQ5MctYdVEEYsIi0ahxbpr7vp+MIUe73WZh1kjK8UoM0gktOR9ger/IvpcW2hgBf7mC1QvLcWqmTnXSDCKfx97hEri/Rp1ocIrRE6BHgxaxxBRkccsyKqHVGeBUQdqJ4R+hjnuGMUHUj6wXmPkedQDzcVWIx0QFe+ZL5nXYqG8B3XMgQ+Au5VlLW9CsBfyc0QMNFo2gwWPoNPKrJ3/sV9Ek4QmhT1V/rxkznBmDB5h8oZ6hQ5oLj9/bXI/TI+gme/mlYcMhxqiDeiP/vW1c9Lj2hh2QvNJGVO+DOZwZm+ZvjCxII6K4H2R/TPtEZm37EH+UIdu7F5HfaBVhdIsumjFl6siuzlqCY6uj232XepVBA6ZV61C0QNttily7P+vPCE7xmd2BbG975y2BJKgxWBiQhO3oVGhEZoVTd/JzQn4AncG7edbHQg5zOtx4LPE+Z8gWp1H61iOnVioL8pOAFe0xhy8Oe/MPx5SiCCnStzZYudichcbMsarMze6et6/qDrwjrxwfEh8vKZ7MPCtMrWR3rz8BIkoMxipkQc9gEq83beYjMzYf4yOtTjA5MC/1XmVtmCOUKGCYL25ncMq3YIr+7z/FUie63L3nPVW7L+ewDjdovIjV1rUK7Aic01B/0WmHu70=
+    secure: eokMzFe48Y7EaHcjB/n7uik8CFlL+V758Ef+Mv5/JDwxpwW7+y/WDJgpCuYPeGhnWLy39P31kVKW4szNCFe/Fg6e3M9vqtuHrpl+hM/8TKgAPi0yDK6UjAzkRq/KSSG318WRUAZCknKbHi/DPPiiLTgGsUs495mFWBHsuDumxzMQ2XIuNHujdsTHeVBmJPXyz3Ei4Im7rkwXZze/ctkmKfBO4ehLbf0TKcmBBnZ9SDJANIOeCLFABeCbed9uOe6oiwqsVhrnHhQANVVyQoE0m4PKyGnNDQlpsr5r4AMbtUmwgY5D/TPXMxIvu0hCfxeVxXpu9TuQYw4j+aiV3izXbRvo3PgJPxI8XEQWf19cEwWXqmVi0OnwUgKlUA9bQtpJnTtemknLCL9KFl7BhmWYKPCFhOHBLjqG7dt0M9ZDuNzxpnuRkZi5YA2m+IMO2yLDeXhYtPw5praBiZWiLyj76+VmYwqXlGUcM02QOKmhKLkjJA21h2JMb1Jzr9gM2aHvxseTQIBX6hHuva+Ii3ZODlrILrxyhZvSDw0Ock8iiG6bO3HV0fgYPWmG5n+7ee4Xkh8njF5riZ89j9ahZC7Drn2M5CogXsjqZ9zNWn4Kru3YnTXpby4ezgYwV7aMp1fSk0HGQbqx3KaDKxLIV5crxL5p52qIFBMS0Z978VddyWY=
   on:
     tags: true
     branch: master
     distributions: sdist bdist_wheel
-    repo: tierratelematics/pytest-pypom-navigation
+    repo: tierratelematics/pytest-play
