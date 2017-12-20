@@ -806,4 +806,4 @@ def test_new_provider_custom_command(dummy_executor):
     assert dummy_provider \
         .return_value \
         .command_newCommand \
-        .assert_called_once_with(command)
+        .assert_called_once_with(command) is None

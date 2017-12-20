@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
 import pytest
-from .engine import PlayEngine
-from .providers import SplinterCommandProvider
 
 
 @pytest.fixture
 def play_engine_class():
     """ Play engine class  class """
+    from .engine import PlayEngine
     return PlayEngine
 
 
