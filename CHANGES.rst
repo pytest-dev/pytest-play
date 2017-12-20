@@ -4,4 +4,4 @@ Changelog
 0.0.0 (unreleased)
 ==================
 
-- Nothing
+- First release
