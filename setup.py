@@ -19,12 +19,12 @@ install_requires = [
     'pytest-variables[yaml]',
     'pytest-pypom-navigation',
     'pytest-splinter',
+    'zope.interface'
 ]
 
 tests_require = [
     'pytest-cov',
     'mock',
-    'zope.interface'
 ]
 
 docs_require = [

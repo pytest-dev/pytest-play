@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 import os
 import pytest
-from .executors import JSONExecutorSplinter
+from .engine import PlayEngine
+from .providers import SplinterCommandProvider
 
 
 @pytest.fixture
-def json_executor_splinter_class():
-    """ Splinter based json executor class """
-    return JSONExecutorSplinter
+def play_engine_class():
+    """ Play engine class  class """
+    return PlayEngine
 
 
 @pytest.fixture
@@ -26,13 +27,7 @@ def data_getter():
 
 
 @pytest.fixture
-def default_json_executor_class(json_executor_splinter_class):
-    """ The default json executor class. You can easily override it """
-    return json_executor_splinter_class
-
-
-@pytest.fixture
-def play_json(default_json_executor_class, bdd_vars,
+def play_json(play_engine_class, bdd_vars,
               parametrizer_class, navigation, variables, skin):
     """
         How to use json_executor::
@@ -50,5 +45,5 @@ def play_json(default_json_executor_class, bdd_vars,
         password_key = "{0}_pwd".format(credential_name)
         context[username_key] = credential_settings['username']
         context[password_key] = credential_settings['password']
-    return default_json_executor_class(
+    return play_engine_class(
         navigation, context, parametrizer_class)
