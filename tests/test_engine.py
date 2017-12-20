@@ -4,21 +4,11 @@ from datetime import (
     datetime,
     timedelta,
 )
-from pytest_play.executors import JSONExecutorSplinter
 
 
-@pytest.fixture
-def page_instance():
-    return mock.MagicMock()
-
-
-@pytest.fixture
-def dummy_executor(parametrizer_class, navigation):
-    return JSONExecutorSplinter(navigation, {'foo': 'bar'}, parametrizer_class)
-
-
-def test_splinter_executor_constructor(bdd_vars, parametrizer_class):
-    executor = JSONExecutorSplinter(None, bdd_vars, parametrizer_class)
+def test_play_engine_constructor(bdd_vars, parametrizer_class):
+    from pytest_play.engine import PlayEngine
+    executor = PlayEngine(None, bdd_vars, parametrizer_class)
     assert executor.parametrizer_class is parametrizer_class
     assert executor.navigation is None
     assert executor.variables == bdd_vars
@@ -26,19 +16,6 @@ def test_splinter_executor_constructor(bdd_vars, parametrizer_class):
 
 def test_splinter_executor_parametrizer(dummy_executor):
     assert dummy_executor.parametrizer.parametrize('$foo') == 'bar'
-
-
-def test_splinter_executor_locator(dummy_executor):
-    assert dummy_executor.locator_translate(
-        {'type': 'css',
-         'value': 'body'}) == ('css', 'body')
-
-
-def test_splinter_executor_locator_bad(dummy_executor):
-    with pytest.raises(ValueError):
-        dummy_executor.locator_translate(
-            {'type': 'cssXX',
-             'value': 'body'}) == ('css', 'body')
 
 
 def test_splinter_execute(dummy_executor):
@@ -811,3 +788,22 @@ def test_execute_verify_text_false(dummy_executor):
 
     with pytest.raises(AssertionError):
         dummy_executor.execute_command(command)
+
+
+def test_new_provider_custom_command(dummy_executor):
+    command = {'type': 'newCommand', 'provider': 'newprovider'}
+    dummy_provider = mock.MagicMock()
+
+    with pytest.raises(ValueError):
+        dummy_executor.execute_command(command)
+    dummy_executor.register_command_provider(
+        dummy_provider, 'newprovider')
+
+    # execute new custom command
+    dummy_executor.execute_command(command)
+
+    assert dummy_provider.assert_called_once_with(dummy_executor) is None
+    assert dummy_provider \
+        .return_value \
+        .command_newCommand \
+        .assert_called_once_with(command) is None

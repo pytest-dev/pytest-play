@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 import pytest
-from pytest_play.executors import JSONExecutorSplinter
 
 
 @pytest.fixture
@@ -22,17 +21,14 @@ def data_base_path():
     return os.path.join(here, 'data')
 
 
-def test_executor_splinter_class(json_executor_splinter_class):
-    assert json_executor_splinter_class is JSONExecutorSplinter
+def test_play_engine_class(play_engine_class):
+    from pytest_play.engine import PlayEngine
+    assert play_engine_class is PlayEngine
 
 
 def test_data_getter(data_base_path, data_getter):
     contents = data_getter(data_base_path, 'login.json')
     assert '$base_url' in contents
-
-
-def test_default_executor(default_json_executor_class):
-    assert default_json_executor_class is JSONExecutorSplinter
 
 
 def test_play_json(play_json, navigation, bdd_vars, parametrizer_class):

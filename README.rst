@@ -412,13 +412,48 @@ using the cookiecutter-qa_ scaffolding tool:
 This is the easiest way, otherwise you'll need to setup a pytest
 project by your own and install ``pytest-play``.
 
-Future
-======
+pytest-play is pluggable and extensible
+=======================================
 
-One of the ``pytest-play`` goals is flexibility: it will let you to plug
-your own commands or support non UI commands like making raw post/get/etc
-calls, simulate IoT devices activities, interact with queues, provide
-easy interaction with complex UI widgets like calendar widgets and so on.
+``pytest-play`` has a pluggable architecture and you can extend it.
+
+For example you might want to support your own commands, support non UI
+commands like making raw POST/GET/etc calls, simulate IoT devices
+activities, provide easy interaction with complex UI widgets like
+calendar widgets and so on.
+
+How to register a new command provider
+--------------------------------------
+
+Let's suppose you want to extend pytest-play with the following command::
+
+    command = {'type': 'print', 'provider': 'newprovider'}
+
+You just have to implement a command provider::
+
+
+    class NewProvider(object):
+        def __init__(self, engine):
+            self.engine = engine
+
+        def this_is_not_a_command(self):
+            """ Commands should be command_ prefixed """
+
+        def command_newCommand(self, command):
+            print(command)
+
+        def command_yetAnotherCommand(self, command):
+            print(command)
+
+and register your new provider::
+
+    import pytest
+
+
+    @pytest.fixture(autouse=True)
+    def newprovider(play_json):
+        play_json.register_command_provider(NewProvider, 'newprovider')
+
 
 Twitter
 =======
