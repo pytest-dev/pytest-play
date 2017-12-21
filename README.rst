@@ -442,7 +442,7 @@ You just have to implement a command provider::
         def this_is_not_a_command(self):
             """ Commands should be command_ prefixed """
 
-        def command_newCommand(self, command):
+        def command_print(self, command):
             print(command)
 
         def command_yetAnotherCommand(self, command):
