@@ -3,6 +3,65 @@ from time import sleep
 from selenium.webdriver.common.keys import Keys
 
 
+def subcommand_provider(data):
+    """
+        The subcommand_provider could be used as follows in order to improve
+        reusability of your tests.
+
+        For example here you can see a pretend login and like scenario::
+            import pytest
+
+
+            @pytest.fixture(autouse=True)
+            def login_procedure(play_json, data_getter):
+                data = data_getter('/my/path/etc', 'login.json')
+                play_json.register_command_provider(
+                    subcommand_provider(data), 'login.json')
+
+            def test_like(play_json, data_getter):
+                data = data_getter('/my/path/etc', 'like.json')
+                play_json.execute(data)
+
+
+        where ``buy.json`` is::
+
+            {
+                "steps": [
+                        {
+                                "provider": "login.json"
+                                "type": "exec"
+                        },
+                        {
+                                "type": "clickElement",
+                                "locator": {
+                                        "type": "css",
+                                        "value": ".like"
+                                }
+                        }
+                ]
+            }
+
+        and it will execute before the steps related to the login.json scenario
+        and then the other steps.
+
+        Thanks to ``subcommand_provider`` you can split your test procedure in
+        reusable blocks.
+
+
+        **NOTE WELL**: it's up to you avoid recursion issues.
+
+    """
+    class PlayEngineWrapperProvider(object):
+        """ PlayEngine wrapper """
+
+        def __init__(self, engine):
+            self.engine = engine
+
+        def command_exec(self, command):
+            self.engine.execute(data)
+    return PlayEngineWrapperProvider
+
+
 class SplinterCommandProvider(object):
     """ JSON executor """
 
