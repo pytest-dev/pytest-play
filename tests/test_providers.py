@@ -1,5 +1,4 @@
 import pytest
-import mock
 
 
 @pytest.fixture
@@ -25,19 +24,3 @@ def test_splinter_executor_locator_bad(dummy_default_provider):
         dummy_default_provider.locator_translate(
             {'type': 'cssXX',
              'value': 'body'}) == ('css', 'body')
-
-
-def test_include_provider(dummy_include_provider):
-    mock_executor = mock.MagicMock()
-    data = '{"steps":[]}'
-    provider = dummy_include_provider(data)(mock_executor)
-    provider.command_include({})
-    assert provider.engine.execute.assert_called_once_with(data) is None
-
-
-def test_include_provider_variation(dummy_include_provider):
-    mock_executor = mock.MagicMock()
-    data = {"steps": []}
-    provider = dummy_include_provider(data)(mock_executor)
-    provider.command_include({})
-    assert provider.engine.execute.assert_called_once_with(data) is None

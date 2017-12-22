@@ -827,3 +827,53 @@ def test_splinter_execute_includes(dummy_executor):
     ]
     assert dummy_executor.execute_command.assert_has_calls(
         calls, any_order=False) is None
+
+
+def test_include(play_json, test_run_identifier):
+    json_data = {
+        "steps": [
+            {"provider": "included-scenario.json", "type": "include"},
+            {"type": "get", "url": "http://2"},
+            {"type": "get", "url": "http://{0}".format(test_run_identifier)}
+        ]
+    }
+    play_json.execute(json_data)
+
+    calls = [
+        mock.call('http://'),
+        mock.call('http://2'),
+        mock.call('http://{0}'.format(test_run_identifier)),
+    ]
+    assert play_json \
+        .navigation \
+        .page \
+        .driver_adapter \
+        .open \
+        .assert_has_calls(
+            calls, any_order=False) is None
+
+
+def test_include_string(play_json, test_run_identifier):
+    json_data = """
+    {
+        "steps": [
+            {"provider": "included-scenario.json", "type": "include"},
+            {"type": "get", "url": "http://2"},
+            {"type": "get", "url": "http://$test_run_identifier"}
+        ]
+    }
+    """
+    play_json.execute(json_data)
+
+    calls = [
+        mock.call('http://'),
+        mock.call('http://2'),
+        mock.call('http://{0}'.format(test_run_identifier)),
+    ]
+    assert play_json \
+        .navigation \
+        .page \
+        .driver_adapter \
+        .open \
+        .assert_has_calls(
+            calls, any_order=False) is None
