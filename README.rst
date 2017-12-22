@@ -402,8 +402,33 @@ or not present::
       "negated": true
     }
 
+How to reuse steps
+------------------
+
+You can split your commands and reuse them using the ``include`` command avoiding
+duplication::
+
+    {
+        "steps": [
+            {"provider": "included-scenario.json", "type": "include"},
+            ... other commands ...
+        ]
+    }
+
+registering ``included-scenario.json``'s contents as follows::
+
+    @pytest.fixture(autouse=True)
+    def included_scenario(play_json, data_getter, data_base_path):
+        data = data_getter(data_base_path, 'included-scenario.json')
+        play_json.register_steps(
+            data, 'included-scenario.json')
+
+
+This way other json files will be able to include the ``included-scenario.json`` file.
+
+
 How to install pytest-play
---------------------------
+==========================
 
 You can see ``pytest-play`` in action creating a pytest project
 using the cookiecutter-qa_ scaffolding tool:
