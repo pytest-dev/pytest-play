@@ -402,8 +402,33 @@ or not present::
       "negated": true
     }
 
+How to reuse steps
+------------------
+
+You can split your commands and reuse them using the ``include`` command avoiding
+duplication::
+
+    {
+        "steps": [
+            {"provider": "included-scenario.json", "type": "include"},
+            ... other commands ...
+        ]
+    }
+
+registering ``included-scenario.json``'s contents as follows::
+
+    @pytest.fixture(autouse=True)
+    def included_scenario(play_json, data_getter, data_base_path):
+        data = data_getter(data_base_path, 'included-scenario.json')
+        play_json.register_steps(
+            data, 'included-scenario.json')
+
+
+This way other json files will be able to include the ``included-scenario.json`` file.
+
+
 How to install pytest-play
---------------------------
+==========================
 
 You can see ``pytest-play`` in action creating a pytest project
 using the cookiecutter-qa_ scaffolding tool:
@@ -442,7 +467,7 @@ You just have to implement a command provider::
         def this_is_not_a_command(self):
             """ Commands should be command_ prefixed """
 
-        def command_newCommand(self, command):
+        def command_print(self, command):
             print(command)
 
         def command_yetAnotherCommand(self, command):
@@ -456,6 +481,9 @@ and register your new provider::
     @pytest.fixture(autouse=True)
     def newprovider(play_json):
         play_json.register_command_provider(NewProvider, 'newprovider')
+
+You can define new providers also for non UI commands. For example publish MQTT
+messages simulating IoT device activities for integration tests.
 
 
 Twitter

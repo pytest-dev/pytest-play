@@ -34,14 +34,16 @@ docs_require = [
 
 setup(
     name='pytest-play',
-    version='0.0.1.dev0',
+    version='0.1.1.dev0',
     author='Davide Moro',
     author_email='davide.moro@gmail.com',
     maintainer='Davide Moro',
     maintainer_email='davide.moro@gmail.com',
     license='Apache Software License 2.0',
     url='https://github.com/tierratelematics/pytest-play',
-    description='Selenium/Splinter executor engine',
+    description='pytest plugin that let you play a json file '
+                'describing some actions and assertions. '
+                'Supports by default Selenium/Splinter actions',
     long_description=open("README.rst").read() + "\n" +
     open("CHANGES.rst").read(),
     packages=find_packages(),

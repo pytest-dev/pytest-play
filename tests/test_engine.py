@@ -807,3 +807,73 @@ def test_new_provider_custom_command(dummy_executor):
         .return_value \
         .command_newCommand \
         .assert_called_once_with(command) is None
+
+
+def test_splinter_execute_includes(dummy_executor):
+    execute_command_mock = mock.MagicMock()
+    dummy_executor.execute_command = execute_command_mock
+
+    json_data = {
+        'steps': [
+            {'type': 'include', 'provider': 'login.json'},
+            {'type': 'get', 'url': 'http://2'}
+        ]
+    }
+    dummy_executor.execute(json_data)
+
+    calls = [
+        mock.call(json_data['steps'][0]),
+        mock.call(json_data['steps'][1]),
+    ]
+    assert dummy_executor.execute_command.assert_has_calls(
+        calls, any_order=False) is None
+
+
+def test_include(play_json, test_run_identifier):
+    json_data = {
+        "steps": [
+            {"provider": "included-scenario.json", "type": "include"},
+            {"type": "get", "url": "http://2"},
+            {"type": "get", "url": "http://{0}".format(test_run_identifier)}
+        ]
+    }
+    play_json.execute(json_data)
+
+    calls = [
+        mock.call('http://'),
+        mock.call('http://2'),
+        mock.call('http://{0}'.format(test_run_identifier)),
+    ]
+    assert play_json \
+        .navigation \
+        .page \
+        .driver_adapter \
+        .open \
+        .assert_has_calls(
+            calls, any_order=False) is None
+
+
+def test_include_string(play_json, test_run_identifier):
+    json_data = """
+    {
+        "steps": [
+            {"provider": "included-scenario.json", "type": "include"},
+            {"type": "get", "url": "http://2"},
+            {"type": "get", "url": "http://$test_run_identifier"}
+        ]
+    }
+    """
+    play_json.execute(json_data)
+
+    calls = [
+        mock.call('http://'),
+        mock.call('http://2'),
+        mock.call('http://{0}'.format(test_run_identifier)),
+    ]
+    assert play_json \
+        .navigation \
+        .page \
+        .driver_adapter \
+        .open \
+        .assert_has_calls(
+            calls, any_order=False) is None

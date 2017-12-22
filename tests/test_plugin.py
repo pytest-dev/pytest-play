@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
 import pytest
 
 
@@ -12,13 +11,6 @@ def browser():
     from pypom.splinter_driver import ISplinter
     alsoProvides(browser, ISplinter)
     return browser
-
-
-@pytest.fixture
-def data_base_path():
-    """ selenium/splinter base path, where json files live """
-    here = os.path.abspath(os.path.dirname(__file__))
-    return os.path.join(here, 'data')
 
 
 def test_play_engine_class(play_engine_class):
