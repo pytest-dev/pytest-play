@@ -457,6 +457,9 @@ and register your new provider::
     def newprovider(play_json):
         play_json.register_command_provider(NewProvider, 'newprovider')
 
+You can define new providers also for non UI commands. For example publish MQTT
+messages simulating IoT device activities for integration tests.
+
 
 Twitter
 =======
