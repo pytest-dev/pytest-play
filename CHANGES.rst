@@ -1,7 +1,7 @@
 Changelog
 *********
 
-0.0.2 (unreleased)
+0.1.0 (2017-12-22)
 ==================
 
 - implement reusable steps (include scenario)
