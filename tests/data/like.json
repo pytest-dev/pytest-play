@@ -1,0 +1,18 @@
+{
+	"type": "script",
+	"seleniumVersion": "2",
+	"formatVersion": 2,
+	"steps": [
+		{
+                        "provider": "login.json",
+			"type": "include"
+		},
+		{
+			"type": "clickElement",
+			"locator": {
+				"type": "css",
+				"value": ".like"
+			}
+		}
+	]
+}

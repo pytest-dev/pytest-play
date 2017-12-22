@@ -3,12 +3,14 @@ from time import sleep
 from selenium.webdriver.common.keys import Keys
 
 
-def subcommand_provider(data):
+def register_steps(data):
     """
-        The subcommand_provider could be used as follows in order to improve
-        reusability of your tests.
+        You can register a group of actions as a pytest play provider and
+        **include** them in other scenario for improved reusability.
 
-        For example here you can see a pretend login and like scenario::
+        For example let's pretend we want to reuse the login steps coming from
+        a ``login.json`` file::
+
             import pytest
 
 
@@ -16,20 +18,21 @@ def subcommand_provider(data):
             def login_procedure(play_json, data_getter):
                 data = data_getter('/my/path/etc', 'login.json')
                 play_json.register_command_provider(
-                    subcommand_provider(data), 'login.json')
+                    register_steps(data), 'login.json')
 
             def test_like(play_json, data_getter):
                 data = data_getter('/my/path/etc', 'like.json')
                 play_json.execute(data)
 
 
-        where ``buy.json`` is::
+        where ``like.json`` contains the steps coming from the included
+        ``login.json`` file plus additional actions::
 
             {
                 "steps": [
                         {
                                 "provider": "login.json"
-                                "type": "exec"
+                                "type": "include"
                         },
                         {
                                 "type": "clickElement",
@@ -41,15 +44,8 @@ def subcommand_provider(data):
                 ]
             }
 
-        and it will execute before the steps related to the login.json scenario
-        and then the other steps.
-
-        Thanks to ``subcommand_provider`` you can split your test procedure in
-        reusable blocks.
-
 
         **NOTE WELL**: it's up to you avoid recursion issues.
-
     """
     class PlayEngineWrapperProvider(object):
         """ PlayEngine wrapper """
@@ -57,7 +53,7 @@ def subcommand_provider(data):
         def __init__(self, engine):
             self.engine = engine
 
-        def command_exec(self, command):
+        def command_include(self, command):
             self.engine.execute(data)
     return PlayEngineWrapperProvider
 
