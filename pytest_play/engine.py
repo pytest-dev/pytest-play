@@ -40,8 +40,10 @@ class PlayEngine(object):
             data = self.parametrizer.parametrize(json.dumps(data))
         return self.parametrizer.json_loads(data)
 
-    def execute(self, data):
+    def execute(self, data, extra_variables={}):
         """ Execute parsed json-like file contents """
+        if extra_variables:
+            self.update_variables(extra_variables)
         data = self._json_loads(data)
         steps = data['steps']
         for step in steps:
@@ -66,6 +68,10 @@ class PlayEngine(object):
             raise NotImplementedError(
                 'Command not implemented', command_type, provider_name)
         method(command)
+
+    def update_variables(self, extra_variables):
+        """ Update variables """
+        self.variables.update(extra_variables)
 
     # register commands
     def register_command_provider(self, factory, name):

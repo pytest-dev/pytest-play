@@ -4,7 +4,7 @@ Changelog
 0.2.1 (unreleased)
 ==================
 
-- Nothing changed yet.
+- you are able to update variables when executing commands
 
 
 0.2.0 (2018-01-02)
