@@ -74,6 +74,9 @@ class SplinterCommandProvider(object):
     @condition
     def command_get(self, command):
         """ get """
+        if self.engine.navigation.page is None:
+            page = self.engine.navigation.get_page_instance()
+            self.engine.navigation.setPage(page)
         self.engine.navigation.page.driver_adapter.open(command['url'])
 
     @wait_for_element_visible

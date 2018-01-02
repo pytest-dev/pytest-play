@@ -108,6 +108,18 @@ def test_execute_get(dummy_executor):
         .assert_called_once_with(command['url']) is None
 
 
+def test_execute_get_page_none(dummy_executor, page_instance):
+    command = {'type': 'get', 'url': 'http://1'}
+    dummy_executor.navigation.page = None
+    dummy_executor.execute_command(command)
+    dummy_executor \
+        .navigation \
+        .page \
+        .driver_adapter \
+        .open \
+        .assert_called_once_with(command['url']) is None
+
+
 def test_execute_get_basestring(dummy_executor):
     command = """{"type": "get", "url": "http://1"}"""
     dummy_executor.execute_command(command)
@@ -829,7 +841,7 @@ def test_splinter_execute_includes(dummy_executor):
         calls, any_order=False) is None
 
 
-def test_include(play_json, test_run_identifier):
+def test_include(play_json, test_run_identifier, page_instance):
     json_data = {
         "steps": [
             {"provider": "included-scenario.json", "type": "include"},
@@ -837,6 +849,9 @@ def test_include(play_json, test_run_identifier):
             {"type": "get", "url": "http://{0}".format(test_run_identifier)}
         ]
     }
+    play_json \
+        .navigation \
+        .get_page_instance = lambda *args, **kwargs: page_instance
     play_json.execute(json_data)
 
     calls = [
@@ -853,7 +868,7 @@ def test_include(play_json, test_run_identifier):
             calls, any_order=False) is None
 
 
-def test_include_string(play_json, test_run_identifier):
+def test_include_string(play_json, test_run_identifier, page_instance):
     json_data = """
     {
         "steps": [
@@ -863,6 +878,9 @@ def test_include_string(play_json, test_run_identifier):
         ]
     }
     """
+    play_json \
+        .navigation \
+        .get_page_instance = lambda *args, **kwargs: page_instance
     play_json.execute(json_data)
 
     calls = [
