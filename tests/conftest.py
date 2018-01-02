@@ -31,14 +31,27 @@ def variables(skin):
 
 
 @pytest.fixture
-def dummy_executor(parametrizer_class, navigation):
-    from pytest_play.engine import PlayEngine
-    return PlayEngine(navigation, {'foo': 'bar'}, parametrizer_class)
+def browser():
+    from zope.interface import alsoProvides
+    from pypom.splinter_driver import ISplinter
+    driver = mock.MagicMock()
+    alsoProvides(driver, ISplinter)
+    return driver
 
 
 @pytest.fixture
-def page_instance():
+def page_instance(browser):
     return mock.MagicMock()
+
+
+@pytest.fixture
+def dummy_executor(parametrizer_class, navigation, page_instance):
+    from pytest_play.engine import PlayEngine
+    engine = PlayEngine(navigation, {'foo': 'bar'}, parametrizer_class)
+    # initialize browser
+    engine.navigation.setPage(page_instance)
+    engine.navigation.get_page_instance = lambda *args, **kwargs: page_instance
+    return engine
 
 
 @pytest.fixture(autouse=True)
