@@ -476,7 +476,7 @@ You just have to implement a command provider::
 and register your new provider in your ``setup.py`` adding an entrypoint::
 
     entry_points={
-        'pytest-play-commands': [
+        'playcommands': [
             'print = your_package.providers:NewProvider',
         ],
     },
