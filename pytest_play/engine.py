@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import pkg_resources
 try:
     # python3
     from builtins import str as basestring
@@ -9,7 +10,6 @@ except ImportError:
 from zope import component
 from zope.interface import Interface
 from pypom_navigation.parametrizer import Parametrizer
-from .providers import SplinterCommandProvider
 
 
 class ICommandProvider(Interface):
@@ -26,7 +26,8 @@ class PlayEngine(object):
             parametrizer_class or Parametrizer
         self.gsm = component.getGlobalSiteManager()
 
-        self.register_command_provider(SplinterCommandProvider, 'default')
+        # self.register_command_provider(SplinterCommandProvider, 'default')
+        self.register_plugins()
 
     @property
     def parametrizer(self):
@@ -74,6 +75,12 @@ class PlayEngine(object):
         self.variables.update(extra_variables)
 
     # register commands
+    def register_plugins(self):
+        """ Auto register plugins and command providers"""
+        for entrypoint in pkg_resources.iter_entry_points('pytestplay11'):
+            plugin = entrypoint.load()
+            self.register_command_provider(plugin, entrypoint.name)
+
     def register_command_provider(self, factory, name):
         """ Register command provider """
         self.gsm.registerUtility(

@@ -66,6 +66,9 @@ setup(
         'License :: OSI Approved :: Apache Software License',
     ],
     entry_points={
+        'pytestplay11': [
+            'default = pytest_play.providers:SplinterCommandProvider',
+        ],
         'pytest11': [
             'pytest-play = pytest_play.plugin',
         ],
