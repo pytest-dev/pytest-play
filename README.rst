@@ -489,6 +489,16 @@ If you want you can generate a new command provider thanks to:
 * https://github.com/tierratelematics/cookiecutter-play-plugin
 
 
+Third party pytest-play plugins
+===============================
+
+* play_mqtt_, ``pytest-play`` plugin for MQTT support. Thanks to ``play_mqtt``
+  you can test the integration between a mocked IoT device that sends
+  commands on MQTT and a reactive web application
+
+Feel free to add your own public plugins with a pull request!
+
+
 Twitter
 =======
 
@@ -511,3 +521,4 @@ Twitter
 .. _`cookiecutter-qa`: https://github.com/tierratelematics/cookiecutter-qa
 .. _`play.json`: https://github.com/tierratelematics/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/data/play.json
 .. _`test_play.py`: https://github.com/tierratelematics/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/test_play.py
+.. _`play_mqtt`: https://github.com/tierratelematics/play_mqtt
