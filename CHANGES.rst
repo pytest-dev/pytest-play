@@ -6,6 +6,9 @@ Changelog
 
 - you are able to update variables when executing commands
 
+- you can extend ``pytest-play`` with new pluggable commands coming
+  from third party packages thanks to setuptools entrypoints
+
 
 0.2.0 (2018-01-02)
 ==================
