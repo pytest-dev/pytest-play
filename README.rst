@@ -473,14 +473,13 @@ You just have to implement a command provider::
         def command_yetAnotherCommand(self, command):
             print(command)
 
-and register your new provider::
+and register your new provider in your ``setup.py`` adding an entrypoint::
 
-    import pytest
-
-
-    @pytest.fixture(autouse=True)
-    def newprovider(play_json):
-        play_json.register_command_provider(NewProvider, 'newprovider')
+    entry_points={
+        'pytest-play-commands': [
+            'print = your_package.providers:NewProvider',
+        ],
+    },
 
 You can define new providers also for non UI commands. For example publish MQTT
 messages simulating IoT device activities for integration tests.

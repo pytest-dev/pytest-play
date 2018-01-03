@@ -77,7 +77,7 @@ class PlayEngine(object):
     # register commands
     def register_plugins(self):
         """ Auto register plugins and command providers"""
-        for entrypoint in pkg_resources.iter_entry_points('pytestplay11'):
+        for entrypoint in pkg_resources.iter_entry_points('playcommands'):
             plugin = entrypoint.load()
             self.register_command_provider(plugin, entrypoint.name)
 
