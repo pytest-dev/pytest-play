@@ -455,7 +455,7 @@ How to register a new command provider
 
 Let's suppose you want to extend pytest-play with the following command::
 
-    command = {'type': 'print', 'provider': 'newprovider'}
+    command = {'type': 'print', 'provider': 'newprovider', 'message': 'Hello, World!'}
 
 You just have to implement a command provider::
 
@@ -468,22 +468,25 @@ You just have to implement a command provider::
             """ Commands should be command_ prefixed """
 
         def command_print(self, command):
-            print(command)
+            print(command['message'])
 
         def command_yetAnotherCommand(self, command):
             print(command)
 
-and register your new provider::
+and register your new provider in your ``setup.py`` adding an entrypoint::
 
-    import pytest
-
-
-    @pytest.fixture(autouse=True)
-    def newprovider(play_json):
-        play_json.register_command_provider(NewProvider, 'newprovider')
+    entry_points={
+        'playcommands': [
+            'print = your_package.providers:NewProvider',
+        ],
+    },
 
 You can define new providers also for non UI commands. For example publish MQTT
 messages simulating IoT device activities for integration tests.
+
+If you want you can generate a new command provider thanks to:
+
+* https://github.com/tierratelematics/cookiecutter-play-plugin
 
 
 Twitter
