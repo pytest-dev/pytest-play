@@ -455,7 +455,7 @@ How to register a new command provider
 
 Let's suppose you want to extend pytest-play with the following command::
 
-    command = {'type': 'print', 'provider': 'newprovider'}
+    command = {'type': 'print', 'provider': 'newprovider', 'message': 'Hello, World!'}
 
 You just have to implement a command provider::
 
@@ -468,7 +468,7 @@ You just have to implement a command provider::
             """ Commands should be command_ prefixed """
 
         def command_print(self, command):
-            print(command)
+            print(command['message'])
 
         def command_yetAnotherCommand(self, command):
             print(command)
