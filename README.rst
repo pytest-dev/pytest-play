@@ -484,6 +484,10 @@ and register your new provider in your ``setup.py`` adding an entrypoint::
 You can define new providers also for non UI commands. For example publish MQTT
 messages simulating IoT device activities for integration tests.
 
+If you want you can generate a new command provider thanks to:
+
+* https://github.com/tierratelematics/cookiecutter-play-plugin
+
 
 Twitter
 =======
