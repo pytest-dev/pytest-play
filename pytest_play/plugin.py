@@ -26,8 +26,7 @@ def data_getter():
 
 
 @pytest.fixture
-def play_json(play_engine_class, bdd_vars,
-              parametrizer_class, navigation, variables, skin):
+def play_json(request, play_engine_class, bdd_vars, variables, skin):
     """
         How to use json_executor::
 
@@ -44,5 +43,4 @@ def play_json(play_engine_class, bdd_vars,
         password_key = "{0}_pwd".format(credential_name)
         context[username_key] = credential_settings['username']
         context[password_key] = credential_settings['password']
-    return play_engine_class(
-        navigation, context, parametrizer_class)
+    return play_engine_class(request, context)
