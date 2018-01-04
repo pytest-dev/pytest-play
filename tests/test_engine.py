@@ -38,6 +38,27 @@ def test_splinter_execute(dummy_executor):
         calls, any_order=False) is None
 
 
+def test_splinter_execute_extra_vars(dummy_executor):
+    execute_command_mock = mock.MagicMock()
+    dummy_executor.execute_command = execute_command_mock
+
+    json_data = {
+        'steps': [
+            {'type': 'get', 'url': 'http://1'},
+            {'type': 'get', 'url': 'http://$does_not_exist'}
+        ]
+    }
+    assert 'does_not_exist' not in dummy_executor.variables
+    dummy_executor.execute(json_data, extra_variables={'does_not_exist': 'no'})
+
+    calls = [
+        mock.call(json_data['steps'][0]),
+        mock.call({'type': 'get', 'url': 'http://no'}),
+    ]
+    assert dummy_executor.execute_command.assert_has_calls(
+        calls, any_order=False) is None
+
+
 def test_execute_bad_type(dummy_executor):
     command = {'typeXX': 'get', 'url': 'http://1'}
     with pytest.raises(KeyError):

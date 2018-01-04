@@ -16,6 +16,6 @@ pytest_play.plugin
 pytest_play.executors
 =====================
 
-.. automodule:: pytest_play.executors
+.. automodule:: pytest_play.providers
    :members:
    :member-order: bysource

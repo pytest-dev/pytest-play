@@ -8,11 +8,11 @@ pytest-play
     :alt: See Build Status on Travis CI
 
 .. image:: https://readthedocs.org/projects/pytest-play/badge/?version=latest
-          :target: http://pytest-play.readthedocs.io/en/latest/?badge=latest
-          :alt: Documentation Status
+    :target: http://pytest-play.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
 
 .. image:: https://codecov.io/gh/tierratelematics/pytest-play/branch/develop/graph/badge.svg
-          :target: https://codecov.io/gh/tierratelematics/pytest-play
+    :target: https://codecov.io/gh/tierratelematics/pytest-play
 
 ``pytest-play`` is a pytest_ plugin that let you **play** a json file describing some actions and assertions.
 You can extend ``pytest-play`` with your own commands thanks to its pluggable architecture and by default it supports
@@ -455,7 +455,7 @@ How to register a new command provider
 
 Let's suppose you want to extend pytest-play with the following command::
 
-    command = {'type': 'print', 'provider': 'newprovider'}
+    command = {'type': 'print', 'provider': 'newprovider', 'message': 'Hello, World!'}
 
 You just have to implement a command provider::
 
@@ -468,22 +468,37 @@ You just have to implement a command provider::
             """ Commands should be command_ prefixed """
 
         def command_print(self, command):
-            print(command)
+            print(command['message'])
 
         def command_yetAnotherCommand(self, command):
             print(command)
 
-and register your new provider::
+and register your new provider in your ``setup.py`` adding an entrypoint::
 
-    import pytest
-
-
-    @pytest.fixture(autouse=True)
-    def newprovider(play_json):
-        play_json.register_command_provider(NewProvider, 'newprovider')
+    entry_points={
+        'playcommands': [
+            'print = your_package.providers:NewProvider',
+        ],
+    },
 
 You can define new providers also for non UI commands. For example publish MQTT
 messages simulating IoT device activities for integration tests.
+
+If you want you can generate a new command provider thanks to:
+
+* https://github.com/tierratelematics/cookiecutter-play-plugin
+
+
+Third party pytest-play plugins
+===============================
+
+* play_mqtt_, ``pytest-play`` plugin for MQTT support. Thanks to ``play_mqtt``
+  you can test the integration between a mocked IoT device that sends
+  commands on MQTT and a reactive web application with UI checks.
+
+  You can also build a simulator that generates messages for you.
+
+Feel free to add your own public plugins with a pull request!
 
 
 Twitter
@@ -508,3 +523,4 @@ Twitter
 .. _`cookiecutter-qa`: https://github.com/tierratelematics/cookiecutter-qa
 .. _`play.json`: https://github.com/tierratelematics/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/data/play.json
 .. _`test_play.py`: https://github.com/tierratelematics/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/test_play.py
+.. _`play_mqtt`: https://github.com/tierratelematics/play_mqtt

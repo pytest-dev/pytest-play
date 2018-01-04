@@ -34,7 +34,7 @@ docs_require = [
 
 setup(
     name='pytest-play',
-    version='0.2.1.dev0',
+    version='0.3.1.dev0',
     author='Davide Moro',
     author_email='davide.moro@gmail.com',
     maintainer='Davide Moro',
@@ -66,6 +66,9 @@ setup(
         'License :: OSI Approved :: Apache Software License',
     ],
     entry_points={
+        'playcommands': [
+            'default = pytest_play.providers:SplinterCommandProvider',
+        ],
         'pytest11': [
             'pytest-play = pytest_play.plugin',
         ],
