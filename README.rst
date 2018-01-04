@@ -8,11 +8,14 @@ pytest-play
     :alt: See Build Status on Travis CI
 
 .. image:: https://readthedocs.org/projects/pytest-play/badge/?version=latest
-          :target: http://pytest-play.readthedocs.io/en/latest/?badge=latest
-          :alt: Documentation Status
+    :target: http://pytest-play.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
 
 .. image:: https://codecov.io/gh/tierratelematics/pytest-play/branch/develop/graph/badge.svg
-          :target: https://codecov.io/gh/tierratelematics/pytest-play
+    :target: https://codecov.io/gh/tierratelematics/pytest-play
+
+.. image:: https://codecov.io/gh/tierratelematics/play_mqtt/branch/develop/graph/badge.svg
+    :target: https://codecov.io/gh/tierratelematics/play_mqtt
 
 ``pytest-play`` is a pytest_ plugin that let you **play** a json file describing some actions and assertions.
 You can extend ``pytest-play`` with your own commands thanks to its pluggable architecture and by default it supports
