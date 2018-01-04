@@ -1,7 +1,7 @@
 Changelog
 *********
 
-0.2.1 (unreleased)
+0.3.0 (2018-01-04)
 ==================
 
 - you are able to update variables when executing commands
