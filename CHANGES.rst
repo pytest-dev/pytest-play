@@ -1,7 +1,7 @@
 Changelog
 *********
 
-0.3.1 (unreleased)
+0.3.1 (2018-01-04)
 ==================
 
 - play engine now logs commands to be executed and errors
