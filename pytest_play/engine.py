@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import json
 import pkg_resources
 try:
@@ -9,7 +10,6 @@ except ImportError:
     pass
 from zope import component
 from zope.interface import Interface
-from pypom_navigation.parametrizer import Parametrizer
 
 
 class ICommandProvider(Interface):
@@ -19,14 +19,20 @@ class ICommandProvider(Interface):
 class PlayEngine(object):
     """ JSON executor """
 
-    def __init__(self, navigation, variables, parametrizer_class=None):
-        self.navigation = navigation
+    def __init__(self, request, variables):
+        """ The executor should be initialized with:
+            * **request**. A pytest ``request`` fixture that will be used
+              for looking up other fixtures like ``navigation``
+              and ``parametrizer_class``
+            * **variables**. A dictionary that wil be used for parametrize
+              commands
+        """
+        self.navigation = request.getfixturevalue('navigation')
         self.variables = variables
-        self.parametrizer_class = parametrizer_class and \
-            parametrizer_class or Parametrizer
+        self.parametrizer_class = request.getfixturevalue('parametrizer_class')
+        self.logger = logging.getLogger()
         self.gsm = component.getGlobalSiteManager()
 
-        # self.register_command_provider(SplinterCommandProvider, 'default')
         self.register_plugins()
 
     @property
@@ -58,6 +64,7 @@ class PlayEngine(object):
         command_provider = self.get_command_provider(provider_name)
 
         if command_provider is None:
+            self.logger.error('Not supported provider %r', command)
             raise ValueError('Command not supported',
                              command_type,
                              provider_name)
@@ -66,13 +73,20 @@ class PlayEngine(object):
 
         method = getattr(command_provider, method_name, None)
         if method is None:
+            self.logger.error('Not supported command %r', command)
             raise NotImplementedError(
                 'Command not implemented', command_type, provider_name)
-        method(command)
+        self.logger.info('Executing command %r', command)
+        try:
+            method(command)
+        except Exception:
+            self.logger.error('FAILED command %r', command)
+            raise
 
     def update_variables(self, extra_variables):
         """ Update variables """
         self.variables.update(extra_variables)
+        self.logger.debug("Variables updated %r", self.variables)
 
     # register commands
     def register_plugins(self):

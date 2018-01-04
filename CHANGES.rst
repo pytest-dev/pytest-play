@@ -1,10 +1,16 @@
 Changelog
 *********
 
-0.3.1 (unreleased)
+0.3.2 (unreleased)
 ==================
 
 - Nothing changed yet.
+
+
+0.3.1 (2018-01-04)
+==================
+
+- play engine now logs commands to be executed and errors
 
 
 0.3.0 (2018-01-04)

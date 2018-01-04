@@ -45,9 +45,9 @@ def page_instance(browser):
 
 
 @pytest.fixture
-def dummy_executor(parametrizer_class, navigation, page_instance):
+def dummy_executor(page_instance, request):
     from pytest_play.engine import PlayEngine
-    engine = PlayEngine(navigation, {'foo': 'bar'}, parametrizer_class)
+    engine = PlayEngine(request, {'foo': 'bar'})
     # initialize browser
     engine.navigation.setPage(page_instance)
     engine.navigation.get_page_instance = lambda *args, **kwargs: page_instance
