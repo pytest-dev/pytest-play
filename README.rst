@@ -494,7 +494,9 @@ Third party pytest-play plugins
 
 * play_mqtt_, ``pytest-play`` plugin for MQTT support. Thanks to ``play_mqtt``
   you can test the integration between a mocked IoT device that sends
-  commands on MQTT and a reactive web application
+  commands on MQTT and a reactive web application with UI checks.
+
+  You can also build a simulator that generates messages for you.
 
 Feel free to add your own public plugins with a pull request!
 
