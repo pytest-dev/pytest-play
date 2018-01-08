@@ -84,8 +84,9 @@ Given a json file (eg: ``login.json``)::
 
 you define a test ``test_login.py`` like this::
 
-    def test_login(play_json, data_getter):
-        data = data_getter('/my/path/etc', 'login.json')
+    def test_login(play_json):
+        data = play_json.get_file_contents(
+            '/my/path/etc', 'login.json')
         play_json.execute(data)
 
 you get things moving on your browser!
@@ -410,22 +411,12 @@ duplication::
 
     {
         "steps": [
-            {"provider": "included-scenario.json", "type": "include"},
+            {"provider": "include", "type": "include", "path": "/some-path/included-scenario.json"},
             ... other commands ...
         ]
     }
 
-registering ``included-scenario.json``'s contents as follows::
-
-    @pytest.fixture(autouse=True)
-    def included_scenario(play_json, data_getter, data_base_path):
-        data = data_getter(data_base_path, 'included-scenario.json')
-        play_json.register_steps(
-            data, 'included-scenario.json')
-
-
-This way other json files will be able to include the ``included-scenario.json`` file.
-
+You can create a variable for the base folder where your test scripts live.
 
 How to install pytest-play
 ==========================

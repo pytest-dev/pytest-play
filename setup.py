@@ -68,6 +68,7 @@ setup(
     entry_points={
         'playcommands': [
             'default = pytest_play.providers:SplinterCommandProvider',
+            'include = pytest_play.providers:IncludeProvider',
         ],
         'pytest11': [
             'pytest-play = pytest_play.plugin',
