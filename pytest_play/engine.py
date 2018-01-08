@@ -78,7 +78,7 @@ class PlayEngine(object):
                 'Command not implemented', command_type, provider_name)
         self.logger.info('Executing command %r', command)
         try:
-            method(command, **kwargs)
+            return method(command, **kwargs)
         except Exception:
             self.logger.error('FAILED command %r', command)
             raise
