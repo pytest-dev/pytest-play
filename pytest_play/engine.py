@@ -56,7 +56,7 @@ class PlayEngine(object):
         for step in steps:
             self.execute_command(step)
 
-    def execute_command(self, command):
+    def execute_command(self, command, **kwargs):
         """ Execute single command """
         command = self._json_loads(command)
         command_type = command['type']
@@ -78,7 +78,7 @@ class PlayEngine(object):
                 'Command not implemented', command_type, provider_name)
         self.logger.info('Executing command %r', command)
         try:
-            method(command)
+            return method(command, **kwargs)
         except Exception:
             self.logger.error('FAILED command %r', command)
             raise
@@ -156,7 +156,7 @@ class PlayEngine(object):
             def __init__(self, engine):
                 self.engine = engine
 
-            def command_include(self, command):
+            def command_include(self, command, **kwargs):
                 self.engine.execute(
                     self.engine.parametrizer.parametrize(data)
                 )

@@ -4,7 +4,9 @@ Changelog
 0.3.2 (unreleased)
 ==================
 
-- Nothing changed yet.
+- execute command accepts kwargs now
+
+- execute command returns the command value now
 
 
 0.3.1 (2018-01-04)
