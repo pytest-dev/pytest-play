@@ -156,7 +156,7 @@ class PlayEngine(object):
             def __init__(self, engine):
                 self.engine = engine
 
-            def command_include(self, command):
+            def command_include(self, command, **kwargs):
                 self.engine.execute(
                     self.engine.parametrizer.parametrize(data)
                 )
