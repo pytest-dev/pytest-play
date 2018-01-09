@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import logging
 import json
 import pkg_resources
@@ -34,6 +35,15 @@ class PlayEngine(object):
         self.gsm = component.getGlobalSiteManager()
 
         self.register_plugins()
+
+    def get_file_contents(self, *tokens):
+        """ Return file contents """
+        data = ''
+        with open(
+                os.path.join(*tokens),
+                'r') as file_obj:
+            data = file_obj.read()
+        return data
 
     @property
     def parametrizer(self):
@@ -106,59 +116,3 @@ class PlayEngine(object):
     def get_command_provider(self, name):
         """ Get command provider by name """
         return component.queryUtility(ICommandProvider, name=name)
-
-    def register_steps(self, data, name):
-        """
-            You can register a group of actions as a pytest play provider and
-            **include** them in other scenario for improved reusability.
-
-            For example let's pretend we want to reuse the login steps coming
-            from a ``login.json`` file::
-
-                import pytest
-
-
-                @pytest.fixture(autouse=True)
-                def login_procedure(play_json, data_getter):
-                    data = data_getter('/my/path/etc', 'login.json')
-                    play_json.register_steps(
-                        data, 'login.json')
-
-                def test_like(play_json, data_getter):
-                    data = data_getter('/my/path/etc', 'like.json')
-                    play_json.execute(data)
-
-
-            where ``like.json`` contains the steps coming from the included
-            ``login.json`` file plus additional actions::
-
-                {
-                    "steps": [
-                            {
-                                    "provider": "login.json"
-                                    "type": "include"
-                            },
-                            {
-                                    "type": "clickElement",
-                                    "locator": {
-                                            "type": "css",
-                                            "value": ".like"
-                                    }
-                            }
-                    ]
-                }
-
-            **NOTE WELL**: it's up to you avoid recursion issues.
-        """
-        class IncludeProvider(object):
-            """ PlayEngine wrapper """
-
-            def __init__(self, engine):
-                self.engine = engine
-
-            def command_include(self, command, **kwargs):
-                self.engine.execute(
-                    self.engine.parametrizer.parametrize(data)
-                )
-
-        self.register_command_provider(IncludeProvider, name)

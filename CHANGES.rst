@@ -8,6 +8,12 @@ Changelog
 
 - execute command returns the command value now
 
+- complete refactor of ``include`` provider (no
+  backwards compatibility)
+
+- add ``play_json.get_file_contents`` and removed
+  ``data_getter`` fixture (no backwards compatibility)
+
 
 0.3.1 (2018-01-04)
 ==================

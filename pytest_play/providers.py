@@ -3,7 +3,26 @@ from time import sleep
 from selenium.webdriver.common.keys import Keys
 
 
-class SplinterCommandProvider(object):
+class BaseProvider(object):
+    """ Base command provider  """
+
+    def __init__(self, engine):
+        self.engine = engine
+
+
+class IncludeProvider(BaseProvider):
+    """ PlayEngine wrapper """
+
+    def command_include(self, command, **kwargs):
+        """ Include scenario """
+        file_path = command['path']
+        data = self.engine.get_file_contents(file_path)
+        self.engine.execute(
+            self.engine.parametrizer.parametrize(data)
+        )
+
+
+class SplinterCommandProvider(BaseProvider):
     """ JSON executor """
 
     SELECTOR_TYPES = [
@@ -29,9 +48,6 @@ class SplinterCommandProvider(object):
         'RIGHT', 'SEMICOLON', 'SEPARATOR', 'SHIFT', 'SPACE',
         'SUBTRACT', 'TAB', 'UP',
     ]
-
-    def __init__(self, engine):
-        self.engine = engine
 
     def locator_translate(self, locator):
         """ Translates json locator to splinter selector

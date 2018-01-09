@@ -7,12 +7,6 @@ def dummy_default_provider(dummy_executor):
     return SplinterCommandProvider(dummy_executor)
 
 
-@pytest.fixture
-def dummy_include_provider():
-    from pytest_play.providers import register_steps
-    return register_steps
-
-
 def test_splinter_executor_locator(dummy_default_provider):
     assert dummy_default_provider.locator_translate(
         {'type': 'css',

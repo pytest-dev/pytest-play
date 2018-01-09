@@ -52,10 +52,3 @@ def dummy_executor(page_instance, request):
     engine.navigation.setPage(page_instance)
     engine.navigation.get_page_instance = lambda *args, **kwargs: page_instance
     return engine
-
-
-@pytest.fixture(autouse=True)
-def included_scenario(play_json, data_getter, data_base_path):
-    data = data_getter(data_base_path, 'included-scenario.json')
-    play_json.register_steps(
-        data, 'included-scenario.json')
