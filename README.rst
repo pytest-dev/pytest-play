@@ -19,6 +19,7 @@ You can extend ``pytest-play`` with your own commands thanks to its pluggable ar
 browser interactions. For example it can be used for running previously recorded selenium splinter_ actions driving your
 browser for your UI test.
 
+See at the bottom of the page the third party plugins that extends ``pytest-play``.
 
 ``pytest-play`` is also your friend when page object approach (considered best practice) is not possible. For example:
 
