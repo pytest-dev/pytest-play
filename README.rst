@@ -450,10 +450,9 @@ Let's suppose you want to extend pytest-play with the following command::
 
 You just have to implement a command provider::
 
+    from pytest_play.providers import BaseProvider
 
-    class NewProvider(object):
-        def __init__(self, engine):
-            self.engine = engine
+    class NewProvider(BaseProvider):
 
         def this_is_not_a_command(self):
             """ Commands should be command_ prefixed """
