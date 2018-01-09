@@ -151,12 +151,18 @@ or with a regular url::
 
 Pause
 -----
-::
+
+This command invokes a javascript expression that will
+pause the execution flow of your commands::
+
 
     {
       "type": "pause",
       "waitTime": 1500
     }
+
+If you need a pause/sleep for non UI tests you can use the
+``sleep`` command provided by the play_python_ plugin.
 
 Click an element
 ----------------
@@ -488,6 +494,14 @@ Third party pytest-play plugins
 
   You can also build a simulator that generates messages for you.
 
+* play_python_, ``pytest-play`` plugin with restricted Python expressions and
+  assertions and it is based on the RestrictedPython_ package.
+
+* play_requests_, ...
+
+* **play_selenium**, the ``pytest-play`` selenium commands for UI tests
+  will be implemented on a brand new package named play_selenium
+
 Feel free to add your own public plugins with a pull request!
 
 
@@ -514,3 +528,6 @@ Twitter
 .. _`play.json`: https://github.com/tierratelematics/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/data/play.json
 .. _`test_play.py`: https://github.com/tierratelematics/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/test_play.py
 .. _`play_mqtt`: https://github.com/tierratelematics/play_mqtt
+.. _`play_python`: https://github.com/tierratelematics/play_python
+.. _`play_requests`: https://github.com/tierratelematics/play_requests
+.. _`RestrictedPython`: https://github.com/zopefoundation/RestrictedPython
