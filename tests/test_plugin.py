@@ -18,11 +18,6 @@ def test_play_engine_class(play_engine_class):
     assert play_engine_class is PlayEngine
 
 
-def test_data_getter(data_base_path, data_getter):
-    contents = data_getter(data_base_path, 'login.json')
-    assert '$base_url' in contents
-
-
 def test_play_json(play_json, navigation, bdd_vars, parametrizer_class):
     assert play_json.navigation is navigation
     assert play_json.navigation.page is navigation.page

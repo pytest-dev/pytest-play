@@ -15,6 +15,10 @@ def test_play_engine_constructor(
     assert executor.variables == bdd_vars
 
 
+def test_get_file_contents(play_json, data_base_path):
+    play_json.get_file_contents(data_base_path, 'login.json')
+
+
 def test_splinter_executor_parametrizer(dummy_executor):
     assert dummy_executor.parametrizer.parametrize('$foo') == 'bar'
 
@@ -863,10 +867,12 @@ def test_splinter_execute_includes(dummy_executor):
         calls, any_order=False) is None
 
 
-def test_include(play_json, test_run_identifier, page_instance):
+def test_include(play_json, test_run_identifier, page_instance,
+                 data_base_path):
     json_data = {
         "steps": [
-            {"provider": "included-scenario.json", "type": "include"},
+            {"provider": "include", "type": "include",
+             "path": "{0}/included-scenario.json".format(data_base_path)},
             {"type": "get", "url": "http://2"},
             {"type": "get", "url": "http://{0}".format(test_run_identifier)}
         ]
@@ -890,16 +896,18 @@ def test_include(play_json, test_run_identifier, page_instance):
             calls, any_order=False) is None
 
 
-def test_include_string(play_json, test_run_identifier, page_instance):
+def test_include_string(play_json, test_run_identifier, page_instance,
+                        data_base_path):
     json_data = """
     {
         "steps": [
-            {"provider": "included-scenario.json", "type": "include"},
+            {"provider": "include", "type": "include",
+             "path": "%s/included-scenario.json"},
             {"type": "get", "url": "http://2"},
             {"type": "get", "url": "http://$test_run_identifier"}
         ]
     }
-    """
+    """ % data_base_path
     play_json \
         .navigation \
         .get_page_instance = lambda *args, **kwargs: page_instance

@@ -3,7 +3,26 @@ from time import sleep
 from selenium.webdriver.common.keys import Keys
 
 
-class SplinterCommandProvider(object):
+class BaseProvider(object):
+    """ Base command provider  """
+
+    def __init__(self, engine):
+        self.engine = engine
+
+
+class IncludeProvider(BaseProvider):
+    """ PlayEngine wrapper """
+
+    def command_include(self, command, **kwargs):
+        """ Include scenario """
+        file_path = command['path']
+        data = self.engine.get_file_contents(file_path)
+        self.engine.execute(
+            self.engine.parametrizer.parametrize(data)
+        )
+
+
+class SplinterCommandProvider(BaseProvider):
     """ JSON executor """
 
     SELECTOR_TYPES = [
@@ -29,9 +48,6 @@ class SplinterCommandProvider(object):
         'RIGHT', 'SEMICOLON', 'SEPARATOR', 'SHIFT', 'SPACE',
         'SUBTRACT', 'TAB', 'UP',
     ]
-
-    def __init__(self, engine):
-        self.engine = engine
 
     def locator_translate(self, locator):
         """ Translates json locator to splinter selector
@@ -72,7 +88,7 @@ class SplinterCommandProvider(object):
 
     # commands
     @condition
-    def command_get(self, command):
+    def command_get(self, command, **kwargs):
         """ get """
         if self.engine.navigation.page is None:
             page = self.engine.navigation.get_page_instance()
@@ -81,14 +97,14 @@ class SplinterCommandProvider(object):
 
     @wait_for_element_visible
     @condition
-    def command_clickElement(self, command):
+    def command_clickElement(self, command, **kwargs):
         """ clickElement """
         selector = self.locator_translate(command['locator'])
         self.engine.navigation.page.find_element(*selector).click()
 
     @wait_for_element_visible
     @condition
-    def command_setElementText(self, command):
+    def command_setElementText(self, command, **kwargs):
         """ setElementText """
         selector = self.locator_translate(command['locator'])
         text = command['text']
@@ -96,7 +112,7 @@ class SplinterCommandProvider(object):
 
     @wait_for_element_visible
     @condition
-    def command_select(self, command):
+    def command_select(self, command, **kwargs):
         """ select """
         selector = self.locator_translate(command['locator'])
 
@@ -117,7 +133,7 @@ class SplinterCommandProvider(object):
         option.click()
 
     @condition
-    def command_waitForElementPresent(self, command):
+    def command_waitForElementPresent(self, command, **kwargs):
         """ waitForElementPresent """
         selector = self.locator_translate(command['locator'])
 
@@ -127,7 +143,7 @@ class SplinterCommandProvider(object):
         self.engine.navigation.page.wait.until(_wait)
 
     @condition
-    def command_waitForElementVisible(self, command):
+    def command_waitForElementVisible(self, command, **kwargs):
         """ waitForElementVisible """
         selector = self.locator_translate(command['locator'])
 
@@ -137,7 +153,7 @@ class SplinterCommandProvider(object):
         self.engine.navigation.page.wait.until(_wait)
 
     @condition
-    def command_assertElementPresent(self, command):
+    def command_assertElementPresent(self, command, **kwargs):
         """ assertElementPresent """
         selector = self.locator_translate(command['locator'])
         negated = command.get('negated', False)
@@ -150,7 +166,7 @@ class SplinterCommandProvider(object):
         assert result
 
     @condition
-    def command_assertElementVisible(self, command):
+    def command_assertElementVisible(self, command, **kwargs):
         """ assertElementVisible """
         selector = self.locator_translate(command['locator'])
         negated = command.get('negated', False)
@@ -164,7 +180,7 @@ class SplinterCommandProvider(object):
 
     @wait_for_element_visible
     @condition
-    def command_sendKeysToElement(self, command):
+    def command_sendKeysToElement(self, command, **kwargs):
         """ sendKeysToElement """
         key = command['text']
         if key not in self.KEYS:
@@ -176,14 +192,14 @@ class SplinterCommandProvider(object):
             .send_keys(getattr(Keys, key))
 
     @condition
-    def command_pause(self, command):
+    def command_pause(self, command, **kwargs):
         """ pause """
         wait_time = float(command['waitTime'])
         sleep(wait_time/1000.0)
 
     @wait_for_element_visible
     @condition
-    def command_verifyText(self, command):
+    def command_verifyText(self, command, **kwargs):
         """ verifyText """
         selector = self.locator_translate(command['locator'])
         negated = command.get('negated', False)
@@ -193,7 +209,7 @@ class SplinterCommandProvider(object):
         assert not negated and match
 
     @condition
-    def command_storeEval(self, command):
+    def command_storeEval(self, command, **kwargs):
         """ storeEval """
         variable = command['variable']
         script = self.engine.parametrizer.parametrize(command['script'])
@@ -201,7 +217,7 @@ class SplinterCommandProvider(object):
         self.engine.variables[variable] = value
 
     @condition
-    def command_verifyEval(self, command):
+    def command_verifyEval(self, command, **kwargs):
         """ verifyEval """
         value = command['value']
         script = self.engine.parametrizer.parametrize(command['script'])
@@ -209,13 +225,13 @@ class SplinterCommandProvider(object):
             script)
 
     @condition
-    def command_eval(self, command):
+    def command_eval(self, command, **kwargs):
         """ eval """
         script = self.engine.parametrizer.parametrize(command['script'])
         self.engine.navigation.page.driver.evaluate_script(script)
 
     @condition
-    def command_waitUntilCondition(self, command):
+    def command_waitUntilCondition(self, command, **kwargs):
         """ waitUntilCondition  """
         script = self.engine.parametrizer.parametrize(command['script'])
         self.engine.navigation.page.wait.until(

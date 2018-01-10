@@ -1,10 +1,24 @@
 Changelog
 *********
 
-0.3.2 (unreleased)
+1.0.1 (unreleased)
 ==================
 
 - Nothing changed yet.
+
+
+1.0.0 (2018-01-10)
+==================
+
+- execute command accepts kwargs now
+
+- execute command returns the command value now
+
+- complete refactor of ``include`` provider (no
+  backwards compatibility)
+
+- add ``play_json.get_file_contents`` and removed
+  ``data_getter`` fixture (no backwards compatibility)
 
 
 0.3.1 (2018-01-04)
