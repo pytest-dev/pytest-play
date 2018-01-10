@@ -1,7 +1,7 @@
 Changelog
 *********
 
-0.3.2 (unreleased)
+1.0.0 (2018-01-10)
 ==================
 
 - execute command accepts kwargs now

@@ -34,7 +34,7 @@ docs_require = [
 
 setup(
     name='pytest-play',
-    version='0.3.2.dev0',
+    version='1.0.0',
     author='Davide Moro',
     author_email='davide.moro@gmail.com',
     maintainer='Davide Moro',
