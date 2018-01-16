@@ -847,13 +847,15 @@ def test_new_provider_custom_command(dummy_executor):
         .assert_called_once_with(command) is None
 
 
-def test_splinter_execute_includes(dummy_executor):
+def test_splinter_execute_includes(dummy_executor, data_base_path):
     execute_command_mock = mock.MagicMock()
     dummy_executor.execute_command = execute_command_mock
 
     json_data = {
         'steps': [
-            {'type': 'include', 'provider': 'login.json'},
+            {'type': 'include', 'provider': 'include',
+             'path': '{0}/{1}'.format(
+                 data_base_path, 'login.json')},
             {'type': 'get', 'url': 'http://2'}
         ]
     }
