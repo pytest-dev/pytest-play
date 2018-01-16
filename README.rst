@@ -425,6 +425,34 @@ duplication::
 
 You can create a variable for the base folder where your test scripts live.
 
+Default commands
+----------------
+
+Some commands require many verbose options you don't want to repeat (eg: authentication headers for play_requests_).
+
+Instead of replicating all the headers information you can initialize a ``pytest-play`` with the provider name as
+key and as a value the default command you want to omit::
+
+    {
+        "steps": [{
+            "provider": "python",
+            "type": "store_variable",
+            "name": "bearer",
+            "expression": "'BEARER'"
+        },
+        {
+            "provider": "python",
+            "type": "exec",
+            "expression": "variables.update({'play_requests': {'parameters': {'headers': {'Authorization': '$bearer'}}}})"
+        },
+        {
+             "provider": "play_requests",
+             "type": "GET",
+             "comment": "this is an authenticated request!",
+             "url": "$base_url"
+        }
+    }
+
 How to install pytest-play
 ==========================
 

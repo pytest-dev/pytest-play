@@ -6,6 +6,9 @@ Changelog
 
 - Documentation updated (add new pytest play plugins)
 
+- Support default payloads for command providers. Useful
+  for HTTP authentication headers, common database settings
+
 
 1.0.0 (2018-01-10)
 ==================

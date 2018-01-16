@@ -898,6 +898,156 @@ def test_include(play_json, test_run_identifier, page_instance,
             calls, any_order=False) is None
 
 
+def test_default_command(
+        play_json, test_run_identifier, page_instance,
+        data_base_path):
+    play_json.variables['include'] = {'comment': 'default comment'}
+    play_json.get_command_provider = mock.MagicMock()
+    json_data = {
+        "steps": [
+            {"provider": "include", "type": "include",
+             "path": "{0}/included-scenario.json".format(data_base_path)},
+        ]
+    }
+    from copy import deepcopy
+    expected_command = deepcopy(json_data)["steps"][0]
+    expected_command['comment'] = 'default comment'
+    play_json.execute(json_data)
+    assert play_json \
+        .get_command_provider \
+        .return_value \
+        .command_include \
+        .assert_called_once_with(
+            expected_command) is None
+
+
+def test_default_command_override(
+        play_json, test_run_identifier, page_instance,
+        data_base_path):
+    play_json.variables['include'] = {'comment': 'default comment'}
+    play_json.get_command_provider = mock.MagicMock()
+    json_data = {
+        "steps": [
+            {"provider": "include", "type": "include",
+             "comment": "override",
+             "path": "{0}/included-scenario.json".format(data_base_path)},
+        ]
+    }
+    from copy import deepcopy
+    expected_command = deepcopy(json_data)["steps"][0]
+    expected_command['comment'] = 'override'
+    play_json.execute(json_data)
+    assert play_json \
+        .get_command_provider \
+        .return_value \
+        .command_include \
+        .assert_called_once_with(
+            expected_command) is None
+
+
+def test_default_command_override_dict(
+        play_json, test_run_identifier, page_instance,
+        data_base_path):
+    play_json.variables['include'] = {
+        'comment': {'comment': 'default comment'}}
+    play_json.get_command_provider = mock.MagicMock()
+    json_data = {
+        "steps": [
+            {"provider": "include", "type": "include",
+             "comment": {"another": "override"},
+             "path": "{0}/included-scenario.json".format(data_base_path)},
+        ]
+    }
+    from copy import deepcopy
+    expected_command = deepcopy(json_data)["steps"][0]
+    expected_command['comment'] = {
+        'another': 'override', 'comment': 'default comment'}
+    play_json.execute(json_data)
+    assert play_json \
+        .get_command_provider \
+        .return_value \
+        .command_include \
+        .assert_called_once_with(
+            expected_command) is None
+
+
+def test_default_command_override_dict_2(
+        play_json, test_run_identifier, page_instance,
+        data_base_path):
+    play_json.variables['include'] = {
+        'comment': {'comment': 'default comment'}}
+    play_json.get_command_provider = mock.MagicMock()
+    json_data = {
+        "steps": [
+            {"provider": "include", "type": "include",
+             "comment": {"another": "override", "comment": "other"},
+             "path": "{0}/included-scenario.json".format(data_base_path)},
+        ]
+    }
+    from copy import deepcopy
+    expected_command = deepcopy(json_data)["steps"][0]
+    expected_command['comment'] = {
+        'another': 'override', 'comment': 'other'}
+    play_json.execute(json_data)
+    assert play_json \
+        .get_command_provider \
+        .return_value \
+        .command_include \
+        .assert_called_once_with(
+            expected_command) is None
+
+
+def test_default_command_override_dict_4(
+        play_json, test_run_identifier, page_instance,
+        data_base_path):
+    play_json.variables['include'] = {
+        'comment': {'comment': 'default comment'}}
+    play_json.get_command_provider = mock.MagicMock()
+    json_data = {
+        "steps": [
+            {"provider": "include", "type": "include",
+             "comment": "default comment",
+             "path": "{0}/included-scenario.json".format(data_base_path)},
+        ]
+    }
+    from copy import deepcopy
+    expected_command = deepcopy(json_data)["steps"][0]
+    expected_command['comment'] = 'default comment'
+    play_json.execute(json_data)
+    assert play_json \
+        .get_command_provider \
+        .return_value \
+        .command_include \
+        .assert_called_once_with(
+            expected_command) is None
+
+
+def test_default_command_override_dict_3(
+        play_json, test_run_identifier, page_instance,
+        data_base_path):
+    play_json.variables['include'] = {
+        'comment': 'default comment'}
+    play_json.get_command_provider = mock.MagicMock()
+    json_data = {
+        "steps": [
+            {"provider": "include", "type": "include",
+             "comment": {"another": "override", "comment": "other"},
+             "path": "{0}/included-scenario.json".format(data_base_path)},
+        ]
+    }
+    from copy import deepcopy
+    expected_command = deepcopy(json_data)["steps"][0]
+    expected_command['comment'] = {
+        'another': 'override', 'comment': 'other'}
+    play_json.execute(json_data)
+    assert play_json \
+        .get_command_provider \
+        .return_value \
+        .command_include \
+        .assert_called_once_with(
+            expected_command) is None
+
+
 def test_include_string(play_json, test_run_identifier, page_instance,
                         data_base_path):
     json_data = """

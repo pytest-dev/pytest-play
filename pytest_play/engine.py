@@ -57,6 +57,40 @@ class PlayEngine(object):
             data = self.parametrizer.parametrize(json.dumps(data))
         return self.parametrizer.json_loads(data)
 
+    def _merge_payload(self, command):
+        """ Merge command with the default command available in
+            engine.variables['provider']
+        """
+        provider = command.get('provider', 'default')
+        provider_conf = self.variables.get(provider, {})
+        if provider_conf:
+            default = json.loads(
+                self.parametrizer.parametrize(
+                    json.dumps(provider_conf)))
+            if provider_conf:
+                return self._merge(default, command)
+        return command
+
+    def _merge(self, a, b, path=None):
+        """ merges b and a configurations.
+            Based on http://bit.ly/2uFUHgb
+         """
+        if path is None:
+            path = []
+
+        for key in b:
+            if key in a:
+                if isinstance(a[key], dict) and isinstance(b[key], dict):
+                    self._merge(a[key], b[key], path + [str(key)])
+                elif a[key] == b[key]:
+                    pass  # same leaf value
+                else:
+                    # b wins
+                    a[key] = b[key]
+            else:
+                a[key] = b[key]
+        return a
+
     def execute(self, data, extra_variables={}):
         """ Execute parsed json-like file contents """
         if extra_variables:
@@ -69,6 +103,7 @@ class PlayEngine(object):
     def execute_command(self, command, **kwargs):
         """ Execute single command """
         command = self._json_loads(command)
+        command = self._merge_payload(command)
         command_type = command['type']
         provider_name = command.get('provider', 'default')
         command_provider = self.get_command_provider(provider_name)
