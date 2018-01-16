@@ -1,7 +1,7 @@
 Changelog
 *********
 
-1.0.1 (unreleased)
+1.1.0 (2018-01-16)
 ==================
 
 - Documentation updated (add new pytest play plugins)
