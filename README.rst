@@ -503,6 +503,8 @@ Third party pytest-play plugins
 
 * play_sql_, ``pytest-play`` support for SQL expressions and assertions
 
+* play_cassandra_, ``pytest-play`` support for Cassandra expressions and assertions
+
 * **play_selenium**, the ``pytest-play`` selenium commands for UI tests
   will be implemented on a brand new package named play_selenium
 
@@ -535,4 +537,5 @@ Twitter
 .. _`play_python`: https://github.com/tierratelematics/play_python
 .. _`play_requests`: https://github.com/tierratelematics/play_requests
 .. _`play_sql`: https://github.com/tierratelematics/play_sql
+.. _`play_cassandra`: https://github.com/tierratelematics/play_cassandra
 .. _`RestrictedPython`: https://github.com/zopefoundation/RestrictedPython
