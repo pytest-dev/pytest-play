@@ -1,10 +1,19 @@
 Changelog
 *********
 
-1.0.1 (unreleased)
+1.1.1 (unreleased)
 ==================
 
 - Nothing changed yet.
+
+
+1.1.0 (2018-01-16)
+==================
+
+- Documentation updated (add new pytest play plugins)
+
+- Support default payloads for command providers. Useful
+  for HTTP authentication headers, common database settings
 
 
 1.0.0 (2018-01-10)

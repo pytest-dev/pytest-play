@@ -425,6 +425,34 @@ duplication::
 
 You can create a variable for the base folder where your test scripts live.
 
+Default commands
+----------------
+
+Some commands require many verbose options you don't want to repeat (eg: authentication headers for play_requests_).
+
+Instead of replicating all the headers information you can initialize a ``pytest-play`` with the provider name as
+key and as a value the default command you want to omit::
+
+    {
+        "steps": [{
+            "provider": "python",
+            "type": "store_variable",
+            "name": "bearer",
+            "expression": "'BEARER'"
+        },
+        {
+            "provider": "python",
+            "type": "exec",
+            "expression": "variables.update({'play_requests': {'parameters': {'headers': {'Authorization': '$bearer'}}}})"
+        },
+        {
+             "provider": "play_requests",
+             "type": "GET",
+             "comment": "this is an authenticated request!",
+             "url": "$base_url"
+        }
+    }
+
 How to install pytest-play
 ==========================
 
@@ -498,7 +526,12 @@ Third party pytest-play plugins
 * play_python_, ``pytest-play`` plugin with restricted Python expressions and
   assertions and it is based on the RestrictedPython_ package.
 
-* play_requests_, ...
+* play_requests_, ``pytest-play`` plugin driving the famous Python ``requests``
+  library for making ``HTTP`` calls.
+
+* play_sql_, ``pytest-play`` support for SQL expressions and assertions
+
+* play_cassandra_, ``pytest-play`` support for Cassandra expressions and assertions
 
 * **play_selenium**, the ``pytest-play`` selenium commands for UI tests
   will be implemented on a brand new package named play_selenium
@@ -531,4 +564,6 @@ Twitter
 .. _`play_mqtt`: https://github.com/tierratelematics/play_mqtt
 .. _`play_python`: https://github.com/tierratelematics/play_python
 .. _`play_requests`: https://github.com/tierratelematics/play_requests
+.. _`play_sql`: https://github.com/tierratelematics/play_sql
+.. _`play_cassandra`: https://github.com/tierratelematics/play_cassandra
 .. _`RestrictedPython`: https://github.com/zopefoundation/RestrictedPython
