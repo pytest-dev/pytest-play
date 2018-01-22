@@ -93,7 +93,7 @@ you define a test ``test_login.py`` like this::
 you get things moving on your browser!
 
 Core commands
-=============
+-------------
 
 pytest-play_ provides some core commands that let you:
 
@@ -105,7 +105,7 @@ pytest-play_ provides some core commands that let you:
   (eg: add by default HTTP authentication headers for all requests)
 
 Python expressions
-------------------
+==================
 
 You can write restricted Python expressions and assertions based on the ``RestrictedPython`` package.
 
@@ -119,7 +119,7 @@ See:
 * https://github.com/zopefoundation/RestrictedPython
 
 How to reuse steps
-------------------
+==================
 
 You can split your commands and reuse them using the ``include`` command avoiding
 duplication::
@@ -134,7 +134,7 @@ duplication::
 You can create a variable for the base folder where your test scripts live.
 
 Default commands
-----------------
+================
 
 Some commands require many verbose options you don't want to repeat (eg: authentication headers for play_requests_).
 
@@ -163,7 +163,7 @@ key and as a value the default command you want to omit::
     }
 
 Store variables
----------------
+===============
 
 You can store a pytest-play_ variables::
 
@@ -175,7 +175,7 @@ You can store a pytest-play_ variables::
     }
 
 Make a Python assertion
------------------------
+=======================
 
 You can make an assertion based on a Python expression::
 
@@ -186,7 +186,7 @@ You can make an assertion based on a Python expression::
     }
 
 Sleep
------
+=====
 
 Sleep for a given amount of seconds::
 
@@ -197,7 +197,7 @@ Sleep for a given amount of seconds::
     }
 
 Exec a Python expresssion
--------------------------
+=========================
 
 You can execute a Python expression::
 
@@ -208,7 +208,7 @@ You can execute a Python expression::
     }
 
 Wait until condition
---------------------
+====================
 
 The ``wait_until_not`` command waits until the wait expression is False::
 
@@ -242,7 +242,7 @@ You can use the opposite command named ``wait_until`` that waits until the wait
 expression is not False.
 
 Loop commands
--------------
+=============
 
 You can repeat a group of subcommands using a variable as a counter. Assuming you
 have defined a ``countdown`` variable with 10 value, the wait until command will
@@ -264,7 +264,7 @@ repeat the group of commands for 10 times::
 
 
 Conditional commands
---------------------
+====================
 
 You can skip any command evaluating a Python based skip condition
 like the following::
@@ -278,15 +278,16 @@ like the following::
 
 
 Browser based commands
-======================
+----------------------
 
 **Deprecation warning**: Browser commands will be removed
 in pytest-play_ >= 2.0.0 but don't worry: they will be
 implemented in a separate package.
  
 Conditional commands
---------------------
-::
+====================
+
+Based on a browser level expression (Javascript)::
 
     {
       "type": "clickElement",
@@ -299,7 +300,7 @@ Conditional commands
 
 
 Supported locators
-------------------
+==================
 
 Supported selector types:
 
@@ -312,7 +313,7 @@ Supported selector types:
 * value
 
 Open a page
------------
+===========
 
 With parametrization::
 
@@ -329,7 +330,7 @@ or with a regular url::
     }
 
 Pause
------
+=====
 
 This command invokes a javascript expression that will
 pause the execution flow of your commands::
@@ -344,7 +345,7 @@ If you need a pause/sleep for non UI tests you can use the
 ``sleep`` command provided by the play_python_ plugin.
 
 Click an element
-----------------
+================
 ::
 
     {
@@ -356,7 +357,7 @@ Click an element
     }
 
 Fill in a text
---------------
+==============
 ::
 
     {
@@ -369,7 +370,7 @@ Fill in a text
     }
 
 Interact with select input elements
------------------------------------
+===================================
 
 Select by label::
 
@@ -394,7 +395,7 @@ or select by value::
     }
 
 Eval a Javascript expression
-----------------------------
+============================
 
 ::
 
@@ -404,7 +405,7 @@ Eval a Javascript expression
     }
 
 Create a variable starting from a Javascript expression
--------------------------------------------------------
+=======================================================
 
 The value of the Javascript expression will be stored in
 ``pytest_play.variables`` under the name ``count``::
@@ -416,7 +417,7 @@ The value of the Javascript expression will be stored in
     }
 
 Assert if a Javascript expression matches
------------------------------------------
+=========================================
 
 If the result of the expression does not match an ``AssertionError``
 will be raised and the test will fail::
@@ -428,7 +429,7 @@ will be raised and the test will fail::
     }
 
 Verify that the text of one element contains a string
------------------------------------------------------
+=====================================================
 
 If the element text does not contain the provided text an
 ``AssertionError`` will be raised and the test will fail::
@@ -443,7 +444,7 @@ If the element text does not contain the provided text an
     }
 
 Send keys to an element
------------------------
+=======================
 
 All ``selenium.webdriver.common.keys.Keys`` are supported::
 
@@ -475,7 +476,7 @@ Supported keys::
     ]
 
 Wait until a Javascript expression matches
-------------------------------------------
+==========================================
 
 Wait until the given expression matches or raise a 
 ``selenium.common.exceptions.TimeoutException`` if takes too time.
@@ -489,7 +490,7 @@ you will be able to override it on command basis::
     }
 
 Wait for element present in DOM
--------------------------------
+===============================
 
 Present::
 
@@ -513,7 +514,7 @@ or not present::
     }
 
 Wait for element visible
-------------------------
+========================
 
 Visible::
 
@@ -537,7 +538,7 @@ or not visible::
     }
 
 Assert element is present in DOM
---------------------------------
+================================
 
 An ``AssertionError`` will be raised if assertion fails.
 
@@ -563,7 +564,7 @@ or not present::
     }
 
 Assert element is visible
--------------------------
+=========================
 
 An ``AssertionError`` will be raised if assertion fails.
 
@@ -590,7 +591,7 @@ or not present::
 
 
 How to install pytest-play
-==========================
+--------------------------
 
 You can see ``pytest-play`` in action creating a pytest project
 using the cookiecutter-qa_ scaffolding tool:
@@ -603,7 +604,7 @@ This is the easiest way, otherwise you'll need to setup a pytest
 project by your own and install ``pytest-play``.
 
 pytest-play is pluggable and extensible
-=======================================
+---------------------------------------
 
 ``pytest-play`` has a pluggable architecture and you can extend it.
 
@@ -613,7 +614,7 @@ activities, provide easy interaction with complex UI widgets like
 calendar widgets and so on.
 
 How to register a new command provider
---------------------------------------
+======================================
 
 Let's suppose you want to extend pytest-play with the following command::
 
@@ -651,16 +652,13 @@ If you want you can generate a new command provider thanks to:
 
 
 Third party pytest-play plugins
-===============================
+-------------------------------
 
 * play_mqtt_, ``pytest-play`` plugin for MQTT support. Thanks to ``play_mqtt``
   you can test the integration between a mocked IoT device that sends
   commands on MQTT and a reactive web application with UI checks.
 
   You can also build a simulator that generates messages for you.
-
-* play_python_, ``pytest-play`` plugin with restricted Python expressions and
-  assertions and it is based on the RestrictedPython_ package.
 
 * play_requests_, ``pytest-play`` plugin driving the famous Python ``requests``
   library for making ``HTTP`` calls.
@@ -676,7 +674,7 @@ Feel free to add your own public plugins with a pull request!
 
 
 Twitter
-=======
+-------
 
 ``pytest-play`` tweets happens here:
 
