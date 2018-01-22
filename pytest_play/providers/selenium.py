@@ -2,6 +2,12 @@ import re
 from time import sleep
 from selenium.webdriver.common.keys import Keys
 from . import BaseProvider
+import warnings
+
+
+warnings.warn(
+    "This provider will be moved to a separate package in 2.0.0",
+    DeprecationWarning)
 
 
 class SplinterCommandProvider(BaseProvider):

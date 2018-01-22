@@ -13,6 +13,12 @@ Changelog
 
 - update documentation
 
+- deprecate selenium commands (they will be implemented
+  on a separate plugin and dropped in
+  ``pytest-play`` >= 2.0.0). All your previous scripts
+  will work fine, this warning is just for people
+  directly importing the provider for some reason.
+
 
 1.1.0 (2018-01-16)
 ==================
