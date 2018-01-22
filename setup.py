@@ -43,8 +43,7 @@ setup(
     license='Apache Software License 2.0',
     url='https://github.com/tierratelematics/pytest-play',
     description='pytest plugin that let you play a json file '
-                'describing some actions and assertions. '
-                'Supports by default Selenium/Splinter actions',
+                'describing some actions and assertions.',
     long_description=open("README.rst").read() + "\n" +
     open("CHANGES.rst").read(),
     packages=find_packages(),
