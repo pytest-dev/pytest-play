@@ -19,7 +19,8 @@ install_requires = [
     'pytest-variables[yaml]',
     'pytest-pypom-navigation',
     'pytest-splinter',
-    'zope.interface'
+    'zope.interface',
+    'RestrictedPython>=4.0.b2',
 ]
 
 tests_require = [
@@ -69,6 +70,7 @@ setup(
         'playcommands': [
             'default = pytest_play.providers:SplinterCommandProvider',
             'include = pytest_play.providers:IncludeProvider',
+            'python = pytest_play.providers:PythonProvider',
         ],
         'pytest11': [
             'pytest-play = pytest_play.plugin',

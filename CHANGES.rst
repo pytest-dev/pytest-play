@@ -4,7 +4,12 @@ Changelog
 1.1.1 (unreleased)
 ==================
 
-- Nothing changed yet.
+- implement python based commands in ``pytest-play`` and
+  deprecates ``play_python``.
+  So this feature is a drop-in replacement for the
+  ``play-python`` plugin.
+
+  You should no more install ``play_python`` since now.
 
 
 1.1.0 (2018-01-16)
