@@ -1,7 +1,7 @@
 Changelog
 *********
 
-1.1.1 (unreleased)
+1.2.0 (2018-01-22)
 ==================
 
 - implement python based commands in ``pytest-play`` and
