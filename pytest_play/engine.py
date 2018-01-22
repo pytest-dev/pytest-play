@@ -91,6 +91,24 @@ class PlayEngine(object):
                 a[key] = b[key]
         return a
 
+    def skip_condition(func):
+        """ Skip command if skip_condition python expression is falsish  """
+        def wrapper(*args, **kwargs):
+            command = args[0]._json_loads(args[1])
+            condition = command.get('skip_condition', None)
+            skip = False
+            if condition is not None:
+                expr = args[0].parametrizer.parametrize(condition)
+                if args[0].execute_command(
+                    {'provider': 'python',
+                     'type': 'exec',
+                     'expression': expr
+                     }):
+                    skip = True
+            if not skip:
+                return func(*args, **kwargs)
+        return wrapper
+
     def execute(self, data, extra_variables={}):
         """ Execute parsed json-like file contents """
         if extra_variables:
@@ -100,6 +118,7 @@ class PlayEngine(object):
         for step in steps:
             self.execute_command(step)
 
+    @skip_condition
     def execute_command(self, command, **kwargs):
         """ Execute single command """
         command = self._json_loads(command)
