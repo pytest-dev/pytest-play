@@ -35,6 +35,20 @@ class PlayEngine(object):
         self.gsm = component.getGlobalSiteManager()
 
         self.register_plugins()
+        self._teardown = []
+
+    def register_teardown_callback(self, callback):
+        """ Register teardown callback """
+        if callback not in self._teardown:
+            self._teardown.append(callback)
+
+    def teardown(self):
+        """ Teardown """
+        for callback in self._teardown:
+            try:
+                callback()
+            except Exception:
+                pass
 
     def get_file_contents(self, *tokens):
         """ Return file contents """
