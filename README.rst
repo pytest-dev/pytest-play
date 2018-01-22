@@ -104,8 +104,10 @@ pytest-play_ provides some core commands that let you:
 * provide a default command template for some particular providers
   (eg: add by default HTTP authentication headers for all requests)
 
-Python expressions
-==================
+* a generic wait until machinery. Useful for waiting for an
+  observable asynchronous event will complete its flow before
+  proceeding with the following commands that depends on the previous
+  step completion
 
 You can write restricted Python expressions and assertions based on the ``RestrictedPython`` package.
 
