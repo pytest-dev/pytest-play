@@ -19,6 +19,9 @@ Changelog
   will work fine, this warning is just for people
   directly importing the provider for some reason.
 
+- implement skip conditions. You can omit the execution of
+  any command evaluating a Python based skip condition
+
 
 1.1.0 (2018-01-16)
 ==================

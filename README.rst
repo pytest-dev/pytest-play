@@ -263,6 +263,20 @@ repeat the group of commands for 10 times::
     })
 
 
+Conditional commands
+--------------------
+
+You can skip any command evaluating a Python based skip condition
+like the following::
+
+    {
+      "provider": "include",
+      "type": "include",
+      "path": "/some-path/assertions.json",
+      "skip_condition": "variables['cassandra_assertions'] is True"
+    }
+
+
 Browser based commands
 ======================
 

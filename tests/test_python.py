@@ -273,3 +273,34 @@ def test_wait_until_not_countdown_timeout(play_json):
     now_now = datetime.now()
     expected_date = now + timedelta(seconds=1.3)
     assert now_now >= expected_date
+
+
+def test_skip_condition(play_json):
+    play_json.variables = {'foo': 'baz'}
+    play_json.execute_command({
+        'provider': 'python',
+        'type': 'assert',
+        'expression': '200 == 404',
+        'skip_condition': '"$foo" == "baz"'
+    })
+
+
+def test_skip_condition_str(play_json):
+    play_json.variables = {'foo': 'baz'}
+    play_json.execute_command("""{
+        "provider": "python",
+        "type": "assert",
+        "expression": "200 == 404",
+        "skip_condition": "'$foo' == 'baz'"
+    }""")
+
+
+def test_skip_condition_false(play_json):
+    play_json.variables = {'foo': 'baz'}
+    with pytest.raises(AssertionError):
+        play_json.execute_command({
+            'provider': 'python',
+            'type': 'assert',
+            'expression': '200 == 404',
+            'skip_condition': '"$foo" != "baz"'
+        })
