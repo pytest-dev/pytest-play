@@ -6,6 +6,8 @@ Changelog
 
 - documentation improvements
 
+- supports teardown callbacks
+
 
 1.2.0 (2018-01-22)
 ==================
