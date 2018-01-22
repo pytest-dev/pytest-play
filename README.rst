@@ -92,23 +92,204 @@ you define a test ``test_login.py`` like this::
 
 you get things moving on your browser!
 
-Commands syntax
+Core commands
+-------------
+
+pytest-play_ provides some core commands that let you:
+
+* write simple Python assertions, expressions and variables
+
+* reuse steps including other test scenario scripts
+
+* provide a default command template for some particular providers
+  (eg: add by default HTTP authentication headers for all requests)
+
+* a generic wait until machinery. Useful for waiting for an
+  observable asynchronous event will complete its flow before
+  proceeding with the following commands that depends on the previous
+  step completion
+
+You can write restricted Python expressions and assertions based on the ``RestrictedPython`` package.
+
+``RestrictedPython`` is a tool that helps to define a subset of the Python
+language which allows to provide a program input into a trusted environment.
+RestrictedPython is not a sandbox system or a secured environment, but it helps
+to define a trusted environment and execute untrusted code inside of it.
+
+See:
+
+* https://github.com/zopefoundation/RestrictedPython
+
+How to reuse steps
+==================
+
+You can split your commands and reuse them using the ``include`` command avoiding
+duplication::
+
+    {
+        "steps": [
+            {"provider": "include", "type": "include", "path": "/some-path/included-scenario.json"},
+            ... other commands ...
+        ]
+    }
+
+You can create a variable for the base folder where your test scripts live.
+
+Default commands
+================
+
+Some commands require many verbose options you don't want to repeat (eg: authentication headers for play_requests_).
+
+Instead of replicating all the headers information you can initialize a ``pytest-play`` with the provider name as
+key and as a value the default command you want to omit::
+
+    {
+        "steps": [{
+            "provider": "python",
+            "type": "store_variable",
+            "name": "bearer",
+            "expression": "'BEARER'"
+        },
+        {
+            "provider": "python",
+            "type": "store_variable",
+            "name": "play_requests",
+            "expression": "{'play_requests': {'parameters': {'headers': {'Authorization': '$bearer'}}}}"
+        },
+        {
+             "provider": "play_requests",
+             "type": "GET",
+             "comment": "this is an authenticated request!",
+             "url": "$base_url"
+        }
+    }
+
+Store variables
 ===============
 
-Project status is pre-alpha so commands could change and the
-following list will be extended.
+You can store a pytest-play_ variables::
 
-Some useful commands is missing, for example:
+    {
+     'provider': 'python',
+     'type': 'store_variable',
+     'expression': '1+1',
+     'name': 'foo'
+    }
 
-* url assertions
+Make a Python assertion
+=======================
 
-* text in page
+You can make an assertion based on a Python expression::
 
-* interaction with other input elements like radio buttons
+    {
+     'provider': 'python',
+     'type': 'assert',
+     'expression': 'variables["foo"] == 2'
+    }
+
+Sleep
+=====
+
+Sleep for a given amount of seconds::
+
+    {
+     'provider': 'python',
+     'type': 'sleep',
+     'seconds': 2
+    }
+
+Exec a Python expresssion
+=========================
+
+You can execute a Python expression::
+
+    {
+     'provider': 'python',
+     'type': 'exec',
+     'expression': '1+1'
+    }
+
+Wait until condition
+====================
+
+The ``wait_until_not`` command waits until the wait expression is False::
+
+    {
+     'provider': 'python',
+     'type': 'wait_until_not',
+     'expression': 'variables["expected_id"] is not None and variables["expected_id"][0] == $id',
+     'timeout': 5,
+     'poll': 0.1,
+     'subcommands': [{
+         'provider': 'play_sql',
+         'type': 'sql',
+         'database_url': 'postgresql://$db_user:$db_pwd@$db_host/$db_name',
+         'query': 'SELECT id FROM table WHERE id=$id ORDER BY id DESC;',
+         'variable': 'expected_id',
+         'expression': 'results.first()'
+     }]
+    }
+
+assuming that the subcommand updates the execution results updating a ``pytest-play``
+variable (eg: ``expected_id``) where tipically the ``$id`` value comes
+from a previously executed command that causes an asynchrounous update on a relational
+database soon or later (eg: a play_requests_ command making a ``HTTP POST`` call
+or a ``MQTT`` message coming from a simulated IoT device with play_mqtt_).
+
+The wait command will try (and retry) to execute the subcommand with a poll frequency
+``poll`` (default: 0.1 seconds) until the provided ``timeout`` expressed
+in seconds expires or an exception occurs.
+
+You can use the opposite command named ``wait_until`` that waits until the wait
+expression is not False.
+
+Loop commands
+=============
+
+You can repeat a group of subcommands using a variable as a counter. Assuming you
+have defined a ``countdown`` variable with 10 value, the wait until command will
+repeat the group of commands for 10 times::
+
+    play_json.execute_command({
+        'provider': 'python',
+        'type': 'wait_until',
+        'expression': 'variables["countdown"] == 0',
+        'timeout': 0,
+        'poll': 0,
+        'sub_commands': [{
+            'provider': 'python',
+            'type': 'store_variable',
+            'name': 'countdown',
+            'expression': 'variables["countdown"] - 1'
+        }]
+    })
+
 
 Conditional commands
---------------------
-::
+====================
+
+You can skip any command evaluating a Python based skip condition
+like the following::
+
+    {
+      "provider": "include",
+      "type": "include",
+      "path": "/some-path/assertions.json",
+      "skip_condition": "variables['cassandra_assertions'] is True"
+    }
+
+
+Browser based commands
+----------------------
+
+**Deprecation warning**: Browser commands will be removed
+in pytest-play_ >= 2.0.0 but don't worry: they will be
+implemented in a separate package.
+ 
+Conditional commands
+====================
+
+Based on a browser level expression (Javascript)::
 
     {
       "type": "clickElement",
@@ -121,7 +302,7 @@ Conditional commands
 
 
 Supported locators
-------------------
+==================
 
 Supported selector types:
 
@@ -134,7 +315,7 @@ Supported selector types:
 * value
 
 Open a page
------------
+===========
 
 With parametrization::
 
@@ -151,7 +332,7 @@ or with a regular url::
     }
 
 Pause
------
+=====
 
 This command invokes a javascript expression that will
 pause the execution flow of your commands::
@@ -166,7 +347,7 @@ If you need a pause/sleep for non UI tests you can use the
 ``sleep`` command provided by the play_python_ plugin.
 
 Click an element
-----------------
+================
 ::
 
     {
@@ -178,7 +359,7 @@ Click an element
     }
 
 Fill in a text
---------------
+==============
 ::
 
     {
@@ -191,7 +372,7 @@ Fill in a text
     }
 
 Interact with select input elements
------------------------------------
+===================================
 
 Select by label::
 
@@ -216,7 +397,7 @@ or select by value::
     }
 
 Eval a Javascript expression
-----------------------------
+============================
 
 ::
 
@@ -226,7 +407,7 @@ Eval a Javascript expression
     }
 
 Create a variable starting from a Javascript expression
--------------------------------------------------------
+=======================================================
 
 The value of the Javascript expression will be stored in
 ``pytest_play.variables`` under the name ``count``::
@@ -238,7 +419,7 @@ The value of the Javascript expression will be stored in
     }
 
 Assert if a Javascript expression matches
------------------------------------------
+=========================================
 
 If the result of the expression does not match an ``AssertionError``
 will be raised and the test will fail::
@@ -250,7 +431,7 @@ will be raised and the test will fail::
     }
 
 Verify that the text of one element contains a string
------------------------------------------------------
+=====================================================
 
 If the element text does not contain the provided text an
 ``AssertionError`` will be raised and the test will fail::
@@ -265,7 +446,7 @@ If the element text does not contain the provided text an
     }
 
 Send keys to an element
------------------------
+=======================
 
 All ``selenium.webdriver.common.keys.Keys`` are supported::
 
@@ -297,7 +478,7 @@ Supported keys::
     ]
 
 Wait until a Javascript expression matches
-------------------------------------------
+==========================================
 
 Wait until the given expression matches or raise a 
 ``selenium.common.exceptions.TimeoutException`` if takes too time.
@@ -311,7 +492,7 @@ you will be able to override it on command basis::
     }
 
 Wait for element present in DOM
--------------------------------
+===============================
 
 Present::
 
@@ -335,7 +516,7 @@ or not present::
     }
 
 Wait for element visible
-------------------------
+========================
 
 Visible::
 
@@ -359,7 +540,7 @@ or not visible::
     }
 
 Assert element is present in DOM
---------------------------------
+================================
 
 An ``AssertionError`` will be raised if assertion fails.
 
@@ -385,7 +566,7 @@ or not present::
     }
 
 Assert element is visible
--------------------------
+=========================
 
 An ``AssertionError`` will be raised if assertion fails.
 
@@ -410,51 +591,9 @@ or not present::
       "negated": true
     }
 
-How to reuse steps
-------------------
-
-You can split your commands and reuse them using the ``include`` command avoiding
-duplication::
-
-    {
-        "steps": [
-            {"provider": "include", "type": "include", "path": "/some-path/included-scenario.json"},
-            ... other commands ...
-        ]
-    }
-
-You can create a variable for the base folder where your test scripts live.
-
-Default commands
-----------------
-
-Some commands require many verbose options you don't want to repeat (eg: authentication headers for play_requests_).
-
-Instead of replicating all the headers information you can initialize a ``pytest-play`` with the provider name as
-key and as a value the default command you want to omit::
-
-    {
-        "steps": [{
-            "provider": "python",
-            "type": "store_variable",
-            "name": "bearer",
-            "expression": "'BEARER'"
-        },
-        {
-            "provider": "python",
-            "type": "exec",
-            "expression": "variables.update({'play_requests': {'parameters': {'headers': {'Authorization': '$bearer'}}}})"
-        },
-        {
-             "provider": "play_requests",
-             "type": "GET",
-             "comment": "this is an authenticated request!",
-             "url": "$base_url"
-        }
-    }
 
 How to install pytest-play
-==========================
+--------------------------
 
 You can see ``pytest-play`` in action creating a pytest project
 using the cookiecutter-qa_ scaffolding tool:
@@ -467,7 +606,7 @@ This is the easiest way, otherwise you'll need to setup a pytest
 project by your own and install ``pytest-play``.
 
 pytest-play is pluggable and extensible
-=======================================
+---------------------------------------
 
 ``pytest-play`` has a pluggable architecture and you can extend it.
 
@@ -477,7 +616,7 @@ activities, provide easy interaction with complex UI widgets like
 calendar widgets and so on.
 
 How to register a new command provider
---------------------------------------
+======================================
 
 Let's suppose you want to extend pytest-play with the following command::
 
@@ -515,16 +654,13 @@ If you want you can generate a new command provider thanks to:
 
 
 Third party pytest-play plugins
-===============================
+-------------------------------
 
 * play_mqtt_, ``pytest-play`` plugin for MQTT support. Thanks to ``play_mqtt``
   you can test the integration between a mocked IoT device that sends
   commands on MQTT and a reactive web application with UI checks.
 
   You can also build a simulator that generates messages for you.
-
-* play_python_, ``pytest-play`` plugin with restricted Python expressions and
-  assertions and it is based on the RestrictedPython_ package.
 
 * play_requests_, ``pytest-play`` plugin driving the famous Python ``requests``
   library for making ``HTTP`` calls.
@@ -540,7 +676,7 @@ Feel free to add your own public plugins with a pull request!
 
 
 Twitter
-=======
+-------
 
 ``pytest-play`` tweets happens here:
 

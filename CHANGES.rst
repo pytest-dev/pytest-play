@@ -1,10 +1,32 @@
 Changelog
 *********
 
-1.1.1 (unreleased)
+1.2.1 (unreleased)
 ==================
 
 - Nothing changed yet.
+
+
+1.2.0 (2018-01-22)
+==================
+
+- implement python based commands in ``pytest-play`` and
+  deprecates ``play_python``.
+  So this feature is a drop-in replacement for the
+  ``play-python`` plugin.
+
+  You should no more install ``play_python`` since now.
+
+- update documentation
+
+- deprecate selenium commands (they will be implemented
+  on a separate plugin and dropped in
+  ``pytest-play`` >= 2.0.0). All your previous scripts
+  will work fine, this warning is just for people
+  directly importing the provider for some reason.
+
+- implement skip conditions. You can omit the execution of
+  any command evaluating a Python based skip condition
 
 
 1.1.0 (2018-01-16)

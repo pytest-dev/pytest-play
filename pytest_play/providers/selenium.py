@@ -1,25 +1,13 @@
 import re
 from time import sleep
 from selenium.webdriver.common.keys import Keys
+from . import BaseProvider
+import warnings
 
 
-class BaseProvider(object):
-    """ Base command provider  """
-
-    def __init__(self, engine):
-        self.engine = engine
-
-
-class IncludeProvider(BaseProvider):
-    """ PlayEngine wrapper """
-
-    def command_include(self, command, **kwargs):
-        """ Include scenario """
-        file_path = command['path']
-        data = self.engine.get_file_contents(file_path)
-        self.engine.execute(
-            self.engine.parametrizer.parametrize(data)
-        )
+warnings.warn(
+    "This provider will be moved to a separate package in 2.0.0",
+    DeprecationWarning)
 
 
 class SplinterCommandProvider(BaseProvider):
