@@ -92,20 +92,184 @@ you define a test ``test_login.py`` like this::
 
 you get things moving on your browser!
 
-Commands syntax
-===============
+Core commands
+=============
 
-Project status is pre-alpha so commands could change and the
-following list will be extended.
+pytest-play_ provides some core commands that let you:
 
-Some useful commands is missing, for example:
+* write simple Python assertions, expressions and variables
 
-* url assertions
+* reuse steps including other test scenario scripts
 
-* text in page
+* provide a default command template for some particular providers
+  (eg: add by default HTTP authentication headers for all requests)
 
-* interaction with other input elements like radio buttons
+Python expressions
+------------------
 
+You can write restricted Python expressions and assertions based on the ``RestrictedPython`` package.
+
+``RestrictedPython`` is a tool that helps to define a subset of the Python
+language which allows to provide a program input into a trusted environment.
+RestrictedPython is not a sandbox system or a secured environment, but it helps
+to define a trusted environment and execute untrusted code inside of it.
+
+See:
+
+* https://github.com/zopefoundation/RestrictedPython
+
+How to reuse steps
+------------------
+
+You can split your commands and reuse them using the ``include`` command avoiding
+duplication::
+
+    {
+        "steps": [
+            {"provider": "include", "type": "include", "path": "/some-path/included-scenario.json"},
+            ... other commands ...
+        ]
+    }
+
+You can create a variable for the base folder where your test scripts live.
+
+Default commands
+----------------
+
+Some commands require many verbose options you don't want to repeat (eg: authentication headers for play_requests_).
+
+Instead of replicating all the headers information you can initialize a ``pytest-play`` with the provider name as
+key and as a value the default command you want to omit::
+
+    {
+        "steps": [{
+            "provider": "python",
+            "type": "store_variable",
+            "name": "bearer",
+            "expression": "'BEARER'"
+        },
+        {
+            "provider": "python",
+            "type": "store_variable",
+            "name": "play_requests",
+            "expression": "{'play_requests': {'parameters': {'headers': {'Authorization': '$bearer'}}}}"
+        },
+        {
+             "provider": "play_requests",
+             "type": "GET",
+             "comment": "this is an authenticated request!",
+             "url": "$base_url"
+        }
+    }
+
+Store variables
+---------------
+
+You can store a pytest-play_ variables::
+
+    {
+     'provider': 'python',
+     'type': 'store_variable',
+     'expression': '1+1',
+     'name': 'foo'
+    }
+
+Make a Python assertion
+-----------------------
+
+You can make an assertion based on a Python expression::
+
+    {
+     'provider': 'python',
+     'type': 'assert',
+     'expression': 'variables["foo"] == 2'
+    }
+
+Sleep
+-----
+
+Sleep for a given amount of seconds::
+
+    {
+     'provider': 'python',
+     'type': 'sleep',
+     'seconds': 2
+    }
+
+Exec a Python expresssion
+-------------------------
+
+You can execute a Python expression::
+
+    {
+     'provider': 'python',
+     'type': 'exec',
+     'expression': '1+1'
+    }
+
+Wait until condition
+--------------------
+
+The ``wait_until_not`` command waits until the wait expression is False::
+
+    {
+     'provider': 'python',
+     'type': 'wait_until_not',
+     'expression': 'variables["expected_id"] is not None and variables["expected_id"][0] == $id',
+     'timeout': 5,
+     'poll': 0.1,
+     'subcommands': [{
+         'provider': 'play_sql',
+         'type': 'sql',
+         'database_url': 'postgresql://$db_user:$db_pwd@$db_host/$db_name',
+         'query': 'SELECT id FROM table WHERE id=$id ORDER BY id DESC;',
+         'variable': 'expected_id',
+         'expression': 'results.first()'
+     }]
+    }
+
+assuming that the subcommand updates the execution results updating a ``pytest-play``
+variable (eg: ``expected_id``) where tipically the ``$id`` value comes
+from a previously executed command that causes an asynchrounous update on a relational
+database soon or later (eg: a play_requests_ command making a ``HTTP POST`` call
+or a ``MQTT`` message coming from a simulated IoT device with play_mqtt_).
+
+The wait command will try (and retry) to execute the subcommand with a poll frequency
+``poll`` (default: 0.1 seconds) until the provided ``timeout`` expressed
+in seconds expires or an exception occurs.
+
+You can use the opposite command named ``wait_until`` that waits until the wait
+expression is not False.
+
+Loop commands
+-------------
+
+You can repeat a group of subcommands using a variable as a counter. Assuming you
+have defined a ``countdown`` variable with 10 value, the wait until command will
+repeat the group of commands for 10 times::
+
+    play_json.execute_command({
+        'provider': 'python',
+        'type': 'wait_until',
+        'expression': 'variables["countdown"] == 0',
+        'timeout': 0,
+        'poll': 0,
+        'sub_commands': [{
+            'provider': 'python',
+            'type': 'store_variable',
+            'name': 'countdown',
+            'expression': 'variables["countdown"] - 1'
+        }]
+    })
+
+
+Browser based commands
+======================
+
+**Deprecation warning**: Browser commands will be removed
+in pytest-play_ >= 2.0.0 but don't worry: they will be
+implemented in a separate package.
+ 
 Conditional commands
 --------------------
 ::
@@ -410,48 +574,6 @@ or not present::
       "negated": true
     }
 
-How to reuse steps
-------------------
-
-You can split your commands and reuse them using the ``include`` command avoiding
-duplication::
-
-    {
-        "steps": [
-            {"provider": "include", "type": "include", "path": "/some-path/included-scenario.json"},
-            ... other commands ...
-        ]
-    }
-
-You can create a variable for the base folder where your test scripts live.
-
-Default commands
-----------------
-
-Some commands require many verbose options you don't want to repeat (eg: authentication headers for play_requests_).
-
-Instead of replicating all the headers information you can initialize a ``pytest-play`` with the provider name as
-key and as a value the default command you want to omit::
-
-    {
-        "steps": [{
-            "provider": "python",
-            "type": "store_variable",
-            "name": "bearer",
-            "expression": "'BEARER'"
-        },
-        {
-            "provider": "python",
-            "type": "exec",
-            "expression": "variables.update({'play_requests': {'parameters': {'headers': {'Authorization': '$bearer'}}}})"
-        },
-        {
-             "provider": "play_requests",
-             "type": "GET",
-             "comment": "this is an authenticated request!",
-             "url": "$base_url"
-        }
-    }
 
 How to install pytest-play
 ==========================

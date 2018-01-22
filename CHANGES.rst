@@ -11,6 +11,8 @@ Changelog
 
   You should no more install ``play_python`` since now.
 
+- update documentation
+
 
 1.1.0 (2018-01-16)
 ==================
