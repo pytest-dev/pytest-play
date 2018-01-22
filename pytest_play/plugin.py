@@ -28,4 +28,6 @@ def play_json(request, play_engine_class, bdd_vars, variables, skin):
         password_key = "{0}_pwd".format(credential_name)
         context[username_key] = credential_settings['username']
         context[password_key] = credential_settings['password']
-    return play_engine_class(request, context)
+    play_json = play_engine_class(request, context)
+    yield play_json
+    play_json.teardown()

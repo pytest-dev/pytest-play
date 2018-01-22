@@ -154,7 +154,7 @@ key and as a value the default command you want to omit::
             "provider": "python",
             "type": "store_variable",
             "name": "play_requests",
-            "expression": "{'play_requests': {'parameters': {'headers': {'Authorization': '$bearer'}}}}"
+            "expression": "{'parameters': {'headers': {'Authorization': '$bearer'}}}"
         },
         {
              "provider": "play_requests",

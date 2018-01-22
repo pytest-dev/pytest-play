@@ -19,6 +19,19 @@ def test_get_file_contents(play_json, data_base_path):
     play_json.get_file_contents(data_base_path, 'login.json')
 
 
+def test_register_teardown(play_json, data_base_path):
+    assert play_json._teardown == []
+    import mock
+    callback = mock.MagicMock()
+    play_json.register_teardown_callback(callback)
+    play_json.register_teardown_callback(callback)
+    assert callback in play_json._teardown
+    assert len(play_json._teardown) == 1
+    assert not callback.called
+    play_json.teardown()
+    assert callback.assert_called_once_with() is None
+
+
 def test_splinter_executor_parametrizer(dummy_executor):
     assert dummy_executor.parametrizer.parametrize('$foo') == 'bar'
 

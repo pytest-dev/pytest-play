@@ -1,10 +1,18 @@
 Changelog
 *********
 
-1.2.1 (unreleased)
+1.3.1 (unreleased)
 ==================
 
 - Nothing changed yet.
+
+
+1.3.0 (2018-01-22)
+==================
+
+- documentation improvements
+
+- supports teardown callbacks
 
 
 1.2.0 (2018-01-22)
