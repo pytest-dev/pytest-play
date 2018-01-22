@@ -4,7 +4,7 @@ Changelog
 1.2.1 (unreleased)
 ==================
 
-- Nothing changed yet.
+- documentation improvements
 
 
 1.2.0 (2018-01-22)
