@@ -304,3 +304,37 @@ def test_skip_condition_false(play_json):
             'expression': '200 == 404',
             'skip_condition': '"$foo" != "baz"'
         })
+
+
+def test_parametrization_update(play_json):
+    play_json.variables = {'countdown': 2}
+    play_json.execute_command({
+        "provider": "python",
+        "type": "wait_until",
+        "expression": "variables['countdown'] == 0",
+        "timeout": 10,
+        "poll": 0,
+        "sub_commands": [
+            {
+             "provider": "python",
+             "type": "store_variable",
+             "name": "concatenation",
+             "expression": "'$countdown' + variables.get('concatenation', '')"
+            },
+            {
+             "provider": "python",
+             "type": "store_variable",
+             "name": "sum",
+             "expression": "variables.get('sum', 0) + variables['countdown']"
+            },
+            {
+             "provider": "python",
+             "type": "store_variable",
+             "name": "countdown",
+             "expression": "variables['countdown'] - 1"
+            }
+            ]
+        },
+    )
+    assert play_json.variables['sum'] == 3
+    assert play_json.variables['concatenation'] == '21'
