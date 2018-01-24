@@ -4,7 +4,7 @@ Changelog
 1.3.1 (unreleased)
 ==================
 
-- Fix variable parametrization bug.
+- Add more tests
 
 
 1.3.0 (2018-01-22)

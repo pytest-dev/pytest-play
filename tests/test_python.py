@@ -336,8 +336,51 @@ def test_parametrization_update(play_json):
              "expression": "variables['countdown'] - 1"
             }
             ]
-        },
+        }
     )
     assert play_json.variables['sum'] == 3
     # with wait until loops you should not use string interpolation
     assert play_json.variables['concatenation'] == '22'
+
+
+def test_parametrization_update_non_string(play_json):
+    play_json.variables = {'sleep_time': 0.5}
+    # should not raise any exception
+    play_json.execute_command("""{
+        "provider": "python",
+        "type": "sleep",
+        "seconds": $sleep_time
+        }
+    """)
+
+
+def test_parametrization_define_non_string(play_json):
+    play_json.variables = {}
+    import json
+    # json is loaded before store_variable has been
+    # defined, so an exception occurs.
+    # Make sure you define the sleep_time variable
+    # * globally
+    # * on an outer json file that includes the one that
+    #   uses "sleep_time"
+    # This happens because "key": $value is not valid
+    # json.
+    # With "key": "$value" the problem doesn't exist
+    # when possible
+    # In future releases we might support YAML
+    # without this kind of limitation
+    with pytest.raises(json.decoder.JSONDecodeError):
+        play_json.execute("""{"steps": [
+            {
+            "provider": "python",
+            "type": "store_variable",
+            "name": "sleep_time",
+            "expression": "0.5"
+            },
+            {
+            "provider": "python",
+            "type": "sleep",
+            "seconds": $sleep_time
+            }
+            ]}
+        """)
