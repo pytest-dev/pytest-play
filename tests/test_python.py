@@ -319,13 +319,15 @@ def test_parametrization_update(play_json):
              "provider": "python",
              "type": "store_variable",
              "name": "concatenation",
-             "expression": "'$countdown' + variables.get('concatenation', '')"
+             "expression": "'$countdown' + variables.get('concatenation', '')",
+             "comment": "KO, don't use $countdown in loops"
             },
             {
              "provider": "python",
              "type": "store_variable",
              "name": "sum",
-             "expression": "variables.get('sum', 0) + variables['countdown']"
+             "expression": "variables.get('sum', 0) + variables['countdown']",
+             "comment": "OK, use variables['countdown'] instead"
             },
             {
              "provider": "python",
@@ -337,4 +339,5 @@ def test_parametrization_update(play_json):
         },
     )
     assert play_json.variables['sum'] == 3
-    assert play_json.variables['concatenation'] == '21'
+    # with wait until loops you should not use string interpolation
+    assert play_json.variables['concatenation'] == '22'
