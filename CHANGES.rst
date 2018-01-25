@@ -6,6 +6,8 @@ Changelog
 
 - Add more tests
 
+- Documentation update
+
 
 1.3.0 (2018-01-22)
 ==================
