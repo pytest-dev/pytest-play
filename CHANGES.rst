@@ -8,6 +8,10 @@ Changelog
 
 - Documentation update
 
+- play_json fixture no more assumes that you
+  have some pytest-variables settings.
+  No more mandatory
+
 
 1.3.0 (2018-01-22)
 ==================
