@@ -12,6 +12,10 @@ Changelog
   have some pytest-variables settings.
   No more mandatory
 
+- fix include scenario bug that occurs only
+  on Windows (slash vs backslash and
+  JSON decoding issues)
+
 
 1.3.0 (2018-01-22)
 ==================
