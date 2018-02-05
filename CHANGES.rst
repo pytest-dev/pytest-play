@@ -4,7 +4,7 @@ Changelog
 1.3.2 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Add ``sorted`` in python expressions
 
 
 1.3.1 (2018-01-31)
