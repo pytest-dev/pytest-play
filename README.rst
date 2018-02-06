@@ -15,22 +15,24 @@ pytest-play
     :target: https://codecov.io/gh/tierratelematics/pytest-play
 
 ``pytest-play`` is a pytest_ plugin that let you **play** a json file describing some actions and assertions.
-You can extend ``pytest-play`` with your own commands thanks to its pluggable architecture and by default it supports
-browser interactions. For example it can be used for running previously recorded selenium splinter_ actions driving your
-browser for your UI test.
+You can extend ``pytest-play`` with your own commands thanks to its pluggable architecture.
 
-See at the bottom of the page the third party plugins that extends ``pytest-play``.
+See at the bottom of the page the third party plugins that extends ``pytest-play``:
 
-``pytest-play`` is also your friend when page object approach (considered best practice) is not possible. For example:
+* `Third party pytest-play plugins`_
 
-* limited time, and/or
-* lack of programming skills
+There are several testing frameworks. Sometimes they address just one single area testing needs: API testing only,
+UI testing only and so on. It could be fine if you are testing a web only application like a CMS but if you are
+dealing with a live IoT application you might need to simulate some device activities while testing your reactive UI (eg:
+last positions or alarms updates), make some cross level checks (not only check the UI but also API for example),
+quickly create some preconditions or contents needed by your UI scenarios for reactive
+applications (I am on the assets page, there is not asset X, you create an asset X, the asset X automatically
+appears in your asset listing), pure API testing (HTTP actions, assertions on response and database storage layer),
+create always fresh test data on demand supporting manual testing activities or build some device simulator activities during
+a demo or your exploratory testing sessions.
 
-Instead if you are interested in a page object pattern have a look at pypom_form_ or pypom_.
-
-``pytest-play`` supports automatic waiting that should help to keep your tests more reliable with implicit waits before
-moving on. By default it waits for node availability and visibility but it supports also some wait commands and
-wait until a given Javascript expression is ok. So it is at the same time user friendly and flexible.
+So pytest-play_ is a all in one testing framework: you can build automated test scenarios that combine different kind of
+interactions for different testing levels.
 
 
 How it works
@@ -282,9 +284,20 @@ like the following::
 Browser based commands
 ----------------------
 
-**Deprecation warning**: Browser commands will be removed
-in pytest-play_ >= 2.0.0 but don't worry: they will be
-implemented in a separate package.
+Browser based commands here.
+``pytest-play`` supports by default browser interactions. For example it can be used for running selenium splinter_ scenarios driving your browser for your UI test or system tests.
+
+``pytest-play`` is also your friend when page object approach (considered best practice) is not possible. For example:
+
+* limited time, and/or
+* lack of programming skills
+
+Instead if you are interested in a page object pattern have a look at pypom_form_ or pypom_.
+
+``pytest-play`` supports automatic waiting that should help to keep your tests more reliable with implicit waits before
+moving on. By default it waits for node availability and visibility but it supports also some wait commands and
+wait until a given Javascript expression is ok. So it is at the same time user friendly and flexible.
+
  
 Conditional commands
 ====================
@@ -672,9 +685,6 @@ Third party pytest-play plugins
 * play_dynamodb_, ``pytest-play`` support for AWS DynamoDB queries and assertions
 
 * play_websocket_, ``pytest-play`` support for websockets
-
-* **play_selenium**, the ``pytest-play`` selenium commands for UI tests
-  will be implemented on a brand new package named play_selenium
 
 Feel free to add your own public plugins with a pull request!
 
