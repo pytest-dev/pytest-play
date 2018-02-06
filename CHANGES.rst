@@ -4,7 +4,7 @@ Changelog
 1.3.3 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Small documentation improvements
 
 
 1.3.2 (2018-02-05)
