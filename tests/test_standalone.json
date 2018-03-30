@@ -1,0 +1,10 @@
+{
+	"formatVersion": 2,
+	"steps": [
+		{
+                        "provider": "python",
+			"type": "assert",
+			"expression": "1"
+		}
+	]
+}

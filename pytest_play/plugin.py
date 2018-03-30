@@ -1,5 +1,62 @@
 # -*- coding: utf-8 -*-
 import pytest
+from _pytest.fixtures import FixtureRequest
+
+
+def _setup_fixtures(json_item):
+    def func():
+        pass
+
+    json_item.funcargs = {}
+    fm = json_item.session._fixturemanager
+    json_item._fixtureinfo = fm.getfixtureinfo(node=json_item, func=func,
+                                               cls=None, funcargs=False)
+    fixture_request = FixtureRequest(json_item)
+    fixture_request._fillfixtures()
+    return fixture_request
+
+
+def pytest_collect_file(parent, path):
+    if path.ext == ".json" and path.basename.startswith("test_"):
+        return JSONFile(path, parent)
+
+
+class JSONFile(pytest.File):
+
+    def collect(self):
+        yield JSONItem(self.nodeid, self, self.fspath)
+
+
+class JSONItem(pytest.Item):
+    def __init__(self, name, parent, path):
+        super(JSONItem, self).__init__(name, parent)
+        self.path = path
+        self.fixture_request = None
+        self.play_json = None
+
+    def setup(self):
+        self.fixture_request = _setup_fixtures(self)
+        self.play_json = self.fixture_request.getfixturevalue('play_json')
+
+    def runtest(self):
+        data = self.play_json.get_file_contents(self.path)
+        self.play_json.execute(data)
+
+    def repr_failure(self, excinfo):
+        """ called when self.runtest() raises an exception. """
+        if isinstance(excinfo.value, JSONException):
+            return "\n".join([
+                "usecase execution failed",
+                "   spec failed: %r: %r" % excinfo.value.args[1:3],
+                "   no further details known at this point."
+            ])
+
+    def reportinfo(self):
+        return self.fspath, 0, "usecase: %s" % self.name
+
+
+class JSONException(Exception):
+    """ custom exception for error reporting. """
 
 
 @pytest.fixture
