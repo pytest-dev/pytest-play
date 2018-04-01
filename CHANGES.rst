@@ -6,6 +6,10 @@ Changelog
 
 - Small documentation improvements
 
+- Now ``test_XXX.json`` files are automatically collected and executed
+
+- You can run a test scenario using the pytest CLI ``pytest test_YYY.json``
+
 
 1.3.2 (2018-02-05)
 ==================
