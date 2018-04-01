@@ -33,10 +33,29 @@ class JSONItem(pytest.Item):
         self.path = path
         self.fixture_request = None
         self.play_json = None
+        self.raw_data = None
 
     def setup(self):
+        self._setup_request()
+        self._setup_play()
+        self._setup_raw_data()
+        # self._setup_markers()
+
+    def _setup_request(self):
         self.fixture_request = _setup_fixtures(self)
+
+    def _setup_play(self):
         self.play_json = self.fixture_request.getfixturevalue('play_json')
+
+    def _setup_raw_data(self):
+        self.raw_data = self.play_json.get_file_contents(self.path)
+
+    def _setup_markers(self):
+        data = self.play_json.parametrizer.json_loads(self.raw_data)
+        for marker in data.get('markers', []):
+            self.session.config.addinivalue_line(
+                "markers", "{}: {}".format(marker, 'dynamic marker'))
+            self.add_marker(marker)
 
     def runtest(self):
         data = self.play_json.get_file_contents(self.path)
