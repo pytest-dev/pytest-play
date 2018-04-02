@@ -10,6 +10,16 @@ Changelog
 
 - You can run a test scenario using the pytest CLI ``pytest test_YYY.json``
 
+- Introduce json test scenario ini file with markers definition. For a given
+  ``test_YYY.json`` scenario you can add a ``test_YYY.ini`` ini file::
+
+    [pytest]
+    markers =
+        marker1
+        marker2
+
+  and filter scenarios using marker expressions ``pytest -m marker1``
+
 
 1.3.2 (2018-02-05)
 ==================
