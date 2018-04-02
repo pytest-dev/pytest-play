@@ -1,30 +1,54 @@
 # -*- coding: utf-8 -*-
+import os
+import configparser
 import pytest
 from _pytest.fixtures import FixtureRequest
 
 
-def _setup_fixtures(json_item):
-    def func():
-        pass
-
-    json_item.funcargs = {}
-    fm = json_item.session._fixturemanager
-    json_item._fixtureinfo = fm.getfixtureinfo(node=json_item, func=func,
-                                               cls=None, funcargs=False)
-    fixture_request = FixtureRequest(json_item)
-    fixture_request._fillfixtures()
-    return fixture_request
-
-
 def pytest_collect_file(parent, path):
+    """ Collect test_XXX.json files """
     if path.ext == ".json" and path.basename.startswith("test_"):
         return JSONFile(path, parent)
 
 
 class JSONFile(pytest.File):
 
+    def _get_metadata_path(self):
+        """ Returns metadata path """
+        dirname = self.fspath.dirname
+        basename = os.path.splitext(self.fspath.basename)[0]
+        ini_file_name = '{0}.ini'.format(basename)
+        ini_file_path = os.path.join(dirname, ini_file_name)
+        return ini_file_path
+
+    def _setup_markers(self, json_item, pytest_conf):
+        """ Setup markers """
+        raw_markers = pytest_conf.get('markers', [])
+        markers = [marker for marker in raw_markers.splitlines()
+                   if marker]
+        for marker in markers:
+            if self.get_marker(marker) is None:
+                if self.config.option.strict:
+                    # register marker (strict mode)
+                    self.session.config.addinivalue_line(
+                        "markers", "{}: {}".format(
+                            marker,
+                            'dynamic marker'))
+            json_item.add_marker(marker)
+
     def collect(self):
-        yield JSONItem(self.nodeid, self, self.fspath)
+        json_item = JSONItem(self.nodeid, self, self.fspath)
+
+        ini_file_path = self._get_metadata_path()
+        if os.path.isfile(ini_file_path):
+            # a pytest-play ini file exists for the given item
+            config = configparser.ConfigParser()
+            config.read(ini_file_path)
+            if 'pytest' in config.sections():
+                pytest_conf = config['pytest']
+
+                self._setup_markers(json_item, pytest_conf)
+        yield json_item
 
 
 class JSONItem(pytest.Item):
@@ -40,8 +64,20 @@ class JSONItem(pytest.Item):
         self._setup_play()
         self._setup_raw_data()
 
+    def _setup_fixtures(self):
+        def func():
+            pass
+
+        self.funcargs = {}
+        fm = self.session._fixturemanager
+        self._fixtureinfo = fm.getfixtureinfo(node=self, func=func,
+                                              cls=None, funcargs=False)
+        fixture_request = FixtureRequest(self)
+        fixture_request._fillfixtures()
+        return fixture_request
+
     def _setup_request(self):
-        self.fixture_request = _setup_fixtures(self)
+        self.fixture_request = self._setup_fixtures()
 
     def _setup_play(self):
         self.play_json = self.fixture_request.getfixturevalue('play_json')
