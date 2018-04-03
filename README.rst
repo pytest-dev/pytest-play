@@ -681,6 +681,12 @@ a ``test_XXX.json`` creating a ``test_XXX.ini`` file::
         marker1
         marker2
 
+Option details:
+
+* ``markers``, you can decorate your scenario with one or more markers. You can use them
+  in pytest command line for filtering scenarios to be executed thanks to marker
+  expressions like ``-m "marker1 and not slow"``
+
 New options will be added in the next feature (e.g., skip scenarios, parametrized test
 data, etc).
 
