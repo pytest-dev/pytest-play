@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import os
 import configparser
 import pytest
@@ -21,11 +22,14 @@ class JSONFile(pytest.File):
         ini_file_path = os.path.join(dirname, ini_file_name)
         return ini_file_path
 
-    def _setup_markers(self, json_item, pytest_conf):
+    def _get_markers(self, pytest_conf):
         """ Setup markers """
-        raw_markers = pytest_conf.get('markers', [])
+        raw_markers = pytest_conf.get('markers', '')
         markers = [marker for marker in raw_markers.splitlines()
                    if marker]
+        return markers
+
+    def _add_markers(self, json_item, markers):
         for marker in markers:
             if self.get_marker(marker) is None:
                 if self.config.option.strict:
@@ -36,10 +40,20 @@ class JSONFile(pytest.File):
                             'dynamic marker'))
             json_item.add_marker(marker)
 
+    def _get_test_data(self, pytest_conf):
+        """ Return an array of test data if available """
+        raw_test_data = pytest_conf.get('test_data', '')
+        test_data = []
+        for item in raw_test_data.splitlines():
+            if item:
+                test_data.append(json.loads(item))
+        return test_data
+
     def collect(self):
-        json_item = JSONItem(self.nodeid, self, self.fspath)
 
         ini_file_path = self._get_metadata_path()
+        test_data = []
+        markers = []
         if os.path.isfile(ini_file_path):
             # a pytest-play ini file exists for the given item
             config = configparser.ConfigParser()
@@ -47,17 +61,30 @@ class JSONFile(pytest.File):
             if 'pytest' in config.sections():
                 pytest_conf = config['pytest']
 
-                self._setup_markers(json_item, pytest_conf)
-        yield json_item
+                markers = self._get_markers(pytest_conf)
+                test_data = self._get_test_data(pytest_conf)
+        if not test_data:
+            json_item = JSONItem(self.nodeid, self, self.fspath)
+            self._add_markers(json_item, markers)
+            yield json_item
+        else:
+            for index, data in enumerate(test_data):
+                json_item = JSONItem('{0}{1}'.format(self.nodeid, index),
+                                     self,
+                                     self.fspath,
+                                     test_data=data)
+                self._add_markers(json_item, markers)
+                yield json_item
 
 
 class JSONItem(pytest.Item):
-    def __init__(self, name, parent, path):
+    def __init__(self, name, parent, path, test_data=None):
         super(JSONItem, self).__init__(name, parent)
         self.path = path
         self.fixture_request = None
         self.play_json = None
         self.raw_data = None
+        self.test_data = test_data is not None and test_data or {}
 
     def setup(self):
         self._setup_request()
@@ -87,7 +114,7 @@ class JSONItem(pytest.Item):
 
     def runtest(self):
         data = self.play_json.get_file_contents(self.path)
-        self.play_json.execute(data)
+        self.play_json.execute(data, extra_variables=self.test_data)
 
     def repr_failure(self, excinfo):
         """ called when self.runtest() raises an exception. """

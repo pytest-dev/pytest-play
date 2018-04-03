@@ -680,6 +680,9 @@ a ``test_XXX.json`` creating a ``test_XXX.ini`` file::
     markers =
         marker1
         marker2
+    test_data =
+        {"username": "foo"}
+        {"username": "bar"}
 
 Option details:
 
@@ -687,8 +690,10 @@ Option details:
   in pytest command line for filtering scenarios to be executed thanks to marker
   expressions like ``-m "marker1 and not slow"``
 
-New options will be added in the next feature (e.g., skip scenarios, parametrized test
-data, etc).
+* ``test_data``, enables parametrization of arguments for a json scenario. For example
+  if test data provides 2 json objects, your test scenario will be executed twice
+
+New options will be added in the next feature (e.g., skip scenarios, xfail, xpass, etc).
 
 
 Third party pytest-play plugins
