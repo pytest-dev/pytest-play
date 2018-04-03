@@ -34,6 +34,11 @@ a demo or your exploratory testing sessions.
 So pytest-play_ is a all in one testing framework: you can build automated test scenarios that combine different kind of
 interactions for different testing levels.
 
+With pytest-play_ you will be able to create automated test suites with no or very little Python knowledge: a
+file ``test_XXX.json`` (e.g., ``test_something.json``. ``test_`` and ``.json`` matter) will be automatically
+recognized and executed without having to touch any ``*.py`` module. You can run a single scenario
+with ``pytest test_XXX.json`` or running the entire suite filtering by name or keyword markers.
+
 
 How it works
 ------------
@@ -664,6 +669,20 @@ messages simulating IoT device activities for integration tests.
 If you want you can generate a new command provider thanks to:
 
 * https://github.com/tierratelematics/cookiecutter-play-plugin
+
+JSON files metadata
+-------------------
+
+You can describe a scenario in pure JSON. You can also add some scenario metadata for
+a ``test_XXX.json`` creating a ``test_XXX.ini`` file::
+
+    [pytest]
+    markers =
+        marker1
+        marker2
+
+New options will be added in the next feature (e.g., skip scenarios, parametrized test
+data, etc).
 
 
 Third party pytest-play plugins
