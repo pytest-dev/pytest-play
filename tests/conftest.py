@@ -16,6 +16,7 @@ def data_base_path():
 @pytest.fixture(scope='session')
 def variables(skin):
     return {
+        'pytest-play': {'date_format': 'YYYYMMDD'},
         'skins': {
             skin: {
                 'base_url': 'http://',

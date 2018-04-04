@@ -25,3 +25,12 @@ def test_play_json(play_json, navigation, bdd_vars, parametrizer_class):
     assert 'base_url' in play_json.variables
     assert 'base_url' not in bdd_vars
     assert play_json.parametrizer_class is parametrizer_class
+
+
+def test_play_json_variables(play_json, navigation, bdd_vars,
+                             parametrizer_class):
+    """ If you provide values inside a pytest-play section of your pytest-variables
+        file, they become available to pytest-play """
+    assert 'date_format' in play_json.variables
+    assert 'date_formant' not in bdd_vars
+    assert play_json.variables['date_format'] == 'YYYYMMDD'

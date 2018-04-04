@@ -27,6 +27,7 @@ class PythonProvider(BaseProvider):
             'dumps': json.dumps,
             'filter': filter,
             'map': map,
+            'sorted': sorted,
             }
         context.update(extra_context)
         return context

@@ -1,10 +1,56 @@
 Changelog
 *********
 
-1.3.2 (unreleased)
+1.4.1 (unreleased)
 ==================
 
 - Nothing changed yet.
+
+
+1.4.0 (2018-04-05)
+==================
+
+- Small documentation improvements
+
+- Now ``test_XXX.json`` files are automatically collected and executed
+
+- You can run a test scenario using the pytest CLI ``pytest test_YYY.json``
+
+- Introduced json test scenario ini file with markers definition. For a given
+  ``test_YYY.json`` scenario you can add a ``test_YYY.ini`` ini file::
+
+    [pytest]
+    markers =
+        marker1
+        marker2
+
+  and filter scenarios using marker expressions ``pytest -m marker1``
+
+- Enabled parametrization of arguments for a plain json scenario in scenario ini file::
+
+    [pytest]
+    test_data =
+       {"username": "foo"}
+       {"username": "bar"}
+
+  and your json scenario will be executed twice
+
+- ``pytest-play`` loads some variables based on the contents of the optional ``pytest-play``
+  section in your ``pytest-variables`` file now. So if your variables file contains the following
+  values::
+
+    pytest-play:
+      foo: bar
+      date_format: YYYYMMDD
+
+  you will be able to use expressions ``$foo``, ``$date_format``, ``variables['foo']`` or
+  ``variables['date_format']``
+
+
+1.3.2 (2018-02-05)
+==================
+
+- Add ``sorted`` in python expressions
 
 
 1.3.1 (2018-01-31)
