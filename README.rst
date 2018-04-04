@@ -42,62 +42,11 @@ with ``pytest test_XXX.json`` or running the entire suite filtering by name or k
 
 How it works
 ------------
-Given a json file (eg: ``login.json``)::
 
-    {
-    	"steps": [
-    		{
-    			"type": "get",
-    			"url": "$base_url"
-    		},
-    		{
-    			"type": "setElementText",
-    			"locator": {
-    				"type": "css",
-    				"value": "input[name=\"email\"]"
-    			},
-    			"text": "$root_name"
-    		},
-    		{
-    			"type": "setElementText",
-    			"locator": {
-    				"type": "css",
-    				"value": "input[name=\"password\"]"
-    			},
-    			"text": "$root_pwd"
-    		},
-    		{
-    			"type": "clickElement",
-    			"locator": {
-    				"type": "css",
-    				"value": ".label-submit"
-    			}
-    		},
-    		{
-    			"type": "waitForElementPresent",
-    			"locator": {
-    				"type": "css",
-    				"value": ".logged"
-    			}
-    		},
-    		{
-    			"type": "assertElementPresent",
-    			"locator": {
-    				"type": "css",
-    				"value": ".user-info"
-    			}
-    		}
-    	]
-    }
+See a basic example:
 
-you define a test ``test_login.py`` like this::
+* https://github.com/davidemoro/pytest-play-plone-example
 
-    def test_login(play_json):
-        data = play_json.get_file_contents(
-            '/my/path/etc', 'login.json')
-        play_json.execute(data)
-
-you get things moving on your browser!
 
 Core commands
 -------------
