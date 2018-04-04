@@ -151,6 +151,9 @@ def play_json(request, play_engine_class, bdd_vars, variables, skin):
                 play_json.execute(data)
     """
     context = bdd_vars.copy()
+    if 'pytest-play' in variables:
+        for name, value in variables['pytest-play'].items():
+            context[name] = value
     if 'skins' in variables:
         skin_settings = variables['skins'][skin]
         if 'base_url' in skin_settings:

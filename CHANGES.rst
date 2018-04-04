@@ -29,6 +29,17 @@ Changelog
 
   and your json scenario will be executed twice
 
+- ``pytest-play`` loads some variables based on the contents of the optional ``pytest-play``
+  section in your ``pytest-variables`` file now. So if your variables file contains the following
+  values::
+
+    pytest-play:
+      foo: bar
+      date_format: YYYYMMDD
+
+  you will be able to use expressions ``$foo``, ``$date_format``, ``variables['foo']`` or
+  ``variables['date_format']``
+
 
 1.3.2 (2018-02-05)
 ==================
