@@ -4,7 +4,7 @@ Changelog
 1.4.1 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Documentation improvements
 
 
 1.4.0 (2018-04-05)
