@@ -6,6 +6,8 @@ Changelog
 
 - Documentation improvements
 
+- Add bzt/Taurus/BlazeMeter compatibility
+
 
 1.4.0 (2018-04-05)
 ==================
