@@ -1,10 +1,18 @@
 Changelog
 *********
 
-1.4.1 (unreleased)
+1.4.2 (unreleased)
 ==================
 
 - Nothing changed yet.
+
+
+1.4.1 (2018-04-06)
+==================
+
+- Documentation improvements
+
+- Add bzt/Taurus/BlazeMeter compatibility
 
 
 1.4.0 (2018-04-05)

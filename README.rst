@@ -43,10 +43,116 @@ with ``pytest test_XXX.json`` or running the entire suite filtering by name or k
 How it works
 ------------
 
-See a basic example:
+Depending on your needs and skills you can choose to use pytest-play programmatically
+writing some Python code or following a Python-less approach.
+
+Python-less (pure json)
+=======================
+
+Here you can see the contents of a ``pytest-play`` project without any Python files inside
+containing a login scenario::
+
+  $ tree
+  .
+  ├── env-ALPHA.yml
+  ├── README.rst
+  ├── test_login.ini
+  └── test_login.json
+
+with some default variables in a settings file specific for a target environment::  
+  
+  $ cat env-ALPHA.yml 
+  pytest-play:
+    base_url: https://www.yoursite.com
+
+The test scenario with action and assertions::
+  
+  $ cat test_login.json
+  {
+      "steps": [
+          {
+              "comment": "visit base url",
+              "type": "get",
+              "url": "$base_url"
+          },
+          {
+              "comment": "click on login link",
+              "locator": {
+                  "type": "id",
+                  "value": "personaltools-login"
+              },
+              "type": "clickElement"
+          },
+          {
+              "comment": "provide a username",
+              "locator": {
+                  "type": "id",
+                  "value": "__ac_name"
+              },
+              "text": "$username",
+              "type": "setElementText"
+          },
+          {
+              "comment": "provide a password",
+              "locator": {
+                  "type": "id",
+                  "value": "__ac_password"
+              },
+              "text": "$password",
+              "type": "setElementText"
+          },
+          {
+              "comment": "click on login submit button",
+              "locator": {
+                  "type": "css",
+                  "value": ".pattern-modal-buttons > input[name=submit]"
+              },
+              "type": "clickElement"
+          },
+          {
+              "comment": "wait for page loaded",
+              "locator": {
+                  "type": "css",
+                  "value": ".icon-user"
+              },
+              "type": "waitForElementVisible"
+          }
+      ]
+  }
+
+Some optional metadata for each json scenario. In this case we have one or more markers so
+you can filter tests to be executed invoking pytest with marker expressions. There is an
+example of test parametrization too.
+So the same ``test_login.json`` scenario will be executed 3 times with different
+decoupled test data::
+
+  $ cat test_login.ini
+  [pytest]
+  markers =
+      login
+  test_data =
+      {"username": "siteadmin", "password": "siteadmin"}
+      {"username": "editor", "password": "editor"}
+      {"username": "reader", "password": "reader"}
+
+You can see a basic example here:
 
 * https://github.com/davidemoro/pytest-play-plone-example
 
+Programmatically
+================
+
+You can invoke pytest-play programmatically too. 
+
+You can define a test ``test_login.py`` like this::
+
+  def test_login(play_json):
+      data = play_json.get_file_contents(
+          'my', 'path', 'etc', 'login.json')
+      play_json.execute(data, extra_variables={})
+
+Or this programmatical approach might be used if you are
+implementing BDD based tests using ``pytest-bdd``.
 
 Core commands
 -------------

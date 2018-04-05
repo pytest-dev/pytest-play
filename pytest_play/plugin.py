@@ -2,8 +2,10 @@
 import json
 import os
 import configparser
+import re
 import pytest
 from _pytest.fixtures import FixtureRequest
+from collections import namedtuple
 
 
 def pytest_collect_file(parent, path):
@@ -78,6 +80,7 @@ class JSONFile(pytest.File):
 
 
 class JSONItem(pytest.Item):
+
     def __init__(self, name, parent, path, test_data=None):
         super(JSONItem, self).__init__(name, parent)
         self.path = path
@@ -85,6 +88,14 @@ class JSONItem(pytest.Item):
         self.play_json = None
         self.raw_data = None
         self.test_data = test_data is not None and test_data or {}
+
+    @property
+    def module(self):
+        """ Needed for Taurus/bzt/BlazeMeter compatibility
+            See https://bit.ly/2GE2KS4 """
+        return namedtuple(
+            re.sub('\W|^(?=\d)', '_', os.path.basename(self.path)),
+            [])
 
     def setup(self):
         self._setup_request()
