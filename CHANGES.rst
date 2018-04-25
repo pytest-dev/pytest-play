@@ -7,6 +7,9 @@ Changelog
 - Configuration change on Github. Use the same branching policy adopted by
   pytest (master becomes main branch, see #56)
 
+- Fixed skipped test and added new tests (deselect scenarios with keyword
+  and marker expressions)
+
 
 1.4.1 (2018-04-06)
 ==================
