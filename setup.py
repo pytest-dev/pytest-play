@@ -41,7 +41,7 @@ setup(
     maintainer='Davide Moro',
     maintainer_email='davide.moro@gmail.com',
     license='Apache Software License 2.0',
-    url='https://github.com/tierratelematics/pytest-play',
+    url='https://github.com/davidemoro/pytest-play',
     description='pytest plugin that let you play a json file '
                 'describing some actions and assertions.',
     long_description=open("README.rst").read() + "\n" +

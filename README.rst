@@ -3,16 +3,16 @@ pytest-play
 ===========
 
 
-.. image:: https://travis-ci.org/tierratelematics/pytest-play.svg?branch=develop
-    :target: https://travis-ci.org/tierratelematics/pytest-play
+.. image:: https://travis-ci.org/pytest-dev/pytest-play.svg?branch=develop
+    :target: https://travis-ci.org/pytest-dev/pytest-play
     :alt: See Build Status on Travis CI
 
 .. image:: https://readthedocs.org/projects/pytest-play/badge/?version=latest
     :target: http://pytest-play.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-.. image:: https://codecov.io/gh/tierratelematics/pytest-play/branch/develop/graph/badge.svg
-    :target: https://codecov.io/gh/tierratelematics/pytest-play
+.. image:: https://codecov.io/gh/pytest-dev/pytest-play/branch/develop/graph/badge.svg
+    :target: https://codecov.io/gh/pytest-dev/pytest-play
 
 ``pytest-play`` is a pytest_ plugin that let you **play** a json file describing some actions and assertions.
 You can extend ``pytest-play`` with your own commands thanks to its pluggable architecture.
@@ -723,7 +723,7 @@ messages simulating IoT device activities for integration tests.
 
 If you want you can generate a new command provider thanks to:
 
-* https://github.com/tierratelematics/cookiecutter-play-plugin
+* https://github.com/davidemoro/cookiecutter-play-plugin
 
 JSON files metadata
 -------------------
@@ -783,7 +783,7 @@ Twitter
  
 
 .. _`Apache Software License 2.0`: http://www.apache.org/licenses/LICENSE-2.0
-.. _`file an issue`: https://github.com/tierratelematics/pytest-play/issues
+.. _`file an issue`: https://github.com/davidemoro/pytest-play/issues
 .. _`pytest`: https://github.com/pytest-dev/pytest
 .. _`pypom_form`: http://pypom-form.readthedocs.io/en/latest/
 .. _`splinter`: https://splinter.readthedocs.io/en/latest/
@@ -793,14 +793,14 @@ Twitter
 .. _`pypom`: http://pypom.readthedocs.io/en/latest/
 .. _`PyPI`: https://pypi.python.org/pypi
 .. _`@davidemoro`: https://twitter.com/davidemoro
-.. _`cookiecutter-qa`: https://github.com/tierratelematics/cookiecutter-qa
-.. _`play.json`: https://github.com/tierratelematics/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/data/play.json
-.. _`test_play.py`: https://github.com/tierratelematics/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/test_play.py
-.. _`play_mqtt`: https://github.com/tierratelematics/play_mqtt
-.. _`play_python`: https://github.com/tierratelematics/play_python
-.. _`play_requests`: https://github.com/tierratelematics/play_requests
-.. _`play_sql`: https://github.com/tierratelematics/play_sql
-.. _`play_cassandra`: https://github.com/tierratelematics/play_cassandra
-.. _`play_dynamodb`: https://github.com/tierratelematics/play_dynamodb
-.. _`play_websocket`: https://github.com/tierratelematics/play_websocket
+.. _`cookiecutter-qa`: https://github.com/davidemoro/cookiecutter-qa
+.. _`play.json`: https://github.com/davidemoro/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/data/play.json
+.. _`test_play.py`: https://github.com/davidemoro/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/test_play.py
+.. _`play_mqtt`: https://github.com/davidemoro/play_mqtt
+.. _`play_python`: https://github.com/davidemoro/play_python
+.. _`play_requests`: https://github.com/davidemoro/play_requests
+.. _`play_sql`: https://github.com/davidemoro/play_sql
+.. _`play_cassandra`: https://github.com/davidemoro/play_cassandra
+.. _`play_dynamodb`: https://github.com/davidemoro/play_dynamodb
+.. _`play_websocket`: https://github.com/davidemoro/play_websocket
 .. _`RestrictedPython`: https://github.com/zopefoundation/RestrictedPython
