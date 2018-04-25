@@ -3,7 +3,7 @@ pytest-play
 ===========
 
 
-.. image:: https://travis-ci.org/pytest-dev/pytest-play.svg?branch=develop
+.. image:: https://travis-ci.org/pytest-dev/pytest-play.svg?branch=master
     :target: https://travis-ci.org/pytest-dev/pytest-play
     :alt: See Build Status on Travis CI
 
@@ -11,7 +11,7 @@ pytest-play
     :target: http://pytest-play.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-.. image:: https://codecov.io/gh/pytest-dev/pytest-play/branch/develop/graph/badge.svg
+.. image:: https://codecov.io/gh/pytest-dev/pytest-play/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/pytest-dev/pytest-play
 
 ``pytest-play`` is a pytest_ plugin that let you **play** a json file describing some actions and assertions.
