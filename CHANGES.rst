@@ -4,7 +4,8 @@ Changelog
 1.4.2 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Configuration change on Github. Use the same branching policy adopted by
+  pytest (master becomes main branch, see #56)
 
 
 1.4.1 (2018-04-06)
