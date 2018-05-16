@@ -83,7 +83,7 @@ class JSONItem(pytest.Item):
 
     def __init__(self, name, parent, path, test_data=None):
         super(JSONItem, self).__init__(name, parent)
-        self.path = path
+        self.path = getattr(path, 'strpath', path)
         self.fixture_request = None
         self.play_json = None
         self.raw_data = None

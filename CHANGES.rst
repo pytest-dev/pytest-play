@@ -10,6 +10,9 @@ Changelog
 - Fixed skipped test and added new tests (deselect scenarios with keyword
   and marker expressions)
 
+- Fix #58: you no more get a TypeError if you try to launch pytest-play
+  in autodiscovery mode
+
 
 1.4.1 (2018-04-06)
 ==================
