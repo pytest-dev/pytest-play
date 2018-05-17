@@ -15,6 +15,8 @@ Changelog
 
 - Fix #55: restructured text lint on README.rst (bad visualization on pypi)
 
+- Updated README (articles and talks links)
+
 
 1.4.1 (2018-04-06)
 ==================

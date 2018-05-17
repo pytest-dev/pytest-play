@@ -751,6 +751,18 @@ Option details:
 New options will be added in the next feature (e.g., skip scenarios, xfail, xpass, etc).
 
 
+Articles and talks
+------------------
+
+Articles:
+
+* `Davide Moro: Hello pytest-play!`_
+
+Talks:
+
+* `Serena Martinetti @ Pycon9 - Florence: Integration tests ready to use with pytest-play`_ 
+
+
 Third party pytest-play plugins
 -------------------------------
 
@@ -798,3 +810,5 @@ Twitter
 .. _`play_dynamodb`: https://github.com/davidemoro/play_dynamodb
 .. _`play_websocket`: https://github.com/davidemoro/play_websocket
 .. _`RestrictedPython`: https://github.com/zopefoundation/RestrictedPython
+.. _`Serena Martinetti @ Pycon9 - Florence: Integration tests ready to use with pytest-play`: https://www.pycon.it/conference/talks/integration-tests-ready-to-use-with-pytest-play
+.. _`Davide Moro: Hello pytest-play!`: http://davidemoro.blogspot.it/2018/04/hello-pytest-play.html
