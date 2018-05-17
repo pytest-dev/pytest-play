@@ -17,6 +17,10 @@ Changelog
 
 - Updated README (articles and talks links)
 
+- Added a ``DeprecationWarning`` for `play_json` fixture.
+  pytest-play will be based on yaml instead of json in version >=2.0.0.
+  See https://github.com/pytest-dev/pytest-play/issues/5
+
 
 1.4.1 (2018-04-06)
 ==================

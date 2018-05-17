@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import warnings
 import json
 import os
 import configparser
@@ -161,6 +162,10 @@ def play_json(request, play_engine_class, bdd_vars, variables, skin):
                     '/my/path/etc', 'login.json')
                 play_json.execute(data)
     """
+    warnings.warn(
+        DeprecationWarning(
+            "play_json fixture DEPRECATED, will be removed in version "
+            ">=2.0.0). See issue #5"))
     context = bdd_vars.copy()
     if 'pytest-play' in variables:
         for name, value in variables['pytest-play'].items():
