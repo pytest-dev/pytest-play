@@ -1,11 +1,31 @@
 Changelog
 *********
 
-1.4.2 (unreleased)
+1.4.3 (unreleased)
+==================
+
+- Nothing changed yet.
+
+
+1.4.2 (2018-05-17)
 ==================
 
 - Configuration change on Github. Use the same branching policy adopted by
   pytest (master becomes main branch, see #56)
+
+- Fixed skipped test and added new tests (deselect scenarios with keyword
+  and marker expressions)
+
+- Fix #58: you no more get a TypeError if you try to launch pytest-play
+  in autodiscovery mode
+
+- Fix #55: restructured text lint on README.rst (bad visualization on pypi)
+
+- Updated README (articles and talks links)
+
+- Added a ``DeprecationWarning`` for `play_json` fixture.
+  pytest-play will be based on yaml instead of json in version >=2.0.0.
+  See https://github.com/pytest-dev/pytest-play/issues/5
 
 
 1.4.1 (2018-04-06)
