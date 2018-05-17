@@ -13,6 +13,8 @@ Changelog
 - Fix #58: you no more get a TypeError if you try to launch pytest-play
   in autodiscovery mode
 
+- Fix #55: restructured text lint on README.rst (bad visualization on pypi)
+
 
 1.4.1 (2018-04-06)
 ==================

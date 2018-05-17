@@ -173,7 +173,7 @@ pytest-play_ provides some core commands that let you:
 
 You can write restricted Python expressions and assertions based on the ``RestrictedPython`` package.
 
-``RestrictedPython`` is a tool that helps to define a subset of the Python
+RestrictedPython_ is a tool that helps to define a subset of the Python
 language which allows to provide a program input into a trusted environment.
 RestrictedPython is not a sandbox system or a secured environment, but it helps
 to define a trusted environment and execute untrusted code inside of it.
@@ -327,8 +327,8 @@ repeat the group of commands for 10 times::
     })
 
 
-Conditional commands
-====================
+Conditional commands (Python)
+=============================
 
 You can skip any command evaluating a Python based skip condition
 like the following::
@@ -359,8 +359,8 @@ moving on. By default it waits for node availability and visibility but it suppo
 wait until a given Javascript expression is ok. So it is at the same time user friendly and flexible.
 
  
-Conditional commands
-====================
+Conditional commands (Javascript)
+=================================
 
 Based on a browser level expression (Javascript)::
 
@@ -782,16 +782,10 @@ Twitter
 * `@davidemoro`_
  
 
-.. _`Apache Software License 2.0`: http://www.apache.org/licenses/LICENSE-2.0
-.. _`file an issue`: https://github.com/davidemoro/pytest-play/issues
 .. _`pytest`: https://github.com/pytest-dev/pytest
 .. _`pypom_form`: http://pypom-form.readthedocs.io/en/latest/
 .. _`splinter`: https://splinter.readthedocs.io/en/latest/
-.. _`pytest-splinter`: https://github.com/pytest-dev/pytest-splinter
-.. _`tox`: https://tox.readthedocs.io/en/latest/
-.. _`pip`: https://pypi.python.org/pypi/pip/
 .. _`pypom`: http://pypom.readthedocs.io/en/latest/
-.. _`PyPI`: https://pypi.python.org/pypi
 .. _`@davidemoro`: https://twitter.com/davidemoro
 .. _`cookiecutter-qa`: https://github.com/davidemoro/cookiecutter-qa
 .. _`play.json`: https://github.com/davidemoro/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/data/play.json
