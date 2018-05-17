@@ -1,13 +1,7 @@
 Changelog
 *********
 
-1.4.3 (unreleased)
-==================
-
-- Nothing changed yet.
-
-
-1.4.2 (2018-05-17)
+1.4.2 (unreleased)
 ==================
 
 - Configuration change on Github. Use the same branching policy adopted by
