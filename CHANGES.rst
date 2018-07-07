@@ -4,7 +4,7 @@ Changelog
 1.4.3 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Fix invalid escape sequences (#62).
 
 
 1.4.2 (2018-05-17)
