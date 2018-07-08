@@ -95,7 +95,7 @@ class JSONItem(pytest.Item):
         """ Needed for Taurus/bzt/BlazeMeter compatibility
             See https://bit.ly/2GE2KS4 """
         return namedtuple(
-            re.sub('\W|^(?=\d)', '_', os.path.basename(self.path)),
+            re.sub(r'\W|^(?=\d)', '_', os.path.basename(self.path)),
             [])
 
     def setup(self):
