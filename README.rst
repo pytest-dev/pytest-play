@@ -43,6 +43,8 @@ file ``test_XXX.yml`` (e.g., ``test_something.yml``. ``test_`` and ``.yml`` matt
 recognized and executed without having to touch any ``*.py`` module. You can run a single scenario
 with ``pytest test_XXX.yml`` or running the entire suite filtering by name or keyword markers.
 
+Despite ``pytest-play`` was born with native support for JSON format, ``pytest-play``>=2.0 versions will support
+YAML only.
 
 How it works
 ------------
