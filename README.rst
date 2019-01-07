@@ -14,17 +14,21 @@ pytest-play
 .. image:: https://codecov.io/gh/pytest-dev/pytest-play/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/pytest-dev/pytest-play
 
-``pytest-play`` is a pytest_ plugin that let you **play** a json file describing some actions and assertions.
+``pytest-play`` is a pytest_ plugin that let you **play** a YAML_ file (e.g., `test_login.yml`)
+describing some actions and assertions.
 You can extend ``pytest-play`` with your own commands thanks to its pluggable architecture.
+So ``pytest-play`` is not yet another testing framework again: it only extends the pytest_ framework
+with another paradigm.
 
 See at the bottom of the page the third party plugins that extends ``pytest-play``:
 
 * `Third party pytest-play plugins`_
 
-There are several testing frameworks. Sometimes they address just one single area testing needs: API testing only,
-UI testing only and so on. It could be fine if you are testing a web only application like a CMS but if you are
-dealing with a live IoT application you might need to simulate some device activities while testing your reactive UI (eg:
-last positions or alarms updates), make some cross level checks (not only check the UI but also API for example),
+There are several testing frameworks or automation tools. Sometimes they address just one single area
+testing needs: API testing only, UI testing only and so on. It could be fine if you are testing a web
+only application like a CMS but if you are dealing with a live IoT application you might need to
+simulate some device activities while testing your reactive UI (eg: last positions or alarms updates),
+make some cross level checks (not only check the UI but also API for example),
 quickly create some preconditions or contents needed by your UI scenarios for reactive
 applications (I am on the assets page, there is not asset X, you create an asset X, the asset X automatically
 appears in your asset listing), pure API testing (HTTP actions, assertions on response and database storage layer),
@@ -35,9 +39,9 @@ So pytest-play_ is a all in one testing framework: you can build automated test 
 interactions for different testing levels.
 
 With pytest-play_ you will be able to create automated test suites with no or very little Python knowledge: a
-file ``test_XXX.json`` (e.g., ``test_something.json``. ``test_`` and ``.json`` matter) will be automatically
+file ``test_XXX.yml`` (e.g., ``test_something.yml``. ``test_`` and ``.yml`` matter) will be automatically
 recognized and executed without having to touch any ``*.py`` module. You can run a single scenario
-with ``pytest test_XXX.json`` or running the entire suite filtering by name or keyword markers.
+with ``pytest test_XXX.yml`` or running the entire suite filtering by name or keyword markers.
 
 
 How it works
@@ -46,7 +50,7 @@ How it works
 Depending on your needs and skills you can choose to use pytest-play programmatically
 writing some Python code or following a Python-less approach.
 
-Python-less (pure json)
+Python-less (pure YAML)
 =======================
 
 Here you can see the contents of a ``pytest-play`` project without any Python files inside
@@ -57,7 +61,7 @@ containing a login scenario::
   ├── env-ALPHA.yml
   ├── README.rst
   ├── test_login.ini
-  └── test_login.json
+  └── test_login.yml
 
 with some default variables in a settings file specific for a target environment::  
   
@@ -67,7 +71,7 @@ with some default variables in a settings file specific for a target environment
 
 The test scenario with action and assertions::
   
-  $ cat test_login.json
+  $ cat test_login.yml
   {
       "steps": [
           {
@@ -120,10 +124,10 @@ The test scenario with action and assertions::
       ]
   }
 
-Some optional metadata for each json scenario. In this case we have one or more markers so
+Some optional metadata for each YAML scenario. In this case we have one or more markers so
 you can filter tests to be executed invoking pytest with marker expressions. There is an
 example of test parametrization too.
-So the same ``test_login.json`` scenario will be executed 3 times with different
+So the same ``test_login.yml`` scenario will be executed 3 times with different
 decoupled test data::
 
   $ cat test_login.ini
@@ -148,7 +152,7 @@ You can define a test ``test_login.py`` like this::
 
   def test_login(play_json):
       data = play_json.get_file_contents(
-          'my', 'path', 'etc', 'login.json')
+          'my', 'path', 'etc', 'login.yml')
       play_json.execute(data, extra_variables={})
 
 Or this programmatical approach might be used if you are
@@ -190,7 +194,7 @@ duplication::
 
     {
         "steps": [
-            {"provider": "include", "type": "include", "path": "/some-path/included-scenario.json"},
+            {"provider": "include", "type": "include", "path": "/some-path/included-scenario.yml"},
             ... other commands ...
         ]
     }
@@ -336,7 +340,7 @@ like the following::
     {
       "provider": "include",
       "type": "include",
-      "path": "/some-path/assertions.json",
+      "path": "/some-path/assertions.yml",
       "skip_condition": "variables['cassandra_assertions'] is True"
     }
 
@@ -729,7 +733,7 @@ JSON files metadata
 -------------------
 
 You can describe a scenario in pure JSON. You can also add some scenario metadata for
-a ``test_XXX.json`` creating a ``test_XXX.ini`` file::
+a ``test_XXX.yml`` creating a ``test_XXX.ini`` file::
 
     [pytest]
     markers =
@@ -812,3 +816,4 @@ Twitter
 .. _`RestrictedPython`: https://github.com/zopefoundation/RestrictedPython
 .. _`Serena Martinetti @ Pycon9 - Florence: Integration tests ready to use with pytest-play`: https://www.pycon.it/conference/talks/integration-tests-ready-to-use-with-pytest-play
 .. _`Davide Moro: Hello pytest-play!`: http://davidemoro.blogspot.it/2018/04/hello-pytest-play.html
+.. _`YAML`: https://en.wikipedia.org/wiki/YAML
