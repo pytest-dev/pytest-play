@@ -154,14 +154,14 @@ def test_sleep():
     assert now_now >= expected_date
 
 
-def test_wait_until_countdown(play_json):
-    play_json.variables = {'countdown': 10}
+def test_wait_until_countdown(play):
+    play.variables = {'countdown': 10}
     from datetime import (
         datetime,
         timedelta,
     )
     now = datetime.now()
-    play_json.execute_command({
+    play.execute_command({
         'provider': 'python',
         'type': 'wait_until',
         'expression': 'variables["countdown"] == 0',
@@ -179,9 +179,9 @@ def test_wait_until_countdown(play_json):
     assert now_now >= expected_date
 
 
-def test_wait_until_countdown_no_poll(play_json):
-    play_json.variables = {'countdown': 10}
-    play_json.execute_command({
+def test_wait_until_countdown_no_poll(play):
+    play.variables = {'countdown': 10}
+    play.execute_command({
         'provider': 'python',
         'type': 'wait_until',
         'expression': 'variables["countdown"] == 0',
@@ -196,16 +196,16 @@ def test_wait_until_countdown_no_poll(play_json):
     })
 
 
-def test_wait_until_countdown_timeout(play_json):
+def test_wait_until_countdown_timeout(play):
     from pytest_play.providers.python import TimeoutException
-    play_json.variables = {'countdown': 20}
+    play.variables = {'countdown': 20}
     from datetime import (
         datetime,
         timedelta,
     )
     now = datetime.now()
     with pytest.raises(TimeoutException):
-        play_json.execute_command({
+        play.execute_command({
             'provider': 'python',
             'type': 'wait_until',
             'expression': 'variables["countdown"] == 0',
@@ -223,14 +223,14 @@ def test_wait_until_countdown_timeout(play_json):
     assert now_now >= expected_date
 
 
-def test_wait_until_not_countdown(play_json):
-    play_json.variables = {'countdown': 10}
+def test_wait_until_not_countdown(play):
+    play.variables = {'countdown': 10}
     from datetime import (
         datetime,
         timedelta,
     )
     now = datetime.now()
-    play_json.execute_command({
+    play.execute_command({
         'provider': 'python',
         'type': 'wait_until_not',
         'expression': 'variables["countdown"] > 0',
@@ -248,16 +248,16 @@ def test_wait_until_not_countdown(play_json):
     assert now_now >= expected_date
 
 
-def test_wait_until_not_countdown_timeout(play_json):
+def test_wait_until_not_countdown_timeout(play):
     from pytest_play.providers.python import TimeoutException
-    play_json.variables = {'countdown': 20}
+    play.variables = {'countdown': 20}
     from datetime import (
         datetime,
         timedelta,
     )
     now = datetime.now()
     with pytest.raises(TimeoutException):
-        play_json.execute_command({
+        play.execute_command({
             'provider': 'python',
             'type': 'wait_until_not',
             'expression': 'variables["countdown"] > 0',
@@ -275,9 +275,9 @@ def test_wait_until_not_countdown_timeout(play_json):
     assert now_now >= expected_date
 
 
-def test_skip_condition(play_json):
-    play_json.variables = {'foo': 'baz'}
-    play_json.execute_command({
+def test_skip_condition(play):
+    play.variables = {'foo': 'baz'}
+    play.execute_command({
         'provider': 'python',
         'type': 'assert',
         'expression': '200 == 404',
@@ -285,9 +285,9 @@ def test_skip_condition(play_json):
     })
 
 
-def test_skip_condition_str(play_json):
-    play_json.variables = {'foo': 'baz'}
-    play_json.execute_command("""{
+def test_skip_condition_str(play):
+    play.variables = {'foo': 'baz'}
+    play.execute_command("""{
         "provider": "python",
         "type": "assert",
         "expression": "200 == 404",
@@ -295,10 +295,10 @@ def test_skip_condition_str(play_json):
     }""")
 
 
-def test_skip_condition_false(play_json):
-    play_json.variables = {'foo': 'baz'}
+def test_skip_condition_false(play):
+    play.variables = {'foo': 'baz'}
     with pytest.raises(AssertionError):
-        play_json.execute_command({
+        play.execute_command({
             'provider': 'python',
             'type': 'assert',
             'expression': '200 == 404',
@@ -306,9 +306,9 @@ def test_skip_condition_false(play_json):
         })
 
 
-def test_parametrization_update(play_json):
-    play_json.variables = {'countdown': 2}
-    play_json.execute_command({
+def test_parametrization_update(play):
+    play.variables = {'countdown': 2}
+    play.execute_command({
         "provider": "python",
         "type": "wait_until",
         "expression": "variables['countdown'] == 0",
@@ -338,49 +338,32 @@ def test_parametrization_update(play_json):
             ]
         }
     )
-    assert play_json.variables['sum'] == 3
+    assert play.variables['sum'] == 3
     # with wait until loops you should not use string interpolation
-    assert play_json.variables['concatenation'] == '22'
+    assert play.variables['concatenation'] == '22'
 
 
-def test_parametrization_update_non_string(play_json):
-    play_json.variables = {'sleep_time': 0.5}
+def test_parametrization_update_non_string(play):
+    play.variables = {'sleep_time': 0.5}
     # should not raise any exception
-    play_json.execute_command("""{
-        "provider": "python",
-        "type": "sleep",
-        "seconds": $sleep_time
-        }
+    play.execute_command("""
+---
+provider: python
+type: sleep
+seconds: $sleep_time
     """)
 
 
-def test_parametrization_define_non_string(play_json):
-    play_json.variables = {}
-    import json
-    # json is loaded before store_variable has been
-    # defined, so an exception occurs.
-    # Make sure you define the sleep_time variable
-    # * globally
-    # * on an outer json file that includes the one that
-    #   uses "sleep_time"
-    # This happens because "key": $value is not valid
-    # json.
-    # With "key": "$value" the problem doesn't exist
-    # when possible
-    # In future releases we might support YAML
-    # without this kind of limitation
-    with pytest.raises(json.decoder.JSONDecodeError):
-        play_json.execute("""{"steps": [
-            {
-            "provider": "python",
-            "type": "store_variable",
-            "name": "sleep_time",
-            "expression": "0.5"
-            },
-            {
-            "provider": "python",
-            "type": "sleep",
-            "seconds": $sleep_time
-            }
-            ]}
+def test_parametrization_template_string(play):
+    play.variables = {}
+    # should not raise any exception
+    play.execute("""
+---
+- provider: python
+  type: store_variable
+  name: sleep_time
+  expression: 0.5
+- provider: python
+  type: sleep
+  seconds: $sleep_time
         """)

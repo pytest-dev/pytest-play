@@ -15,20 +15,20 @@ def test_play_engine_constructor(
     assert executor.variables == bdd_vars
 
 
-def test_get_file_contents(play_json, data_base_path):
-    play_json.get_file_contents(data_base_path, 'login.json')
+def test_get_file_contents(play, data_base_path):
+    play.get_file_contents(data_base_path, 'login.yml')
 
 
-def test_register_teardown(play_json, data_base_path):
-    assert play_json._teardown == []
+def test_register_teardown(play, data_base_path):
+    assert play._teardown == []
     import mock
     callback = mock.MagicMock()
-    play_json.register_teardown_callback(callback)
-    play_json.register_teardown_callback(callback)
-    assert callback in play_json._teardown
-    assert len(play_json._teardown) == 1
+    play.register_teardown_callback(callback)
+    play.register_teardown_callback(callback)
+    assert callback in play._teardown
+    assert len(play._teardown) == 1
     assert not callback.called
-    play_json.teardown()
+    play.teardown()
     assert callback.assert_called_once_with() is None
 
 
@@ -40,17 +40,15 @@ def test_splinter_execute(dummy_executor):
     execute_command_mock = mock.MagicMock()
     dummy_executor.execute_command = execute_command_mock
 
-    json_data = {
-        'steps': [
-            {'type': 'get', 'url': 'http://1'},
-            {'type': 'get', 'url': 'http://2'}
-        ]
-    }
-    dummy_executor.execute(json_data)
+    yml_data = [
+        {'type': 'get', 'url': 'http://1'},
+        {'type': 'get', 'url': 'http://2'}
+    ]
+    dummy_executor.execute(yml_data)
 
     calls = [
-        mock.call(json_data['steps'][0]),
-        mock.call(json_data['steps'][1]),
+        mock.call(yml_data[0]),
+        mock.call(yml_data[1]),
     ]
     assert dummy_executor.execute_command.assert_has_calls(
         calls, any_order=False) is None
@@ -60,17 +58,15 @@ def test_splinter_execute_extra_vars(dummy_executor):
     execute_command_mock = mock.MagicMock()
     dummy_executor.execute_command = execute_command_mock
 
-    json_data = {
-        'steps': [
-            {'type': 'get', 'url': 'http://1'},
-            {'type': 'get', 'url': 'http://$does_not_exist'}
-        ]
-    }
+    yml_data = [
+        {'type': 'get', 'url': 'http://1'},
+        {'type': 'get', 'url': 'http://$does_not_exist'}
+    ]
     assert 'does_not_exist' not in dummy_executor.variables
-    dummy_executor.execute(json_data, extra_variables={'does_not_exist': 'no'})
+    dummy_executor.execute(yml_data, extra_variables={'does_not_exist': 'no'})
 
     calls = [
-        mock.call(json_data['steps'][0]),
+        mock.call(yml_data[0]),
         mock.call({'type': 'get', 'url': 'http://no'}),
     ]
     assert dummy_executor.execute_command.assert_has_calls(
@@ -160,7 +156,11 @@ def test_execute_get_page_none(dummy_executor, page_instance):
 
 
 def test_execute_get_basestring(dummy_executor):
-    command = """{"type": "get", "url": "http://1"}"""
+    command = """
+---
+type: get
+url: http://1
+    """
     dummy_executor.execute_command(command)
     dummy_executor \
         .navigation \
@@ -171,7 +171,11 @@ def test_execute_get_basestring(dummy_executor):
 
 
 def test_execute_get_basestring_param(dummy_executor):
-    command = """{"type": "get", "url": "http://$foo"}"""
+    command = """
+---
+type: get
+url: http://$foo
+"""
     dummy_executor.execute_command(command)
     dummy_executor \
         .navigation \
@@ -864,45 +868,41 @@ def test_splinter_execute_includes(dummy_executor, data_base_path):
     execute_command_mock = mock.MagicMock()
     dummy_executor.execute_command = execute_command_mock
 
-    json_data = {
-        'steps': [
-            {'type': 'include', 'provider': 'include',
-             'path': '{0}/{1}'.format(
-                 data_base_path, 'login.json')},
-            {'type': 'get', 'url': 'http://2'}
-        ]
-    }
-    dummy_executor.execute(json_data)
+    yml_data = [
+        {'type': 'include', 'provider': 'include',
+         'path': '{0}/{1}'.format(
+             data_base_path, 'login.yml')},
+        {'type': 'get', 'url': 'http://2'}
+    ]
+    dummy_executor.execute(yml_data)
 
     calls = [
-        mock.call(json_data['steps'][0]),
-        mock.call(json_data['steps'][1]),
+        mock.call(yml_data[0]),
+        mock.call(yml_data[1]),
     ]
     assert dummy_executor.execute_command.assert_has_calls(
         calls, any_order=False) is None
 
 
-def test_include(play_json, test_run_identifier, page_instance,
+def test_include(play, test_run_identifier, page_instance,
                  data_base_path):
-    json_data = {
-        "steps": [
-            {"provider": "include", "type": "include",
-             "path": "{0}/included-scenario.json".format(data_base_path)},
-            {"type": "get", "url": "http://2"},
-            {"type": "get", "url": "http://{0}".format(test_run_identifier)}
-        ]
-    }
-    play_json \
+    yml_data = [
+        {"provider": "include", "type": "include",
+         "path": "{0}/included-scenario.yml".format(data_base_path)},
+        {"type": "get", "url": "http://2"},
+        {"type": "get", "url": "http://{0}".format(test_run_identifier)}
+    ]
+    play \
         .navigation \
         .get_page_instance = lambda *args, **kwargs: page_instance
-    play_json.execute(json_data)
+    play.execute(yml_data)
 
     calls = [
         mock.call('http://'),
         mock.call('http://2'),
         mock.call('http://{0}'.format(test_run_identifier)),
     ]
-    assert play_json \
+    assert play \
         .navigation \
         .page \
         .driver_adapter \
@@ -912,21 +912,19 @@ def test_include(play_json, test_run_identifier, page_instance,
 
 
 def test_default_command(
-        play_json, test_run_identifier, page_instance,
+        play, test_run_identifier, page_instance,
         data_base_path):
-    play_json.variables['include'] = {'comment': 'default comment'}
-    play_json.get_command_provider = mock.MagicMock()
-    json_data = {
-        "steps": [
-            {"provider": "include", "type": "include",
-             "path": "{0}/included-scenario.json".format(data_base_path)},
-        ]
-    }
+    play.variables['include'] = {'comment': 'default comment'}
+    play.get_command_provider = mock.MagicMock()
+    yml_data = [
+        {"provider": "include", "type": "include",
+         "path": "{0}/included-scenario.yml".format(data_base_path)},
+    ]
     from copy import deepcopy
-    expected_command = deepcopy(json_data)["steps"][0]
+    expected_command = deepcopy(yml_data)[0]
     expected_command['comment'] = 'default comment'
-    play_json.execute(json_data)
-    assert play_json \
+    play.execute(yml_data)
+    assert play \
         .get_command_provider \
         .return_value \
         .command_include \
@@ -935,22 +933,20 @@ def test_default_command(
 
 
 def test_default_command_override(
-        play_json, test_run_identifier, page_instance,
+        play, test_run_identifier, page_instance,
         data_base_path):
-    play_json.variables['include'] = {'comment': 'default comment'}
-    play_json.get_command_provider = mock.MagicMock()
-    json_data = {
-        "steps": [
-            {"provider": "include", "type": "include",
-             "comment": "override",
-             "path": "{0}/included-scenario.json".format(data_base_path)},
-        ]
-    }
+    play.variables['include'] = {'comment': 'default comment'}
+    play.get_command_provider = mock.MagicMock()
+    yml_data = [
+        {"provider": "include", "type": "include",
+         "comment": "override",
+         "path": "{0}/included-scenario.yml".format(data_base_path)},
+    ]
     from copy import deepcopy
-    expected_command = deepcopy(json_data)["steps"][0]
+    expected_command = deepcopy(yml_data)[0]
     expected_command['comment'] = 'override'
-    play_json.execute(json_data)
-    assert play_json \
+    play.execute(yml_data)
+    assert play \
         .get_command_provider \
         .return_value \
         .command_include \
@@ -959,24 +955,22 @@ def test_default_command_override(
 
 
 def test_default_command_override_dict(
-        play_json, test_run_identifier, page_instance,
+        play, test_run_identifier, page_instance,
         data_base_path):
-    play_json.variables['include'] = {
+    play.variables['include'] = {
         'comment': {'comment': 'default comment'}}
-    play_json.get_command_provider = mock.MagicMock()
-    json_data = {
-        "steps": [
-            {"provider": "include", "type": "include",
-             "comment": {"another": "override"},
-             "path": "{0}/included-scenario.json".format(data_base_path)},
-        ]
-    }
+    play.get_command_provider = mock.MagicMock()
+    yml_data = [
+        {"provider": "include", "type": "include",
+         "comment": {"another": "override"},
+         "path": "{0}/included-scenario.yml".format(data_base_path)},
+    ]
     from copy import deepcopy
-    expected_command = deepcopy(json_data)["steps"][0]
+    expected_command = deepcopy(yml_data)[0]
     expected_command['comment'] = {
         'another': 'override', 'comment': 'default comment'}
-    play_json.execute(json_data)
-    assert play_json \
+    play.execute(yml_data)
+    assert play \
         .get_command_provider \
         .return_value \
         .command_include \
@@ -985,24 +979,22 @@ def test_default_command_override_dict(
 
 
 def test_default_command_override_dict_2(
-        play_json, test_run_identifier, page_instance,
+        play, test_run_identifier, page_instance,
         data_base_path):
-    play_json.variables['include'] = {
+    play.variables['include'] = {
         'comment': {'comment': 'default comment'}}
-    play_json.get_command_provider = mock.MagicMock()
-    json_data = {
-        "steps": [
-            {"provider": "include", "type": "include",
-             "comment": {"another": "override", "comment": "other"},
-             "path": "{0}/included-scenario.json".format(data_base_path)},
-        ]
-    }
+    play.get_command_provider = mock.MagicMock()
+    yml_data = [
+        {"provider": "include", "type": "include",
+         "comment": {"another": "override", "comment": "other"},
+         "path": "{0}/included-scenario.yml".format(data_base_path)},
+    ]
     from copy import deepcopy
-    expected_command = deepcopy(json_data)["steps"][0]
+    expected_command = deepcopy(yml_data)[0]
     expected_command['comment'] = {
         'another': 'override', 'comment': 'other'}
-    play_json.execute(json_data)
-    assert play_json \
+    play.execute(yml_data)
+    assert play \
         .get_command_provider \
         .return_value \
         .command_include \
@@ -1011,23 +1003,21 @@ def test_default_command_override_dict_2(
 
 
 def test_default_command_override_dict_4(
-        play_json, test_run_identifier, page_instance,
+        play, test_run_identifier, page_instance,
         data_base_path):
-    play_json.variables['include'] = {
+    play.variables['include'] = {
         'comment': {'comment': 'default comment'}}
-    play_json.get_command_provider = mock.MagicMock()
-    json_data = {
-        "steps": [
-            {"provider": "include", "type": "include",
-             "comment": "default comment",
-             "path": "{0}/included-scenario.json".format(data_base_path)},
-        ]
-    }
+    play.get_command_provider = mock.MagicMock()
+    yml_data = [
+        {"provider": "include", "type": "include",
+         "comment": "default comment",
+         "path": "{0}/included-scenario.yml".format(data_base_path)},
+    ]
     from copy import deepcopy
-    expected_command = deepcopy(json_data)["steps"][0]
+    expected_command = deepcopy(yml_data)[0]
     expected_command['comment'] = 'default comment'
-    play_json.execute(json_data)
-    assert play_json \
+    play.execute(yml_data)
+    assert play \
         .get_command_provider \
         .return_value \
         .command_include \
@@ -1036,24 +1026,22 @@ def test_default_command_override_dict_4(
 
 
 def test_default_command_override_dict_3(
-        play_json, test_run_identifier, page_instance,
+        play, test_run_identifier, page_instance,
         data_base_path):
-    play_json.variables['include'] = {
+    play.variables['include'] = {
         'comment': 'default comment'}
-    play_json.get_command_provider = mock.MagicMock()
-    json_data = {
-        "steps": [
-            {"provider": "include", "type": "include",
-             "comment": {"another": "override", "comment": "other"},
-             "path": "{0}/included-scenario.json".format(data_base_path)},
-        ]
-    }
+    play.get_command_provider = mock.MagicMock()
+    yml_data = [
+        {"provider": "include", "type": "include",
+         "comment": {"another": "override", "comment": "other"},
+         "path": "{0}/included-scenario.yml".format(data_base_path)},
+    ]
     from copy import deepcopy
-    expected_command = deepcopy(json_data)["steps"][0]
+    expected_command = deepcopy(yml_data)[0]
     expected_command['comment'] = {
         'another': 'override', 'comment': 'other'}
-    play_json.execute(json_data)
-    assert play_json \
+    play.execute(yml_data)
+    assert play \
         .get_command_provider \
         .return_value \
         .command_include \
@@ -1061,29 +1049,29 @@ def test_default_command_override_dict_3(
             expected_command) is None
 
 
-def test_include_string(play_json, test_run_identifier, page_instance,
+def test_include_string(play, test_run_identifier, page_instance,
                         data_base_path):
-    json_data = """
-    {
-        "steps": [
-            {"provider": "include", "type": "include",
-             "path": "%s/included-scenario.json"},
-            {"type": "get", "url": "http://2"},
-            {"type": "get", "url": "http://$test_run_identifier"}
-        ]
-    }
+    yml_data = """
+---
+- provider: include
+  type: include
+  path: "%s/included-scenario.yml"
+- type: get
+  url: http://2
+- type: get
+  url: http://$test_run_identifier
     """ % data_base_path
-    play_json \
+    play \
         .navigation \
         .get_page_instance = lambda *args, **kwargs: page_instance
-    play_json.execute(json_data)
+    play.execute(yml_data)
 
     calls = [
         mock.call('http://'),
         mock.call('http://2'),
         mock.call('http://{0}'.format(test_run_identifier)),
     ]
-    assert play_json \
+    assert play \
         .navigation \
         .page \
         .driver_adapter \
