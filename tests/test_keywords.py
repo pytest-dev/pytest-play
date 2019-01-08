@@ -9,7 +9,7 @@ def test_autoexecute_yml_keywords_skipped(testdir, cli_options):
 ---
 - provider: python
   type: assert
-  expression: 1
+  expression: "1"
     """)
     ini_file = testdir.makefile(".ini", """
         [pytest]

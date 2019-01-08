@@ -3,7 +3,7 @@ def test_autoexecute_yml_pass(testdir):
 ---
 - provider: python
   type: assert
-  expression: 1
+  expression: "1"
     """)
     assert yml_file.basename.startswith('test_')
     assert yml_file.basename.endswith('.yml')
@@ -18,7 +18,7 @@ def test_autoexecute_yml_fail(testdir):
 ---
 - provider: python
   type: assert
-  expression: 0
+  expression: "0"
     """)
     assert yml_file.basename.startswith('test_')
     assert yml_file.basename.endswith('.yml')
@@ -33,7 +33,7 @@ def test_autoexecute_yml_cli_pass(testdir):
 ---
 - provider: python
   type: assert
-  expression: 1
+  expression: "1"
     """)
     assert yml_file.basename.startswith('test_')
     assert yml_file.basename.endswith('.yml')

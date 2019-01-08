@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import yml
+import json
 import os
 import configparser
 import re
@@ -48,7 +48,7 @@ class YAMLFile(pytest.File):
         test_data = []
         for item in raw_test_data.splitlines():
             if item:
-                test_data.append(yml.loads(item))
+                test_data.append(json.loads(item))
         return test_data
 
     def collect(self):
@@ -118,7 +118,7 @@ class YAMLItem(pytest.Item):
         self.fixture_request = self._setup_fixtures()
 
     def _setup_play(self):
-        self.play = self.fixture_request.getfixturevalue('play_json')
+        self.play = self.fixture_request.getfixturevalue('play')
 
     def _setup_raw_data(self):
         self.raw_data = self.play.get_file_contents(self.path)

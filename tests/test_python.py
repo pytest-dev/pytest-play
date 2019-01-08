@@ -362,7 +362,7 @@ def test_parametrization_template_string(play):
 - provider: python
   type: store_variable
   name: sleep_time
-  expression: 0.5
+  expression: "0.5"
 - provider: python
   type: sleep
   seconds: $sleep_time

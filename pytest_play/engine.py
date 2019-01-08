@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 import logging
-import json
+import yaml
 import pkg_resources
-try:
-    # python3
-    from builtins import str as basestring
-except ImportError:
-    # python2
-    pass
 from zope import component
 from zope.interface import Interface
 
@@ -18,7 +12,7 @@ class ICommandProvider(Interface):
 
 
 class PlayEngine(object):
-    """ JSON executor """
+    """ YAML executor """
 
     def __init__(self, request, variables):
         """ The executor should be initialized with:
@@ -64,12 +58,10 @@ class PlayEngine(object):
         """ Parametrizer engine """
         return self.parametrizer_class(self.variables)
 
-    def _json_loads(self, data):
-        """ If data is a string returns json dumps """
-        if not isinstance(data, basestring):
-            # if not dic reparametrize
-            data = self.parametrizer.parametrize(json.dumps(data))
-        return self.parametrizer.json_loads(data)
+    def _yaml_loads(self, data):
+        """ returns parametrized yaml dumps """
+        return yaml.safe_load(
+            self.parametrizer.parametrize(data))
 
     def _merge_payload(self, command):
         """ Merge command with the default command available in
@@ -78,9 +70,8 @@ class PlayEngine(object):
         provider = command.get('provider', 'default')
         provider_conf = self.variables.get(provider, {})
         if provider_conf:
-            default = json.loads(
-                self.parametrizer.parametrize(
-                    json.dumps(provider_conf)))
+            default = self._yaml_loads(
+                yaml.dump(provider_conf, default_flow_style=False))
             if provider_conf:
                 return self._merge(default, command)
         return command
@@ -108,7 +99,8 @@ class PlayEngine(object):
     def skip_condition(func):
         """ Skip command if skip_condition python expression is falsish  """
         def wrapper(*args, **kwargs):
-            command = args[0]._json_loads(args[1])
+            command = args[0]._yaml_loads(
+                yaml.dump(args[1], default_flow_style=False))
             condition = command.get('skip_condition', None)
             skip = False
             if condition is not None:
@@ -124,19 +116,21 @@ class PlayEngine(object):
         return wrapper
 
     def execute(self, data, extra_variables={}):
-        """ Execute parsed json-like file contents """
+        """ Execute parsed yaml-like file contents """
         if extra_variables:
             self.update_variables(extra_variables)
-        data = self._json_loads(data)
-        steps = data['steps']
-        for step in steps:
+        data = yaml.safe_load(data)
+        for step in data:
             self.execute_command(step)
 
     @skip_condition
     def execute_command(self, command, **kwargs):
         """ Execute single command """
-        command = self._json_loads(command)
-        command = self._merge_payload(command)
+        command = self._merge_payload(
+            self._yaml_loads(
+                yaml.dump(
+                    command, default_flow_style=False))
+        )
         command_type = command['type']
         provider_name = command.get('provider', 'default')
         command_provider = self.get_command_provider(provider_name)
