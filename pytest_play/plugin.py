@@ -125,7 +125,7 @@ class YAMLItem(pytest.Item):
 
     def runtest(self):
         data = self.play.get_file_contents(self.path)
-        self.play.execute(data, extra_variables=self.test_data)
+        self.play.execute_raw(data, extra_variables=self.test_data)
 
     def repr_failure(self, excinfo):
         """ called when self.runtest() raises an exception. """
@@ -159,7 +159,7 @@ def play(request, play_engine_class, bdd_vars, variables, skin):
             def test_experimental(play):
                 data = play.get_file_contents(
                     '/my/path/etc', 'login.yml')
-                play.execute(data)
+                play.execute_raw(data)
     """
     context = bdd_vars.copy()
     if 'pytest-play' in variables:

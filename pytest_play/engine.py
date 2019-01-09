@@ -115,11 +115,16 @@ class PlayEngine(object):
                 return func(*args, **kwargs)
         return wrapper
 
+    def execute_raw(self, data, extra_variables={}):
+        """ Execute raw yaml-like file contents """
+        if extra_variables:
+            self.update_variables(extra_variables)
+        self.execute(yaml.safe_load(data))
+
     def execute(self, data, extra_variables={}):
         """ Execute parsed yaml-like file contents """
         if extra_variables:
             self.update_variables(extra_variables)
-        data = yaml.safe_load(data)
         for step in data:
             self.execute_command(step)
 

@@ -1,8 +1,17 @@
 Changelog
 *********
 
-1.4.3 (unreleased)
+2.0.0 (unreleased)
 ==================
+
+- Renamed fixture from `play_json` to `play` (#5)
+
+- Drop json support, adopt yaml only format for scenarios (#5)
+
+- `play.execute` no more accepts raw data string), consumes a list of commands.
+  Introduced `play.execute_raw` accepting raw data string.
+
+- `play.execute_command` accepts a Python dictionary only now (not a string)
 
 - Fix invalid escape sequences (#62).
 

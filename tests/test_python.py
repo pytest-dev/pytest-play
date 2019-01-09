@@ -285,16 +285,6 @@ def test_skip_condition(play):
     })
 
 
-def test_skip_condition_str(play):
-    play.variables = {'foo': 'baz'}
-    play.execute_command("""{
-        "provider": "python",
-        "type": "assert",
-        "expression": "200 == 404",
-        "skip_condition": "'$foo' == 'baz'"
-    }""")
-
-
 def test_skip_condition_false(play):
     play.variables = {'foo': 'baz'}
     with pytest.raises(AssertionError):
@@ -344,20 +334,21 @@ def test_parametrization_update(play):
 
 
 def test_parametrization_update_non_string(play):
+    import yaml
     play.variables = {'sleep_time': 0.5}
     # should not raise any exception
-    play.execute_command("""
+    play.execute_command(yaml.load("""
 ---
 provider: python
 type: sleep
 seconds: $sleep_time
-    """)
+    """))
 
 
 def test_parametrization_template_string(play):
     play.variables = {}
     # should not raise any exception
-    play.execute("""
+    play.execute_raw("""
 ---
 - provider: python
   type: store_variable

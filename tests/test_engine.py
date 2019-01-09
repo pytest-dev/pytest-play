@@ -67,7 +67,7 @@ def test_splinter_execute_extra_vars(dummy_executor):
 
     calls = [
         mock.call(yml_data[0]),
-        mock.call({'type': 'get', 'url': 'http://no'}),
+        mock.call(yml_data[1]),
     ]
     assert dummy_executor.execute_command.assert_has_calls(
         calls, any_order=False) is None
@@ -156,11 +156,12 @@ def test_execute_get_page_none(dummy_executor, page_instance):
 
 
 def test_execute_get_basestring(dummy_executor):
-    command = """
+    import yaml
+    command = yaml.load("""
 ---
 type: get
 url: http://1
-    """
+    """)
     dummy_executor.execute_command(command)
     dummy_executor \
         .navigation \
@@ -171,11 +172,12 @@ url: http://1
 
 
 def test_execute_get_basestring_param(dummy_executor):
-    command = """
+    import yaml
+    command = yaml.load("""
 ---
 type: get
 url: http://$foo
-"""
+""")
     dummy_executor.execute_command(command)
     dummy_executor \
         .navigation \
@@ -1064,7 +1066,7 @@ def test_include_string(play, test_run_identifier, page_instance,
     play \
         .navigation \
         .get_page_instance = lambda *args, **kwargs: page_instance
-    play.execute(yml_data)
+    play.execute_raw(yml_data)
 
     calls = [
         mock.call('http://'),

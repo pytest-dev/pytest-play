@@ -3,7 +3,7 @@ def test_autoexecute_yml_parametrized_data(testdir):
 ---
 - provider: python
   type: assert
-  expression: variables['username'] in ('foò', 'bàr',)
+  expression: variables['username'] in ('foo', 'bar',)
     """)
     ini_file = testdir.makefile(".ini", """
         [pytest]
