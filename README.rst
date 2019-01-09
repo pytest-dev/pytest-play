@@ -14,43 +14,66 @@ pytest-play
 .. image:: https://codecov.io/gh/pytest-dev/pytest-play/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/pytest-dev/pytest-play
 
-``pytest-play`` is a pytest_ plugin that let you **play** a YAML_ file (e.g., `test_login.yml`)
-describing some actions and assertions.
-You can extend ``pytest-play`` with your own commands thanks to its pluggable architecture.
-So ``pytest-play`` is not yet another testing framework again: it only extends the pytest_ framework
-with another paradigm.
+``pytest-play`` is a codeless, generic, pluggable and extensible **automation tool**,
+not necessarily **test automation** only, based on the fantastic pytest_ test framework
+that let you define and execute YAML_ files containing scripts or test scenarios
+through actions and assertions that can be implemented and managed even by **non technical users**:
+
+* automation (not necessarily test automation). You can build a set of actions on a single file (e.g,
+  call a JSON based API endpoint, perform an action if a condition matches) or a test automation
+  project with many test scenarios.
+
+  So not only test automation, for example you can create always fresh test data on demand supporting
+  manual testing activities, build a live simulator and so on
+
+* codeless, or better almost codeless. If you have to write assertions against action results or some
+  conditional expressions you need a very basic knowledge of Python or Javascript expressions
+  with a smooth learning curve (something like ``variables['foo'] == 'bar'``)
+
+* generic. It is not yet again another automation tool for browser automation only, API only, etc.
+  You can drive a browser, perform some API calls, make database queries and/or make assertions
+  using the same tool for different technologies
+
+  So there are several free or not free testing frameworks or automation tools and many times
+  they address just one single area testing needs and they are not extensible: API testing only,
+  UI testing only and so on. It could be fine if you are testing a web
+  only application like a CMS but if you are dealing with a reactive IoT application you might something more,
+  make cross actions or cross checks against different systems or build something of more complex upon
+  ``pytest-play``
+
+* powerful. It is not yet again another test automation tool, it only extends the pytest_ framework
+  with another paradigm and inherits a lot of good stuff (test data decoupled by test implementation
+  that let you write once and executed many times the same scenario thanks to native parametrization
+  support, reporting, integration with test management tools, many useful command line options, browsers and
+  remote Selenium grids integration, etc)
+
+* pluggable and extensible. Let's say you need to interact with a system not yet supported by a ``pytest-play``
+  plugin, you can write by your own or pay someone for you. In addition there is a scaffolding tool that
+  let you implement your own command: https://github.com/davidemoro/cookiecutter-play-plugin
+  
+* easy to use. Why YAML? Easy to read, easy to write, simple and standard syntax, easy to be validated and
+  no parentheses hell. Despite there are no recording tools (not yet) for browser interaction or API calls, the
+  documentation based on very common patterns let you copy, paste and edit command by command with no pain
+
+* free software. It's an open source project based on the large and friendly pytest_ community
 
 See at the bottom of the page the third party plugins that extends ``pytest-play``:
 
 * `Third party pytest-play plugins`_
-
-There are several testing frameworks or automation tools. Sometimes they address just one single area
-testing needs: API testing only, UI testing only and so on. It could be fine if you are testing a web
-only application like a CMS but if you are dealing with a live IoT application you might need to
-simulate some device activities while testing your reactive UI (eg: last positions or alarms updates),
-make some cross level checks (not only check the UI but also API for example),
-quickly create some preconditions or contents needed by your UI scenarios for reactive
-applications (I am on the assets page, there is not asset X, you create an asset X, the asset X automatically
-appears in your asset listing), pure API testing (HTTP actions, assertions on response and database storage layer),
-create always fresh test data on demand supporting manual testing activities or build some device simulator activities during
-a demo or your exploratory testing sessions.
-
-So pytest-play_ is a all in one testing framework: you can build automated test scenarios that combine different kind of
-interactions for different testing levels.
-
-With pytest-play_ you will be able to create automated test suites with no or very little Python knowledge: a
-file ``test_XXX.yml`` (e.g., ``test_something.yml``. ``test_`` and ``.yml`` matter) will be automatically
-recognized and executed without having to touch any ``*.py`` module. You can run a single scenario
-with ``pytest test_XXX.yml`` or running the entire suite filtering by name or keyword markers.
-
-Despite ``pytest-play`` was born with native support for JSON format, ``pytest-play``>=2.0 versions will support
-YAML only.
 
 How it works
 ------------
 
 Depending on your needs and skills you can choose to use pytest-play programmatically
 writing some Python code or following a Python-less approach.
+
+As said before with pytest-play_ you will be able to create automated test suites with no or very little Python knowledge: a
+file ``test_XXX.yml`` (e.g., ``test_something.yml``. ``test_`` and ``.yml`` matter) will be automatically
+recognized and executed without having to touch any ``*.py`` module. You can run a single scenario
+with ``pytest test_XXX.yml`` or running the entire suite filtering by name or keyword markers.
+
+Despite ``pytest-play`` was born with native support for JSON format, ``pytest-play``>=2.0 versions will support
+YAML only.
 
 Python-less (pure YAML)
 =======================
@@ -65,7 +88,7 @@ containing a login scenario::
   ├── test_login.ini
   └── test_login.yml
 
-with some default variables in a settings file specific for a target environment::  
+with some default variables in a settings file specific for a target environment (**not mandatory**)::  
   
   $ cat env-ALPHA.yml 
   pytest-play:
@@ -590,7 +613,7 @@ How to install pytest-play
 You can see ``pytest-play`` in action creating a pytest project
 using the cookiecutter-qa_ scaffolding tool:
 
-* play.json_
+* play.yml_
 * test_play.py_
 
 
@@ -719,7 +742,7 @@ Twitter
 .. _`pypom`: http://pypom.readthedocs.io/en/latest/
 .. _`@davidemoro`: https://twitter.com/davidemoro
 .. _`cookiecutter-qa`: https://github.com/davidemoro/cookiecutter-qa
-.. _`play.json`: https://github.com/davidemoro/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/data/play.json
+.. _`play.yml`: https://github.com/davidemoro/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/data/play.yml
 .. _`test_play.py`: https://github.com/davidemoro/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/test_play.py
 .. _`play_mqtt`: https://github.com/davidemoro/play_mqtt
 .. _`play_python`: https://github.com/davidemoro/play_python
