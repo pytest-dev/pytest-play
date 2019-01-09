@@ -570,24 +570,18 @@ An ``AssertionError`` will be raised if assertion fails.
 
 Present::
 
-    {
-      "type": "assertElementVisible",
-      "locator": {
-         "type": "css",
-         "value": "div.elem"
-         }
-    }
+    - type: assertElementVisible
+      locator:
+        type: css
+        value: div.elem
 
 or not present::
 
-    {
-      "type": "assertElementVisible",
-      "locator": {
-         "type": "css",
-         "value": "div.elem"
-         },
-      "negated": true
-    }
+    - type: assertElementVisible
+      locator:
+        type: css
+        value: div.elem
+      negated: true
 
 
 How to install pytest-play
