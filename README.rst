@@ -74,57 +74,38 @@ with some default variables in a settings file specific for a target environment
 The test scenario with action and assertions::
   
   $ cat test_login.yml
-  {
-      "steps": [
-          {
-              "comment": "visit base url",
-              "type": "get",
-              "url": "$base_url"
-          },
-          {
-              "comment": "click on login link",
-              "locator": {
-                  "type": "id",
-                  "value": "personaltools-login"
-              },
-              "type": "clickElement"
-          },
-          {
-              "comment": "provide a username",
-              "locator": {
-                  "type": "id",
-                  "value": "__ac_name"
-              },
-              "text": "$username",
-              "type": "setElementText"
-          },
-          {
-              "comment": "provide a password",
-              "locator": {
-                  "type": "id",
-                  "value": "__ac_password"
-              },
-              "text": "$password",
-              "type": "setElementText"
-          },
-          {
-              "comment": "click on login submit button",
-              "locator": {
-                  "type": "css",
-                  "value": ".pattern-modal-buttons > input[name=submit]"
-              },
-              "type": "clickElement"
-          },
-          {
-              "comment": "wait for page loaded",
-              "locator": {
-                  "type": "css",
-                  "value": ".icon-user"
-              },
-              "type": "waitForElementVisible"
-          }
-      ]
-  }
+  ---
+  - comment: visit base url
+    type: get
+    url: "$base_url"
+  - comment: click on login link
+    locator:
+      type: id
+      value: personaltools-login
+    type: clickElement
+  - comment: provide a username
+    locator:
+      type: id
+      value: __ac_name
+    text: "$username"
+    type: setElementText
+  - comment: provide a password
+    locator:
+      type: id
+      value: __ac_password
+    text: "$password"
+    type: setElementText
+  - comment: click on login submit button
+    locator:
+      type: css
+      value: ".pattern-modal-buttons > input[name=submit]"
+    type: clickElement
+  - comment: wait for page loaded
+    locator:
+      type: css
+      value: ".icon-user"
+    type: waitForElementVisible
+
 
 Some optional metadata for each YAML scenario. In this case we have one or more markers so
 you can filter tests to be executed invoking pytest with marker expressions. There is an
@@ -152,10 +133,10 @@ You can invoke pytest-play programmatically too.
 
 You can define a test ``test_login.py`` like this::
 
-  def test_login(play_json):
-      data = play_json.get_file_contents(
+  def test_login(play):
+      data = play.get_file_contents(
           'my', 'path', 'etc', 'login.yml')
-      play_json.execute(data, extra_variables={})
+      play.execute_raw(data, extra_variables={})
 
 Or this programmatical approach might be used if you are
 implementing BDD based tests using ``pytest-bdd``.
@@ -194,12 +175,10 @@ How to reuse steps
 You can split your commands and reuse them using the ``include`` command avoiding
 duplication::
 
-    {
-        "steps": [
-            {"provider": "include", "type": "include", "path": "/some-path/included-scenario.yml"},
-            ... other commands ...
-        ]
-    }
+    - provider: include
+      type: include
+      path: "/some-path/included-scenario.yml"
+
 
 You can create a variable for the base folder where your test scripts live.
 
@@ -211,92 +190,74 @@ Some commands require many verbose options you don't want to repeat (eg: authent
 Instead of replicating all the headers information you can initialize a ``pytest-play`` with the provider name as
 key and as a value the default command you want to omit::
 
-    {
-        "steps": [{
-            "provider": "python",
-            "type": "store_variable",
-            "name": "bearer",
-            "expression": "'BEARER'"
-        },
-        {
-            "provider": "python",
-            "type": "store_variable",
-            "name": "play_requests",
-            "expression": "{'parameters': {'headers': {'Authorization': '$bearer'}}}"
-        },
-        {
-             "provider": "play_requests",
-             "type": "GET",
-             "comment": "this is an authenticated request!",
-             "url": "$base_url"
-        }
-    }
+    - provider: python
+      type: store_variable
+      name: bearer
+      expression: "'BEARER'"
+    - provider: python
+      type: store_variable
+      name: play_requests
+      expression: "{'parameters': {'headers': {'Authorization': '$bearer'}}}"
+    - provider: play_requests
+      type: GET
+      comment: this is an authenticated request!
+      url: "$base_url"
+
 
 Store variables
 ===============
 
 You can store a pytest-play_ variables::
 
-    {
-     'provider': 'python',
-     'type': 'store_variable',
-     'expression': '1+1',
-     'name': 'foo'
-    }
+    - provider: python
+      type: store_variable
+      expression: "1+1"
+      name: foo
 
 Make a Python assertion
 =======================
 
 You can make an assertion based on a Python expression::
 
-    {
-     'provider': 'python',
-     'type': 'assert',
-     'expression': 'variables["foo"] == 2'
-    }
+    - provider: python
+      type: assert
+      expression: variables['foo'] == 2
 
 Sleep
 =====
 
 Sleep for a given amount of seconds::
 
-    {
-     'provider': 'python',
-     'type': 'sleep',
-     'seconds': 2
-    }
+    - provider: python
+      type: sleep
+      seconds: 2
 
 Exec a Python expresssion
 =========================
 
 You can execute a Python expression::
 
-    {
-     'provider': 'python',
-     'type': 'exec',
-     'expression': '1+1'
-    }
+    - provider: python
+      type: exec
+      expression: "1+1"
 
 Wait until condition
 ====================
 
-The ``wait_until_not`` command waits until the wait expression is False::
+The ``wait_until_not`` command waits until the wait expression is `False`::
 
-    {
-     'provider': 'python',
-     'type': 'wait_until_not',
-     'expression': 'variables["expected_id"] is not None and variables["expected_id"][0] == $id',
-     'timeout': 5,
-     'poll': 0.1,
-     'subcommands': [{
-         'provider': 'play_sql',
-         'type': 'sql',
-         'database_url': 'postgresql://$db_user:$db_pwd@$db_host/$db_name',
-         'query': 'SELECT id FROM table WHERE id=$id ORDER BY id DESC;',
-         'variable': 'expected_id',
-         'expression': 'results.first()'
-     }]
-    }
+    - provider: python
+      type: wait_until_not
+      expression: variables['expected_id'] is not None and variables['expected_id'][0] == $id
+      timeout: 5
+      poll: 0.1
+      subcommands:
+      - provider: play_sql
+        type: sql
+        database_url: postgresql://$db_user:$db_pwd@$db_host/$db_name
+        query: SELECT id FROM table WHERE id=$id ORDER BY id DESC;
+        variable: expected_id
+        expression: results.first()
 
 assuming that the subcommand updates the execution results updating a ``pytest-play``
 variable (eg: ``expected_id``) where tipically the ``$id`` value comes
@@ -318,7 +279,7 @@ You can repeat a group of subcommands using a variable as a counter. Assuming yo
 have defined a ``countdown`` variable with 10 value, the wait until command will
 repeat the group of commands for 10 times::
 
-    play_json.execute_command({
+    play.execute_command({
         'provider': 'python',
         'type': 'wait_until',
         'expression': 'variables["countdown"] == 0',
@@ -332,6 +293,19 @@ repeat the group of commands for 10 times::
         }]
     })
 
+or::
+
+    - provider: python
+      type: wait_until
+      expression: variables['countdown'] == 0
+      timeout: 0
+      poll: 0
+      sub_commands:
+      - provider: python
+        type: store_variable
+        name: countdown
+        expression: variables['countdown'] - 1
+
 
 Conditional commands (Python)
 =============================
@@ -339,12 +313,10 @@ Conditional commands (Python)
 You can skip any command evaluating a Python based skip condition
 like the following::
 
-    {
-      "provider": "include",
-      "type": "include",
-      "path": "/some-path/assertions.yml",
-      "skip_condition": "variables['cassandra_assertions'] is True"
-    }
+    - provider: include
+      type: include
+      path: "/some-path/assertions.yml"
+      skip_condition: variables['cassandra_assertions'] is True
 
 
 Browser based commands
@@ -370,14 +342,11 @@ Conditional commands (Javascript)
 
 Based on a browser level expression (Javascript)::
 
-    {
-      "type": "clickElement",
-      "locator": {
-           "type": "css",
-           "value": "body"
-           },
-      "condition": "'$foo' === 'bar'"
-    }
+    - type: clickElement
+      locator:
+        type: css
+        value: body
+      condition: "'$foo' === 'bar'"
 
 
 Supported locators
@@ -398,17 +367,14 @@ Open a page
 
 With parametrization::
 
-    {
-      "type": "get",
-      "url": "$base_url"
-    }
+    - type: get
+      url: "$base_url"
 
 or with a regular url::
 
-    {
-      "type": "get",
-      "url": "https://google.com"
-    }
+    - type: get
+      url: https://google.com
+
 
 Pause
 =====
@@ -416,11 +382,8 @@ Pause
 This command invokes a javascript expression that will
 pause the execution flow of your commands::
 
-
-    {
-      "type": "pause",
-      "waitTime": 1500
-    }
+    - type: pause
+      waitTime: 1500
 
 If you need a pause/sleep for non UI tests you can use the
 ``sleep`` command provided by the play_python_ plugin.
@@ -429,61 +392,47 @@ Click an element
 ================
 ::
 
-    {
-      "type": "clickElement",
-      "locator": {
-           "type": "css",
-           "value": "body"
-           }
-    }
+    - type: clickElement
+      locator:
+        type: css
+        value: body
 
 Fill in a text
 ==============
 ::
 
-    {
-      "type": "setElementText",
-      "locator": {
-         "type": "css",
-         "value": "input.title"
-         },
-      "text": "text value"
-    }
+    - type: setElementText
+      locator:
+        type: css
+        value: input.title
+      text: text value
 
 Interact with select input elements
 ===================================
 
 Select by label::
 
-    {
-      "type": "select",
-      "locator": {
-           "type": "css",
-           "value": "select.city"
-      },
-      "text": "Turin"
-    }
+    - type: select
+      locator:
+        type: css
+        value: select.city
+      text: Turin
 
 or select by value::
 
-    {
-      "type": "select",
-      "locator": {
-           "type": "css",
-           "value": "select.city"
-      },
-      "value": "1"
-    }
+    - type: select
+      locator:
+        type: css
+        value: select.city
+      value: '1'
 
 Eval a Javascript expression
 ============================
 
 ::
 
-    {
-      "type": "eval",
-      "script": "alert("Hello world!")"
-    }
+    - type: eval
+      script: alert('Hello world!')
 
 Create a variable starting from a Javascript expression
 =======================================================
@@ -491,11 +440,9 @@ Create a variable starting from a Javascript expression
 The value of the Javascript expression will be stored in
 ``pytest_play.variables`` under the name ``count``::
 
-    {
-      "type": "storeEval",
-      "variable": "count",
-      "script": "document.getElementById('count')[0].textContent"
-    }
+    - type: storeEval
+      variable: count
+      script: document.getElementById('count')[0].textContent
 
 Assert if a Javascript expression matches
 =========================================
@@ -503,11 +450,9 @@ Assert if a Javascript expression matches
 If the result of the expression does not match an ``AssertionError``
 will be raised and the test will fail::
 
-    {
-      "type": "verifyEval",
-      "value": "3",
-      "script": "document.getElementById('count')[0].textContent"
-    }
+    - type: verifyEval
+      value: '3'
+      script: document.getElementById('count')[0].textContent
 
 Verify that the text of one element contains a string
 =====================================================
@@ -515,28 +460,22 @@ Verify that the text of one element contains a string
 If the element text does not contain the provided text an
 ``AssertionError`` will be raised and the test will fail::
 
-    {
-      "type": "verifyText",
-      "locator": {
-         "type": "css",
-         "value": ".my-item"
-      },
-      "text": "a text"
-    }
+    - type: verifyText
+      locator:
+        type: css
+        value: ".my-item"
+      text: a text
 
 Send keys to an element
 =======================
 
 All ``selenium.webdriver.common.keys.Keys`` are supported::
 
-    {
-      "type": "sendKeysToElement",
-      "locator": {
-         "type": "css",
-         "value": ".confirm"
-      },
-      "text": "ENTER"
-    }
+    - type: sendKeysToElement
+      locator:
+        type: css
+        value: ".confirm"
+      text: ENTER
 
 
 Supported keys::
@@ -565,58 +504,44 @@ Wait until the given expression matches or raise a
 At this time of writing there is a global timeout (20s) but in future releases
 you will be able to override it on command basis::
 
-    {
-      "type": "waitUntilCondition",
-      "script": "document.body.getAttribute("class") === 'ready'"
-    }
+    - type: waitUntilCondition
+      script: document.body.getAttribute('class') === 'ready'
 
 Wait for element present in DOM
 ===============================
 
 Present::
 
-    {
-      "type": "waitForElementPresent",
-      "locator": {
-         "type": "css",
-         "value": "body"
-      }
-    }
+    - type: waitForElementPresent
+      locator:
+        type: css
+        value: body
 
 or not present::
 
-    {
-      "type": "waitForElementPresent",
-      "locator": {
-         "type": "css",
-         "value": "body"
-      },
-      "negated": true
-    }
+    - type: waitForElementPresent
+      locator:
+        type: css
+        value: body
+      negated: true
 
 Wait for element visible
 ========================
 
 Visible::
 
-    {
-      "type": "waitForElementVisible",
-      "locator": {
-         "type": "css",
-         "value": "body"
-      }
-    }
+    - type: waitForElementVisible
+      locator:
+        type: css
+        value: body
 
 or not visible::
 
-    {
-      "type": "waitForElementVisible",
-      "locator": {
-         "type": "css",
-         "value": "body"
-      },
-      "negated": true
-    }
+    - type: waitForElementVisible
+      locator:
+        type: css
+        value: body
+      negated: true
 
 Assert element is present in DOM
 ================================
@@ -625,24 +550,18 @@ An ``AssertionError`` will be raised if assertion fails.
 
 Present::
 
-    {
-      "type": "assertElementPresent",
-      "locator": {
-         "type": "css",
-         "value": "div.elem"
-         }
-    }
+    - type: assertElementPresent
+      locator:
+        type: css
+        value: div.elem
 
 or not present::
 
-    {
-      "type": "assertElementPresent",
-      "locator": {
-         "type": "css",
-         "value": "div.elem"
-         },
-      "negated": true
-    }
+    - type: assertElementPresent
+      locator:
+        type: css
+        value: div.elem
+      negated: true
 
 Assert element is visible
 =========================
