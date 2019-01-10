@@ -67,13 +67,16 @@ How it works
 Depending on your needs and skills you can choose to use pytest-play programmatically
 writing some Python code or following a Python-less approach.
 
-As said before with pytest-play_ you will be able to create automated test suites with no or very little Python knowledge: a
-file ``test_XXX.yml`` (e.g., ``test_something.yml``. ``test_`` and ``.yml`` matter) will be automatically
-recognized and executed without having to touch any ``*.py`` module. You can run a single scenario
-with ``pytest test_XXX.yml`` or running the entire suite filtering by name or keyword markers.
+As said before with pytest-play_ you will be able to create codeless scripts or test scenarios
+with no or very little Python knowledge: a file ``test_XXX.yml`` (e.g., ``test_something.yml``,
+where ``test_`` and ``.yml`` matter) will be automatically recognized and executed without having
+to touch any ``*.py`` module. 
+
+You can run a single scenario with ``pytest test_XXX.yml`` or running the entire suite filtering
+by name or keyword markers.
 
 Despite ``pytest-play`` was born with native support for JSON format, ``pytest-play``>=2.0 versions will support
-YAML only.
+YAML only for improved usability.
 
 Python-less (pure YAML)
 =======================
@@ -83,12 +86,11 @@ containing a login scenario::
 
   $ tree
   .
-  ├── env-ALPHA.yml
-  ├── README.rst
-  ├── test_login.ini
+  ├── env-ALPHA.yml    (OPTIONAL)
+  ├── test_login.ini   (OPTIONAL)
   └── test_login.yml
 
-with some default variables in a settings file specific for a target environment (**not mandatory**)::  
+and you might have some global variables in a settings file specific for a target environment::  
   
   $ cat env-ALPHA.yml 
   pytest-play:
@@ -129,11 +131,11 @@ The test scenario with action and assertions::
       value: ".icon-user"
     type: waitForElementVisible
 
+For each script or scenario you might have an optional file with the same name with ``.ini`` extension for
+metadata (keywords aka markers so you can filter tests to be executed invoking pytest with marker expressions,
+decoupled test data, etc).
 
-Some optional metadata for each YAML scenario. In this case we have one or more markers so
-you can filter tests to be executed invoking pytest with marker expressions. There is an
-example of test parametrization too.
-So the same ``test_login.yml`` scenario will be executed 3 times with different
+The same ``test_login.yml`` scenario will be executed 3 times with different
 decoupled test data::
 
   $ cat test_login.ini
@@ -144,6 +146,8 @@ decoupled test data::
       {"username": "siteadmin", "password": "siteadmin"}
       {"username": "editor", "password": "editor"}
       {"username": "reader", "password": "reader"}
+
+So write once and execute many times with different test data!
 
 You can see a basic example here:
 
