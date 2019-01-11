@@ -1,8 +1,8 @@
 Changelog
-*********
+=========
 
 2.0.0 (unreleased)
-==================
+------------------
 
 - Renamed fixture from `play_json` to `play` (#5)
 
@@ -13,11 +13,13 @@ Changelog
 
 - `play.execute_command` accepts a Python dictionary only now (not a string)
 
+- Fix invalid markup on PyPI (#55)
+
 - Fix invalid escape sequences (#62).
 
 
 1.4.2 (2018-05-17)
-==================
+------------------
 
 - Configuration change on Github. Use the same branching policy adopted by
   pytest (master becomes main branch, see #56)
@@ -38,7 +40,7 @@ Changelog
 
 
 1.4.1 (2018-04-06)
-==================
+------------------
 
 - Documentation improvements
 
@@ -46,7 +48,7 @@ Changelog
 
 
 1.4.0 (2018-04-05)
-==================
+------------------
 
 - Small documentation improvements
 
@@ -86,13 +88,13 @@ Changelog
 
 
 1.3.2 (2018-02-05)
-==================
+------------------
 
 - Add ``sorted`` in python expressions
 
 
 1.3.1 (2018-01-31)
-==================
+------------------
 
 - Add more tests
 
@@ -108,7 +110,7 @@ Changelog
 
 
 1.3.0 (2018-01-22)
-==================
+------------------
 
 - documentation improvements
 
@@ -116,7 +118,7 @@ Changelog
 
 
 1.2.0 (2018-01-22)
-==================
+------------------
 
 - implement python based commands in ``pytest-play`` and
   deprecates ``play_python``.
@@ -138,7 +140,7 @@ Changelog
 
 
 1.1.0 (2018-01-16)
-==================
+------------------
 
 - Documentation updated (add new pytest play plugins)
 
@@ -147,7 +149,7 @@ Changelog
 
 
 1.0.0 (2018-01-10)
-==================
+------------------
 
 - execute command accepts kwargs now
 
@@ -161,13 +163,13 @@ Changelog
 
 
 0.3.1 (2018-01-04)
-==================
+------------------
 
 - play engine now logs commands to be executed and errors
 
 
 0.3.0 (2018-01-04)
-==================
+------------------
 
 - you are able to update variables when executing commands
 
@@ -176,7 +178,7 @@ Changelog
 
 
 0.2.0 (2018-01-02)
-==================
+------------------
 
 - no more open browser by default
   pytest-play is a generic test engine and it could be used for non UI tests too.
@@ -185,13 +187,13 @@ Changelog
 
 
 0.1.0 (2017-12-22)
-==================
+------------------
 
 - implement reusable steps (include scenario)
 
 - minor documentation changes
 
 0.0.1 (2017-12-20)
-==================
+------------------
 
 - First release
