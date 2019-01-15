@@ -4,17 +4,12 @@ import pytest
 @pytest.mark.parametrize("cli_options", [
     ('-k', 'notestdeselect',),
 ])
-def test_autoexecute_json_keywords_skipped(testdir, cli_options):
-    json_file = testdir.makefile(".json", """
-        {
-            "steps": [
-                {
-                    "provider": "python",
-                    "type": "assert",
-                    "expression": "1"
-                }
-            ]
-        }
+def test_autoexecute_yml_keywords_skipped(testdir, cli_options):
+    yml_file = testdir.makefile(".yml", """
+---
+- provider: python
+  type: assert
+  expression: "1"
     """)
     ini_file = testdir.makefile(".ini", """
         [pytest]
@@ -22,8 +17,8 @@ def test_autoexecute_json_keywords_skipped(testdir, cli_options):
             marker1
             marker2
     """)
-    assert json_file.basename.startswith('test_')
-    assert json_file.basename.endswith('.json')
+    assert yml_file.basename.startswith('test_')
+    assert yml_file.basename.endswith('.yml')
     assert ini_file.basename.startswith('test_')
     assert ini_file.basename.endswith('.ini')
 

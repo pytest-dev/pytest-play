@@ -9,6 +9,4 @@ class IncludeProvider(BaseProvider):
         """ Include scenario """
         file_path = os.path.normcase(command['path'])
         data = self.engine.get_file_contents(file_path)
-        self.engine.execute(
-            self.engine.parametrizer.parametrize(data)
-        )
+        self.engine.execute_raw(data)

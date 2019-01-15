@@ -35,14 +35,14 @@ docs_require = [
 
 setup(
     name='pytest-play',
-    version='1.4.3.dev0',
+    version='2.0.0.dev0',
     author='Davide Moro',
     author_email='davide.moro@gmail.com',
     maintainer='Davide Moro',
     maintainer_email='davide.moro@gmail.com',
     license='Apache Software License 2.0',
     url='https://github.com/davidemoro/pytest-play',
-    description='pytest plugin that let you play a json file '
+    description='pytest plugin that let you play a YAML file '
                 'describing some actions and assertions.',
     long_description=open("README.rst").read() + "\n" +
     open("CHANGES.rst").read(),
