@@ -42,7 +42,7 @@ setup(
     maintainer_email='davide.moro@gmail.com',
     license='Apache Software License 2.0',
     url='https://github.com/davidemoro/pytest-play',
-    description='pytest plugin that let you play a json file '
+    description='pytest plugin that let you play a YAML file '
                 'describing some actions and assertions.',
     long_description=open("README.rst").read() + "\n" +
     open("CHANGES.rst").read(),

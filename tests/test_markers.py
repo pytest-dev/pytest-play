@@ -11,16 +11,16 @@ def test_autoexecute_yml_markers_skipped(testdir, cli_options):
   type: assert
   expression: "1"
     """)
-    ini_file = testdir.makefile(".ini", """
-        [pytest]
-        markers =
-            marker1
-            marker2
+    metadata_file = testdir.makefile(".metadata", """
+---
+markers:
+  - marker1
+  - marker2
     """)
     assert yml_file.basename.startswith('test_')
     assert yml_file.basename.endswith('.yml')
-    assert ini_file.basename.startswith('test_')
-    assert ini_file.basename.endswith('.ini')
+    assert metadata_file.basename.startswith('test_')
+    assert metadata_file.basename.endswith('.metadata')
 
     result = testdir.runpytest(*cli_options)
 
@@ -36,16 +36,16 @@ def test_autoexecute_yml_markers_passed(testdir):
   type: assert
   expression: "1"
     """)
-    ini_file = testdir.makefile(".ini", """
-        [pytest]
-        markers =
-            marker1
-            marker2
+    metadata_file = testdir.makefile(".metadata", """
+---
+markers:
+  - marker1
+  - marker2
     """)
     assert yml_file.basename.startswith('test_')
     assert yml_file.basename.endswith('.yml')
-    assert ini_file.basename.startswith('test_')
-    assert ini_file.basename.endswith('.ini')
+    assert metadata_file.basename.startswith('test_')
+    assert metadata_file.basename.endswith('.metadata')
 
     result = testdir.runpytest('-m marker1')
 
@@ -59,16 +59,16 @@ def test_autoexecute_yml_markers_strict_passed(testdir):
   type: assert
   expression: "1"
     """)
-    ini_file = testdir.makefile(".ini", """
-        [pytest]
-        markers =
-            marker1
-            marker2
+    metadata_file = testdir.makefile(".metadata", """
+---
+markers:
+  - marker1
+  - marker2
     """)
     assert yml_file.basename.startswith('test_')
     assert yml_file.basename.endswith('.yml')
-    assert ini_file.basename.startswith('test_')
-    assert ini_file.basename.endswith('.ini')
+    assert metadata_file.basename.startswith('test_')
+    assert metadata_file.basename.endswith('.metadata')
 
     result = testdir.runpytest('-m marker1 --strict')
 

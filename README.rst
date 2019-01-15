@@ -87,7 +87,7 @@ containing a login scenario::
   $ tree
   .
   ├── env-ALPHA.yml    (OPTIONAL)
-  ├── test_login.ini   (OPTIONAL)
+  ├── test_login.metadata   (OPTIONAL)
   └── test_login.yml
 
 and you might have some global variables in a settings file specific for a target environment::  
@@ -131,21 +131,24 @@ The test scenario with action and assertions::
       value: ".icon-user"
     type: waitForElementVisible
 
-For each script or scenario you might have an optional file with the same name with ``.ini`` extension for
+For each script or scenario you might have an optional file with the same name with ``.metadata`` extension for
 metadata (keywords aka markers so you can filter tests to be executed invoking pytest with marker expressions,
 decoupled test data, etc).
 
 The same ``test_login.yml`` scenario will be executed 3 times with different
-decoupled test data::
+decoupled test data defined inside its ``.metadata`` file::
 
-  $ cat test_login.ini
-  [pytest]
-  markers =
-      login
-  test_data =
-      {"username": "siteadmin", "password": "siteadmin"}
-      {"username": "editor", "password": "editor"}
-      {"username": "reader", "password": "reader"}
+  $ cat test_login.metadata
+  ---
+  markers:
+    - login
+  test_data:
+    - username: siteadmin
+      password: siteadmin
+    - username: editor
+      password: editor
+    - username: reader
+      password: reader
 
 So write once and execute many times with different test data!
 
@@ -671,19 +674,18 @@ If you want you can generate a new command provider thanks to:
 
 * https://github.com/davidemoro/cookiecutter-play-plugin
 
-JSON files metadata
--------------------
+Metadata files
+--------------
 
-You can describe a scenario in pure JSON. You can also add some scenario metadata for
-a ``test_XXX.yml`` creating a ``test_XXX.ini`` file::
+You can also add some scenario metadata for
+a ``test_XXX.yml`` creating a ``test_XXX.metadata`` file with YAML syntax::
 
-    [pytest]
-    markers =
-        marker1
-        marker2
-    test_data =
-        {"username": "foo"}
-        {"username": "bar"}
+    markers:
+      - marker1
+      - marker2
+    test_data:
+      - username: foo
+      - username: bar
 
 Option details:
 
@@ -691,8 +693,10 @@ Option details:
   in pytest command line for filtering scenarios to be executed thanks to marker
   expressions like ``-m "marker1 and not slow"``
 
-* ``test_data``, enables parametrization of arguments for a json scenario. For example
-  if test data provides 2 json objects, your test scenario will be executed twice
+* ``test_data``, enables parametrization of your decoupletd test data and let you execute
+  the same scenario many times. For example
+  the example above will be executed twice (one time with "foo" username and another time
+  with "bar")
 
 New options will be added in the next feature (e.g., skip scenarios, xfail, xpass, etc).
 

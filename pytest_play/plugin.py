@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-import json
+import yaml
 import os
-import configparser
 import re
 import pytest
 from _pytest.fixtures import FixtureRequest
@@ -20,14 +19,14 @@ class YAMLFile(pytest.File):
         """ Returns metadata path """
         dirname = self.fspath.dirname
         basename = os.path.splitext(self.fspath.basename)[0]
-        ini_file_name = '{0}.ini'.format(basename)
-        ini_file_path = os.path.join(dirname, ini_file_name)
-        return ini_file_path
+        metadata_file_name = '{0}.metadata'.format(basename)
+        metadata_file_path = os.path.join(dirname, metadata_file_name)
+        return metadata_file_path
 
-    def _get_markers(self, pytest_conf):
+    def _get_markers(self, conf):
         """ Setup markers """
-        raw_markers = pytest_conf.get('markers', '')
-        markers = [marker for marker in raw_markers.splitlines()
+        raw_markers = conf.get('markers', [])
+        markers = [marker for marker in raw_markers
                    if marker]
         return markers
 
@@ -36,35 +35,28 @@ class YAMLFile(pytest.File):
             if self.get_marker(marker) is None:
                 if self.config.option.strict:
                     # register marker (strict mode)
-                    self.session.config.addinivalue_line(
+                    self.session.config.addmetadatavalue_line(
                         "markers", "{}: {}".format(
                             marker,
                             'dynamic marker'))
             yml_item.add_marker(marker)
 
-    def _get_test_data(self, pytest_conf):
+    def _get_test_data(self, conf):
         """ Return an array of test data if available """
-        raw_test_data = pytest_conf.get('test_data', '')
-        test_data = []
-        for item in raw_test_data.splitlines():
-            if item:
-                test_data.append(json.loads(item))
-        return test_data
+        return conf.get('test_data', '')
 
     def collect(self):
 
-        ini_file_path = self._get_metadata_path()
+        metadata_file_path = self._get_metadata_path()
         test_data = []
         markers = []
-        if os.path.isfile(ini_file_path):
-            # a pytest-play ini file exists for the given item
-            config = configparser.ConfigParser()
-            config.read(ini_file_path)
-            if 'pytest' in config.sections():
-                pytest_conf = config['pytest']
+        if os.path.isfile(metadata_file_path):
+            # a pytest-play metadata file exists for the given item
+            with open(metadata_file_path) as metadata_file:
+                config = yaml.safe_load(metadata_file)
 
-                markers = self._get_markers(pytest_conf)
-                test_data = self._get_test_data(pytest_conf)
+                markers = self._get_markers(config)
+                test_data = self._get_test_data(config)
         if not test_data:
             yml_item = YAMLItem(self.nodeid, self, self.fspath)
             self._add_markers(yml_item, markers)
