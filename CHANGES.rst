@@ -15,6 +15,13 @@ Changelog
 
 - `play.execute_command` accepts a Python dictionary only now (not a string)
 
+- Selenium provider removed from ``pytest-play`` core, implemented on a
+  separate package ``play_selenium``. Starting from now you have to add
+  to your selenium commands ``provider: selenium``
+
+- engine's ``parametrizer_class`` attribute no more available (
+  use ``parametrizer.Parametrizer`` by default now)
+
 - Fix invalid markup on PyPI (#55)
 
 - Fix invalid escape sequences (#62).

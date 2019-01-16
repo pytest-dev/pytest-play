@@ -21,6 +21,7 @@ install_requires = [
     'pytest-splinter',
     'zope.interface',
     'RestrictedPython>=4.0.b2',
+    'parametrizer',
 ]
 
 tests_require = [

@@ -7,10 +7,9 @@ from datetime import (
 
 
 def test_play_engine_constructor(
-        bdd_vars, parametrizer_class, request, navigation):
+        bdd_vars, request, navigation):
     from pytest_play.engine import PlayEngine
     executor = PlayEngine(request, bdd_vars)
-    assert executor.parametrizer_class is parametrizer_class
     assert executor.navigation is navigation
     assert executor.variables == bdd_vars
 
