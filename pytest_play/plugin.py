@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
+import uuid
 import yaml
 import os
 import re
 import pytest
-from _pytest.fixtures import FixtureRequest
+from _pytest.fixtures import (
+    FixtureRequest,
+    FixtureLookupError,
+)
 from collections import namedtuple
 
 
@@ -144,7 +148,7 @@ def play_engine_class():
 
 
 @pytest.fixture
-def play(request, play_engine_class, bdd_vars, variables, skin):
+def play(request, play_engine_class, variables, skin):
     """
         How to use yml_executor::
 
@@ -153,7 +157,12 @@ def play(request, play_engine_class, bdd_vars, variables, skin):
                     '/my/path/etc', 'login.yml')
                 play.execute_raw(data)
     """
-    context = bdd_vars.copy()
+    try:
+        bdd_vars = request.getfixturevalue('bdd_vars')
+        context = bdd_vars.copy()
+    except FixtureLookupError:
+        context = {'test_run_identifier': "QA-{0}".format(str(uuid.uuid1()))}
+
     if 'pytest-play' in variables:
         for name, value in variables['pytest-play'].items():
             context[name] = value

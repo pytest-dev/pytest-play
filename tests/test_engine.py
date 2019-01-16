@@ -886,13 +886,12 @@ def test_splinter_execute_includes(dummy_executor, data_base_path):
         calls, any_order=False) is None
 
 
-def test_include(play, test_run_identifier, page_instance,
-                 data_base_path):
+def test_include(play, page_instance, data_base_path):
     yml_data = [
         {"provider": "include", "type": "include",
          "path": "{0}/included-scenario.yml".format(data_base_path)},
         {"type": "get", "url": "http://2"},
-        {"type": "get", "url": "http://{0}".format(test_run_identifier)}
+        {"type": "get", "url": "http://3"}
     ]
     play \
         .navigation \
@@ -902,7 +901,7 @@ def test_include(play, test_run_identifier, page_instance,
     calls = [
         mock.call('http://'),
         mock.call('http://2'),
-        mock.call('http://{0}'.format(test_run_identifier)),
+        mock.call('http://3'),
     ]
     assert play \
         .navigation \
@@ -914,8 +913,7 @@ def test_include(play, test_run_identifier, page_instance,
 
 
 def test_default_command(
-        play, test_run_identifier, page_instance,
-        data_base_path):
+        play, page_instance, data_base_path):
     play.variables['include'] = {'comment': 'default comment'}
     play.get_command_provider = mock.MagicMock()
     yml_data = [
@@ -935,8 +933,7 @@ def test_default_command(
 
 
 def test_default_command_override(
-        play, test_run_identifier, page_instance,
-        data_base_path):
+        play, page_instance, data_base_path):
     play.variables['include'] = {'comment': 'default comment'}
     play.get_command_provider = mock.MagicMock()
     yml_data = [
@@ -957,8 +954,7 @@ def test_default_command_override(
 
 
 def test_default_command_override_dict(
-        play, test_run_identifier, page_instance,
-        data_base_path):
+        play, page_instance, data_base_path):
     play.variables['include'] = {
         'comment': {'comment': 'default comment'}}
     play.get_command_provider = mock.MagicMock()
@@ -981,8 +977,7 @@ def test_default_command_override_dict(
 
 
 def test_default_command_override_dict_2(
-        play, test_run_identifier, page_instance,
-        data_base_path):
+        play, page_instance, data_base_path):
     play.variables['include'] = {
         'comment': {'comment': 'default comment'}}
     play.get_command_provider = mock.MagicMock()
@@ -1005,8 +1000,7 @@ def test_default_command_override_dict_2(
 
 
 def test_default_command_override_dict_4(
-        play, test_run_identifier, page_instance,
-        data_base_path):
+        play, page_instance, data_base_path):
     play.variables['include'] = {
         'comment': {'comment': 'default comment'}}
     play.get_command_provider = mock.MagicMock()
@@ -1028,8 +1022,7 @@ def test_default_command_override_dict_4(
 
 
 def test_default_command_override_dict_3(
-        play, test_run_identifier, page_instance,
-        data_base_path):
+        play, page_instance, data_base_path):
     play.variables['include'] = {
         'comment': 'default comment'}
     play.get_command_provider = mock.MagicMock()
@@ -1051,8 +1044,8 @@ def test_default_command_override_dict_3(
             expected_command) is None
 
 
-def test_include_string(play, test_run_identifier, page_instance,
-                        data_base_path):
+def test_include_string(play, page_instance, data_base_path):
+    play.variables['foo'] = 'bar'
     yml_data = """
 ---
 - provider: include
@@ -1061,7 +1054,7 @@ def test_include_string(play, test_run_identifier, page_instance,
 - type: get
   url: http://2
 - type: get
-  url: http://$test_run_identifier
+  url: http://$foo
     """ % data_base_path
     play \
         .navigation \
@@ -1071,7 +1064,7 @@ def test_include_string(play, test_run_identifier, page_instance,
     calls = [
         mock.call('http://'),
         mock.call('http://2'),
-        mock.call('http://{0}'.format(test_run_identifier)),
+        mock.call('http://bar'),
     ]
     assert play \
         .navigation \
