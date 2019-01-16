@@ -30,5 +30,5 @@ def test_play_variables(play, navigation, bdd_vars):
     """ If you provide values inside a pytest-play section of your pytest-variables
         file, they become available to pytest-play """
     assert 'date_format' in play.variables
-    assert 'date_formant' not in bdd_vars
+    assert 'date_format' not in bdd_vars
     assert play.variables['date_format'] == 'YYYYMMDD'
