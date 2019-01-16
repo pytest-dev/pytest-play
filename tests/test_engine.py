@@ -6,13 +6,12 @@ from datetime import (
 )
 
 
-def test_play_engine_constructor(
-        bdd_vars, request, navigation):
+def test_play_engine_constructor(request, navigation):
     from pytest_play.engine import PlayEngine
-    executor = PlayEngine(request, bdd_vars)
+    executor = PlayEngine(request, {'foo': 'bar'})
     assert executor.navigation is navigation
     assert executor.request is request
-    assert executor.variables == bdd_vars
+    assert executor.variables == {'foo': 'bar'}
 
 
 def test_get_file_contents(play, data_base_path):
