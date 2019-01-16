@@ -22,6 +22,7 @@ class PlayEngine(object):
             * **variables**. A dictionary that wil be used for parametrize
               commands
         """
+        self.request = request
         self.navigation = request.getfixturevalue('navigation')
         self.variables = variables
         self.logger = logging.getLogger()

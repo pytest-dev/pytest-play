@@ -11,6 +11,7 @@ def test_play_engine_constructor(
     from pytest_play.engine import PlayEngine
     executor = PlayEngine(request, bdd_vars)
     assert executor.navigation is navigation
+    assert executor.request is request
     assert executor.variables == bdd_vars
 
 
