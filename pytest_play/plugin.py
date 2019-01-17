@@ -11,6 +11,15 @@ from _pytest.fixtures import (
 from collections import namedtuple
 
 
+def _get_marker(node, name):
+    try:
+        marker = node.get_closest_marker(name)
+    except AttributeError:
+        # backwards compatibility with old pytest versions
+        marker = node.get_marker(name)
+    return marker
+
+
 def pytest_collect_file(parent, path):
     """ Collect test_XXX.yml files """
     if path.ext in(".yaml", ".yml") and path.basename.startswith("test_"):
@@ -36,7 +45,7 @@ class YAMLFile(pytest.File):
 
     def _add_markers(self, yml_item, markers):
         for marker in markers:
-            if self.get_marker(marker) is None:
+            if _get_marker(self, marker) is None:
                 if self.config.option.strict:
                     # register marker (strict mode)
                     self.session.config.addmetadatavalue_line(
@@ -62,14 +71,14 @@ class YAMLFile(pytest.File):
                 markers = self._get_markers(config)
                 test_data = self._get_test_data(config)
         if not test_data:
-            yml_item = YAMLItem(self.nodeid, self, self.fspath)
+            yml_item = YAMLItem(self.nodeid, parent=self, config=self.fspath)
             self._add_markers(yml_item, markers)
             yield yml_item
         else:
             for index, data in enumerate(test_data):
                 yml_item = YAMLItem('{0}{1}'.format(self.nodeid, index),
-                                    self,
-                                    self.fspath,
+                                    parent=self,
+                                    config=self.fspath,
                                     test_data=data)
                 self._add_markers(yml_item, markers)
                 yield yml_item
@@ -77,9 +86,11 @@ class YAMLFile(pytest.File):
 
 class YAMLItem(pytest.Item):
 
-    def __init__(self, name, parent, path, test_data=None):
-        super(YAMLItem, self).__init__(name, parent)
-        self.path = getattr(path, 'strpath', path)
+    # def __init__(self, name, parent, path, test_data=None):
+    def __init__(self, name, parent=None, config=None, session=None, nodeid=None, test_data=None):
+        super(YAMLItem, self).__init__(name, parent, config, session, nodeid=nodeid)
+        # self.path = getattr(path, 'strpath', path)
+        self.path = getattr(config, 'strpath', config)
         self.fixture_request = None
         self.play = None
         self.raw_data = None

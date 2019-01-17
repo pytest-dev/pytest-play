@@ -23,7 +23,6 @@ class PlayEngine(object):
               commands
         """
         self.request = request
-        self.navigation = request.getfixturevalue('navigation')
         self.variables = variables
         self.logger = logging.getLogger()
         self.gsm = component.getGlobalSiteManager()

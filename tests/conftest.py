@@ -1,6 +1,5 @@
 import os
 import pytest
-import mock
 
 
 pytest_plugins = 'pytester'
@@ -32,24 +31,7 @@ def variables(skin):
 
 
 @pytest.fixture
-def browser():
-    from zope.interface import alsoProvides
-    from pypom.splinter_driver import ISplinter
-    driver = mock.MagicMock()
-    alsoProvides(driver, ISplinter)
-    return driver
-
-
-@pytest.fixture
-def page_instance(browser):
-    return mock.MagicMock()
-
-
-@pytest.fixture
-def dummy_executor(page_instance, request):
+def dummy_executor(request):
     from pytest_play.engine import PlayEngine
     engine = PlayEngine(request, {'foo': 'bar'})
-    # initialize browser
-    engine.navigation.setPage(page_instance)
-    engine.navigation.get_page_instance = lambda *args, **kwargs: page_instance
     return engine
