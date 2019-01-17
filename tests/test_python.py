@@ -165,7 +165,7 @@ def test_wait_until_countdown(play):
         'provider': 'python',
         'type': 'wait_until',
         'expression': 'variables["countdown"] == 0',
-        'timeout': 1.3,
+        'timeout': 2.3,
         'poll': 0.1,
         'sub_commands': [{
             'provider': 'python',
@@ -234,7 +234,7 @@ def test_wait_until_not_countdown(play):
         'provider': 'python',
         'type': 'wait_until_not',
         'expression': 'variables["countdown"] > 0',
-        'timeout': 1.3,
+        'timeout': 2.3,
         'poll': 0.1,
         'sub_commands': [{
             'provider': 'python',
