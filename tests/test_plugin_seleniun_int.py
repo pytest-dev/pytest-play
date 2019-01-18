@@ -8,7 +8,7 @@ def bdd_vars():
     return {'using': 'bdd_vars'}
 
 
-def test_play_variables(play, navigation, bdd_vars):
+def test_play_variables(play, bdd_vars):
     """ If you provide values inside a pytest-play section of your pytest-variables
         file, they become available to pytest-play """
     assert 'date_format' in play.variables

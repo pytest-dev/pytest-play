@@ -2,10 +2,9 @@ import pytest
 import mock
 
 
-def test_play_engine_constructor(request, navigation):
+def test_play_engine_constructor(request):
     from pytest_play.engine import PlayEngine
     executor = PlayEngine(request, {'foo': 'bar'})
-    assert executor.navigation is navigation
     assert executor.request is request
     assert executor.variables == {'foo': 'bar'}
 
@@ -161,8 +160,7 @@ def test_execute_includes(dummy_executor, data_base_path):
     assert dummy_executor.variables['included'] == 1
 
 
-def test_default_command(
-        play, page_instance, data_base_path):
+def test_default_command(play, data_base_path):
     play.variables['include'] = {'comment': 'default comment'}
     play.get_command_provider = mock.MagicMock()
     yml_data = [
@@ -181,8 +179,7 @@ def test_default_command(
             expected_command) is None
 
 
-def test_default_command_override(
-        play, page_instance, data_base_path):
+def test_default_command_override(play, data_base_path):
     play.variables['include'] = {'comment': 'default comment'}
     play.get_command_provider = mock.MagicMock()
     yml_data = [
@@ -202,8 +199,7 @@ def test_default_command_override(
             expected_command) is None
 
 
-def test_default_command_override_dict(
-        play, page_instance, data_base_path):
+def test_default_command_override_dict(play, data_base_path):
     play.variables['include'] = {
         'comment': {'comment': 'default comment'}}
     play.get_command_provider = mock.MagicMock()
@@ -225,8 +221,7 @@ def test_default_command_override_dict(
             expected_command) is None
 
 
-def test_default_command_override_dict_2(
-        play, page_instance, data_base_path):
+def test_default_command_override_dict_2(play, data_base_path):
     play.variables['include'] = {
         'comment': {'comment': 'default comment'}}
     play.get_command_provider = mock.MagicMock()
@@ -249,7 +244,7 @@ def test_default_command_override_dict_2(
 
 
 def test_default_command_override_dict_4(
-        play, page_instance, data_base_path):
+        play, data_base_path):
     play.variables['include'] = {
         'comment': {'comment': 'default comment'}}
     play.get_command_provider = mock.MagicMock()
@@ -271,7 +266,7 @@ def test_default_command_override_dict_4(
 
 
 def test_default_command_override_dict_3(
-        play, page_instance, data_base_path):
+        play, data_base_path):
     play.variables['include'] = {
         'comment': 'default comment'}
     play.get_command_provider = mock.MagicMock()
@@ -293,7 +288,7 @@ def test_default_command_override_dict_3(
             expected_command) is None
 
 
-def test_include_string(play, page_instance, data_base_path):
+def test_include_string(play, data_base_path):
     play.variables['foo'] = 'bar'
     yml_data = """
 ---

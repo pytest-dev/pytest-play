@@ -23,10 +23,15 @@ def _get_marker(node, name):
 def pytest_collect_file(parent, path):
     """ Collect test_XXX.yml files """
     if path.ext in(".yaml", ".yml") and path.basename.startswith("test_"):
-        return YAMLFile(path, parent)
+        return YAMLFile(path, parent=parent)
 
 
 class YAMLFile(pytest.File):
+
+    def __init__(self, fspath, parent=None, config=None,
+                 session=None, nodeid=None):
+        super(YAMLFile, self).__init__(fspath, parent=parent, config=config)
+        self.obj = self
 
     def _get_metadata_path(self):
         """ Returns metadata path """
@@ -71,14 +76,14 @@ class YAMLFile(pytest.File):
                 markers = self._get_markers(config)
                 test_data = self._get_test_data(config)
         if not test_data:
-            yml_item = YAMLItem(self.nodeid, parent=self, config=self.fspath)
+            yml_item = YAMLItem(self.nodeid, parent=self, config=self.config)
             self._add_markers(yml_item, markers)
             yield yml_item
         else:
             for index, data in enumerate(test_data):
                 yml_item = YAMLItem('{0}{1}'.format(self.nodeid, index),
                                     parent=self,
-                                    config=self.fspath,
+                                    config=self.config,
                                     test_data=data)
                 self._add_markers(yml_item, markers)
                 yield yml_item
@@ -86,11 +91,11 @@ class YAMLFile(pytest.File):
 
 class YAMLItem(pytest.Item):
 
-    # def __init__(self, name, parent, path, test_data=None):
-    def __init__(self, name, parent=None, config=None, session=None, nodeid=None, test_data=None):
-        super(YAMLItem, self).__init__(name, parent, config, session, nodeid=nodeid)
-        # self.path = getattr(path, 'strpath', path)
-        self.path = getattr(config, 'strpath', config)
+    def __init__(self, name, parent=None, config=None, session=None,
+                 nodeid=None, test_data=None):
+        super(YAMLItem, self).__init__(
+            name, parent, config, session, nodeid=nodeid)
+        self.path = getattr(parent.fspath, 'strpath')
         self.fixture_request = None
         self.play = None
         self.raw_data = None
@@ -159,7 +164,7 @@ def play_engine_class():
 
 
 @pytest.fixture
-def play(request, play_engine_class, variables, skin):
+def play(request, play_engine_class, variables):
     """
         How to use yml_executor::
 
@@ -168,16 +173,21 @@ def play(request, play_engine_class, variables, skin):
                     '/my/path/etc', 'login.yml')
                 play.execute_raw(data)
     """
+    context = None
+    skin = None
     try:
         bdd_vars = request.getfixturevalue('bdd_vars')
         context = bdd_vars.copy()
+        skin = request.getfixturevalue('skin')
     except FixtureLookupError:
-        context = {'test_run_identifier': "QA-{0}".format(str(uuid.uuid1()))}
+        context = context is not None and context or {
+            'test_run_identifier': "QA-{0}".format(str(uuid.uuid1()))}
+        skin = skin is not None and skin or 'skin1'
 
     if 'pytest-play' in variables:
         for name, value in variables['pytest-play'].items():
             context[name] = value
-    if 'skins' in variables:
+    if 'skins' in variables and skin is not None:
         skin_settings = variables['skins'][skin]
         if 'base_url' in skin_settings:
             context['base_url'] = skin_settings['base_url']
