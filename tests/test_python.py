@@ -6,11 +6,6 @@
 import pytest
 
 
-@pytest.fixture(scope='session')
-def variables():
-    return {'skins': {'skin1': {'base_url': 'http://', 'credentials': {}}}}
-
-
 @pytest.mark.parametrize('expression', [
     '200 == 200',
     '200 != 404 and 10>0',
