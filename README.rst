@@ -1,3 +1,4 @@
+selenium
 ===========
 pytest-play
 ===========
@@ -416,7 +417,7 @@ pause the execution flow of your commands::
       waitTime: 1500
 
 If you need a pause/sleep for non UI tests you can use the
-``sleep`` command provided by the play_python_ plugin.
+``sleep`` command provided by the core Python based commands.
 
 Click an element
 ================
@@ -722,6 +723,10 @@ Third party pytest-play plugins
 
   You can also build a simulator that generates messages for you.
 
+* play_selenium_, ``pytest-play`` plugin driving browsers using Selenium/Splinter
+  under the hood. Selenium grid compatible and implicit auto wait actions
+  for more robust scenarios with less controls.
+
 * play_requests_, ``pytest-play`` plugin driving the famous Python ``requests``
   library for making ``HTTP`` calls.
 
@@ -753,7 +758,7 @@ Twitter
 .. _`play.yml`: https://github.com/davidemoro/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/data/play.yml
 .. _`test_play.py`: https://github.com/davidemoro/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/test_play.py
 .. _`play_mqtt`: https://github.com/davidemoro/play_mqtt
-.. _`play_python`: https://github.com/davidemoro/play_python
+.. _`play_selenium`: https://github.com/davidemoro/play_selenium
 .. _`play_requests`: https://github.com/davidemoro/play_requests
 .. _`play_sql`: https://github.com/davidemoro/play_sql
 .. _`play_cassandra`: https://github.com/davidemoro/play_cassandra
