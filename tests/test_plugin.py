@@ -19,3 +19,18 @@ def test_get_marker():
     assert get_marker(node, 'name') is None
     assert node.get_marker.assert_called_once_with(
         'name') is None
+
+
+def test_yaml_file():
+    import mock
+    from pytest_play.plugin import YAMLFile
+    from py.path import local
+    parent = local('/tmp/')
+    parent.fspath = '/tmp'
+    parent.config = mock.MagicMock()
+    parent.session = mock.MagicMock()
+    parent.session.config.rootdir = '/tmp'
+    yaml_file = YAMLFile(local('/tmp/test_file.yml'), parent=parent)
+    assert yaml_file.fspath == '/tmp/test_file.yml'
+    # pytest > 4.0 compatibility
+    assert yaml_file.obj is yaml_file
