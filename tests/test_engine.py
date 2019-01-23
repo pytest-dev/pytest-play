@@ -309,3 +309,13 @@ def test_include_string(play, data_base_path):
     """ % data_base_path
     play.execute_raw(yml_data)
     assert play.variables['included'] == 2
+
+
+def test_teardown(play):
+    import mock
+    play._teardown = [
+        mock.MagicMock(side_effect=AttributeError()),
+        mock.MagicMock()]
+    play.teardown()
+    assert play._teardown[0].assert_called_once_with() is None
+    assert play._teardown[1].assert_called_once_with() is None
