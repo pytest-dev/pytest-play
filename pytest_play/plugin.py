@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-import uuid
-import yaml
-import os
-import re
-import pytest
-from _pytest.fixtures import (
+import uuid            # pragma: no cover
+import yaml            # pragma: no cover
+import os              # pragma: no cover
+import re              # pragma: no cover
+import pytest          # pragma: no cover
+from _pytest.fixtures import (    # pragma: no cover
     FixtureRequest,
     FixtureLookupError,
 )
-from collections import namedtuple
+from collections import namedtuple  # pragma: no cover
 
 
 def get_marker(node, name):
@@ -27,7 +27,6 @@ def pytest_collect_file(parent, path):
 
 
 class YAMLFile(pytest.File):
-
     def __init__(self, fspath, parent=None, config=None,
                  session=None, nodeid=None):
         super(YAMLFile, self).__init__(fspath, parent=parent, config=config)
@@ -90,7 +89,6 @@ class YAMLFile(pytest.File):
 
 
 class YAMLItem(pytest.Item):
-
     def __init__(self, name, parent=None, config=None, session=None,
                  nodeid=None, test_data=None):
         super(YAMLItem, self).__init__(
@@ -138,22 +136,6 @@ class YAMLItem(pytest.Item):
     def runtest(self):
         data = self.play.get_file_contents(self.path)
         self.play.execute_raw(data, extra_variables=self.test_data)
-
-    def repr_failure(self, excinfo):
-        """ called when self.runtest() raises an exception. """
-        if isinstance(excinfo.value, YAMLException):
-            return "\n".join([
-                "usecase execution failed",
-                "   spec failed: %r: %r" % excinfo.value.args[1:3],
-                "   no further details known at this point."
-            ])
-
-    def reportinfo(self):
-        return self.fspath, 0, "usecase: %s" % self.name
-
-
-class YAMLException(Exception):
-    """ custom exception for error reporting. """
 
 
 @pytest.fixture
