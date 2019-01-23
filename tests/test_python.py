@@ -149,6 +149,21 @@ def test_sleep():
     assert now_now >= expected_date
 
 
+@pytest.mark.parametrize("sleep_time", [0.1, "0.1"])
+def test_sleep_float(sleep_time):
+    import mock
+    mock_engine = mock.MagicMock()
+    mock_engine.variables = {}
+    from pytest_play import providers
+    provider = providers.PythonProvider(mock_engine)
+    assert provider.engine is mock_engine
+    provider.command_sleep({
+        'provider': 'python',
+        'type': 'sleep',
+        'seconds': sleep_time
+    })
+
+
 def test_wait_until_countdown(play):
     play.variables = {'countdown': 10}
     from datetime import (
@@ -352,4 +367,20 @@ def test_parametrization_template_string(play):
 - provider: python
   type: sleep
   seconds: $sleep_time
+        """)
+
+
+def test_parametrization_template_string_2(play):
+    play.variables = {}
+    # should not raise any exception
+    play.execute_raw("""
+---
+- provider: python
+  type: store_variable
+  name: python
+  expression: '{"comment": "a default comment"}'
+- provider: python
+  type: sleep
+  seconds: "0.1"
+  comment: a default comment
         """)

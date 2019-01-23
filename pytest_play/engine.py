@@ -66,7 +66,7 @@ class PlayEngine(object):
         """ Merge command with the default command available in
             engine.variables['provider']
         """
-        provider = command.get('provider', 'default')
+        provider = command['provider']
         provider_conf = self.variables.get(provider, {})
         if provider_conf:
             default = self._yaml_loads(
