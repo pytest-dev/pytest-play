@@ -1,16 +1,4 @@
 # -*- coding: utf-8 -*-
-import pytest
-
-
-@pytest.fixture
-def browser():
-    import mock
-    browser = mock.MagicMock()
-
-    from zope.interface import alsoProvides
-    from pypom.splinter_driver import ISplinter
-    alsoProvides(browser, ISplinter)
-    return browser
 
 
 def test_play_engine_class(play_engine_class):
@@ -18,19 +6,31 @@ def test_play_engine_class(play_engine_class):
     assert play_engine_class is PlayEngine
 
 
-def test_play(play, navigation, bdd_vars, parametrizer_class):
-    assert play.navigation is navigation
-    assert play.navigation.page is navigation.page
-    assert play.variables != bdd_vars
-    assert 'base_url' in play.variables
-    assert 'base_url' not in bdd_vars
-    assert play.parametrizer_class is parametrizer_class
+def test_play(play):
+    assert play.variables['base_url'] == 'http://'
 
 
-def test_play_variables(play, navigation, bdd_vars,
-                        parametrizer_class):
-    """ If you provide values inside a pytest-play section of your pytest-variables
-        file, they become available to pytest-play """
-    assert 'date_format' in play.variables
-    assert 'date_formant' not in bdd_vars
-    assert play.variables['date_format'] == 'YYYYMMDD'
+def test_get_marker():
+    import mock
+    node = mock.MagicMock()
+    node.get_closest_marker.side_effect = AttributeError()
+    node.get_marker.return_value = None
+    from pytest_play.plugin import get_marker
+    assert get_marker(node, 'name') is None
+    assert node.get_marker.assert_called_once_with(
+        'name') is None
+
+
+def test_yaml_file():
+    import mock
+    from pytest_play.plugin import YAMLFile
+    from py.path import local
+    parent = local('/tmp/')
+    parent.fspath = '/tmp'
+    parent.config = mock.MagicMock()
+    parent.session = mock.MagicMock()
+    parent.session.config.rootdir = '/tmp'
+    yaml_file = YAMLFile(local('/tmp/test_file.yml'), parent=parent)
+    assert yaml_file.fspath == '/tmp/test_file.yml'
+    # pytest > 4.0 compatibility
+    assert yaml_file.obj is yaml_file

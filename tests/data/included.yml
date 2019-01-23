@@ -1,0 +1,5 @@
+---
+- provider: python
+  type: store_variable
+  name: included
+  expression: "1"

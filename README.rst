@@ -1,3 +1,4 @@
+selenium
 ===========
 pytest-play
 ===========
@@ -23,7 +24,7 @@ through actions and assertions that can be implemented and managed even by **non
   call a JSON based API endpoint, perform an action if a condition matches) or a test automation
   project with many test scenarios.
 
-  So not only test automation, for example you can create always fresh test data on demand supporting
+  For example you can create always fresh test data on demand supporting
   manual testing activities, build a live simulator and so on
 
 * codeless, or better almost codeless. If you have to write assertions against action results or some
@@ -96,7 +97,7 @@ and you might have some global variables in a settings file specific for a targe
   pytest-play:
     base_url: https://www.yoursite.com
 
-The test scenario with action and assertions::
+The test scenario with action and assertions (play_selenium_ external plugin needed)::
   
   $ cat test_login.yml
   ---
@@ -218,7 +219,7 @@ Default commands
 Some commands require many verbose options you don't want to repeat (eg: authentication headers for play_requests_).
 
 Instead of replicating all the headers information you can initialize a ``pytest-play`` with the provider name as
-key and as a value the default command you want to omit::
+key and as a value the default command you want to omit (this example neets the external plugin play_selenium_)::
 
     - provider: python
       type: store_variable
@@ -274,7 +275,8 @@ You can execute a Python expression::
 Wait until condition
 ====================
 
-The ``wait_until_not`` command waits until the wait expression is `False`::
+The ``wait_until_not`` command waits until the wait expression is `False` (this example
+contains a SQL query so the external plugin called play_sql_ is needed)::
 
     - provider: python
       type: wait_until_not
@@ -352,266 +354,8 @@ like the following::
 Browser based commands
 ----------------------
 
-Browser based commands here.
-``pytest-play`` supports by default browser interactions. For example it can be used for running selenium splinter_ scenarios driving your browser for your UI test or system tests.
-
-``pytest-play`` is also your friend when page object approach (considered best practice) is not possible. For example:
-
-* limited time, and/or
-* lack of programming skills
-
-Instead if you are interested in a page object pattern have a look at pypom_form_ or pypom_.
-
-``pytest-play`` supports automatic waiting that should help to keep your tests more reliable with implicit waits before
-moving on. By default it waits for node availability and visibility but it supports also some wait commands and
-wait until a given Javascript expression is ok. So it is at the same time user friendly and flexible.
-
- 
-Conditional commands (Javascript)
-=================================
-
-Based on a browser level expression (Javascript)::
-
-    - type: clickElement
-      locator:
-        type: css
-        value: body
-      condition: "'$foo' === 'bar'"
-
-
-Supported locators
-==================
-
-Supported selector types:
-
-* css
-* xpath
-* tag
-* name
-* text
-* id
-* value
-
-Open a page
-===========
-
-With parametrization::
-
-    - type: get
-      url: "$base_url"
-
-or with a regular url::
-
-    - type: get
-      url: https://google.com
-
-
-Pause
-=====
-
-This command invokes a javascript expression that will
-pause the execution flow of your commands::
-
-    - type: pause
-      waitTime: 1500
-
-If you need a pause/sleep for non UI tests you can use the
-``sleep`` command provided by the play_python_ plugin.
-
-Click an element
-================
-::
-
-    - type: clickElement
-      locator:
-        type: css
-        value: body
-
-Fill in a text
-==============
-::
-
-    - type: setElementText
-      locator:
-        type: css
-        value: input.title
-      text: text value
-
-Interact with select input elements
-===================================
-
-Select by label::
-
-    - type: select
-      locator:
-        type: css
-        value: select.city
-      text: Turin
-
-or select by value::
-
-    - type: select
-      locator:
-        type: css
-        value: select.city
-      value: '1'
-
-Eval a Javascript expression
-============================
-
-::
-
-    - type: eval
-      script: alert('Hello world!')
-
-Create a variable starting from a Javascript expression
-=======================================================
-
-The value of the Javascript expression will be stored in
-``pytest_play.variables`` under the name ``count``::
-
-    - type: storeEval
-      variable: count
-      script: document.getElementById('count')[0].textContent
-
-Assert if a Javascript expression matches
-=========================================
-
-If the result of the expression does not match an ``AssertionError``
-will be raised and the test will fail::
-
-    - type: verifyEval
-      value: '3'
-      script: document.getElementById('count')[0].textContent
-
-Verify that the text of one element contains a string
-=====================================================
-
-If the element text does not contain the provided text an
-``AssertionError`` will be raised and the test will fail::
-
-    - type: verifyText
-      locator:
-        type: css
-        value: ".my-item"
-      text: a text
-
-Send keys to an element
-=======================
-
-All ``selenium.webdriver.common.keys.Keys`` are supported::
-
-    - type: sendKeysToElement
-      locator:
-        type: css
-        value: ".confirm"
-      text: ENTER
-
-
-Supported keys::
-
-    KEYS = [
-        'ADD', 'ALT', 'ARROW_DOWN', 'ARROW_LEFT', 'ARROW_RIGHT',
-        'ARROW_UP', 'BACKSPACE', 'BACK_SPACE', 'CANCEL', 'CLEAR',
-        'COMMAND', 'CONTROL', 'DECIMAL', 'DELETE', 'DIVIDE',
-        'DOWN', 'END', 'ENTER', 'EQUALS', 'ESCAPE', 'F1', 'F10',
-        'F11', 'F12', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8',
-        'F9', 'HELP', 'HOME', 'INSERT', 'LEFT', 'LEFT_ALT',
-        'LEFT_CONTROL', 'LEFT_SHIFT', 'META', 'MULTIPLY',
-        'NULL', 'NUMPAD0', 'NUMPAD1', 'NUMPAD2', 'NUMPAD3',
-        'NUMPAD4', 'NUMPAD5', 'NUMPAD6', 'NUMPAD7', 'NUMPAD8',
-        'NUMPAD9', 'PAGE_DOWN', 'PAGE_UP', 'PAUSE', 'RETURN',
-        'RIGHT', 'SEMICOLON', 'SEPARATOR', 'SHIFT', 'SPACE',
-        'SUBTRACT', 'TAB', 'UP',
-    ]
-
-Wait until a Javascript expression matches
-==========================================
-
-Wait until the given expression matches or raise a 
-``selenium.common.exceptions.TimeoutException`` if takes too time.
-
-At this time of writing there is a global timeout (20s) but in future releases
-you will be able to override it on command basis::
-
-    - type: waitUntilCondition
-      script: document.body.getAttribute('class') === 'ready'
-
-Wait for element present in DOM
-===============================
-
-Present::
-
-    - type: waitForElementPresent
-      locator:
-        type: css
-        value: body
-
-or not present::
-
-    - type: waitForElementPresent
-      locator:
-        type: css
-        value: body
-      negated: true
-
-Wait for element visible
-========================
-
-Visible::
-
-    - type: waitForElementVisible
-      locator:
-        type: css
-        value: body
-
-or not visible::
-
-    - type: waitForElementVisible
-      locator:
-        type: css
-        value: body
-      negated: true
-
-Assert element is present in DOM
-================================
-
-An ``AssertionError`` will be raised if assertion fails.
-
-Present::
-
-    - type: assertElementPresent
-      locator:
-        type: css
-        value: div.elem
-
-or not present::
-
-    - type: assertElementPresent
-      locator:
-        type: css
-        value: div.elem
-      negated: true
-
-Assert element is visible
-=========================
-
-An ``AssertionError`` will be raised if assertion fails.
-
-Present::
-
-    - type: assertElementVisible
-      locator:
-        type: css
-        value: div.elem
-
-or not present::
-
-    - type: assertElementVisible
-      locator:
-        type: css
-        value: div.elem
-      negated: true
+The ``pytest-play`` core no more includes browser based commands. Moved to play_selenium_
+external plugin.
 
 
 How to install pytest-play
@@ -716,11 +460,9 @@ Talks:
 Third party pytest-play plugins
 -------------------------------
 
-* play_mqtt_, ``pytest-play`` plugin for MQTT support. Thanks to ``play_mqtt``
-  you can test the integration between a mocked IoT device that sends
-  commands on MQTT and a reactive web application with UI checks.
-
-  You can also build a simulator that generates messages for you.
+* play_selenium_, ``pytest-play`` plugin driving browsers using Selenium/Splinter
+  under the hood. Selenium grid compatible and implicit auto wait actions
+  for more robust scenarios with less controls.
 
 * play_requests_, ``pytest-play`` plugin driving the famous Python ``requests``
   library for making ``HTTP`` calls.
@@ -732,6 +474,13 @@ Third party pytest-play plugins
 * play_dynamodb_, ``pytest-play`` support for AWS DynamoDB queries and assertions
 
 * play_websocket_, ``pytest-play`` support for websockets
+
+* play_mqtt_, ``pytest-play`` plugin for MQTT support. Thanks to ``play_mqtt``
+  you can test the integration between a mocked IoT device that sends
+  commands on MQTT and a reactive web application with UI checks.
+
+  You can also build a simulator that generates messages for you.
+
 
 Feel free to add your own public plugins with a pull request!
 
@@ -753,7 +502,7 @@ Twitter
 .. _`play.yml`: https://github.com/davidemoro/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/data/play.yml
 .. _`test_play.py`: https://github.com/davidemoro/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/test_play.py
 .. _`play_mqtt`: https://github.com/davidemoro/play_mqtt
-.. _`play_python`: https://github.com/davidemoro/play_python
+.. _`play_selenium`: https://github.com/davidemoro/play_selenium
 .. _`play_requests`: https://github.com/davidemoro/play_requests
 .. _`play_sql`: https://github.com/davidemoro/play_sql
 .. _`play_cassandra`: https://github.com/davidemoro/play_cassandra

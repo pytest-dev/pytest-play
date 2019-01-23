@@ -5,6 +5,7 @@ import yaml
 import pkg_resources
 from zope import component
 from zope.interface import Interface
+from parametrizer import Parametrizer
 
 
 class ICommandProvider(Interface):
@@ -17,14 +18,12 @@ class PlayEngine(object):
     def __init__(self, request, variables):
         """ The executor should be initialized with:
             * **request**. A pytest ``request`` fixture that will be used
-              for looking up other fixtures like ``navigation``
-              and ``parametrizer_class``
+              for looking up other fixtures
             * **variables**. A dictionary that wil be used for parametrize
               commands
         """
-        self.navigation = request.getfixturevalue('navigation')
+        self.request = request
         self.variables = variables
-        self.parametrizer_class = request.getfixturevalue('parametrizer_class')
         self.logger = logging.getLogger()
         self.gsm = component.getGlobalSiteManager()
 
@@ -56,7 +55,7 @@ class PlayEngine(object):
     @property
     def parametrizer(self):
         """ Parametrizer engine """
-        return self.parametrizer_class(self.variables)
+        return Parametrizer(self.variables)
 
     def _yaml_loads(self, data):
         """ returns parametrized yaml dumps """
@@ -67,7 +66,7 @@ class PlayEngine(object):
         """ Merge command with the default command available in
             engine.variables['provider']
         """
-        provider = command.get('provider', 'default')
+        provider = command['provider']
         provider_conf = self.variables.get(provider, {})
         if provider_conf:
             default = self._yaml_loads(

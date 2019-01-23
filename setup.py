@@ -17,10 +17,10 @@ def read(fname):
 install_requires = [
     'pytest>=3.0.7',
     'pytest-variables[yaml]',
-    'pytest-pypom-navigation',
-    'pytest-splinter',
     'zope.interface',
+    'zope.component',
     'RestrictedPython>=4.0.b2',
+    'parametrizer',
 ]
 
 tests_require = [
@@ -67,7 +67,6 @@ setup(
     ],
     entry_points={
         'playcommands': [
-            'default = pytest_play.providers:SplinterCommandProvider',
             'include = pytest_play.providers:IncludeProvider',
             'python = pytest_play.providers:PythonProvider',
         ],

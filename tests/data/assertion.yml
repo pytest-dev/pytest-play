@@ -1,0 +1,4 @@
+---
+- provider: python
+  type: assert
+  expression: "$included == 1"

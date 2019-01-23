@@ -36,13 +36,12 @@ class PythonProvider(BaseProvider):
         """ Make an assertion based on a command containing
             a python expression
         """
-        expression = command.get('expression', None)
-        if expression:
-            context = self._get_context(kwargs)
-            assert self._exec(
-                expression,
-                context,
-            )
+        expression = command['expression']
+        context = self._get_context(kwargs)
+        assert self._exec(
+            expression,
+            context,
+        )
 
     def command_store_variable(self, command, **kwargs):
         """ Store a variable based on a command containing a
@@ -69,7 +68,7 @@ class PythonProvider(BaseProvider):
     def command_sleep(self, command, **kwargs):
         """ Exec and return an expression
         """
-        wait_time = int(command['seconds'])
+        wait_time = float(command['seconds'])
         sleep(wait_time)
 
     def command_wait_until(self, command, **kwargs):
