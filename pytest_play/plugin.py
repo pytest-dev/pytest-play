@@ -11,7 +11,7 @@ from _pytest.fixtures import (
 from collections import namedtuple
 
 
-def _get_marker(node, name):
+def get_marker(node, name):
     try:
         marker = node.get_closest_marker(name)
     except AttributeError:
@@ -50,7 +50,7 @@ class YAMLFile(pytest.File):
 
     def _add_markers(self, yml_item, markers):
         for marker in markers:
-            if _get_marker(self, marker) is None:
+            if get_marker(self, marker) is None:
                 if self.config.option.strict:
                     # register marker (strict mode)
                     self.session.config.addmetadatavalue_line(
