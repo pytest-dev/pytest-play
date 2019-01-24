@@ -4,6 +4,8 @@ Changelog
 2.0.0 (unreleased)
 ------------------
 
+Breaking changes:
+
 - Renamed fixture from `play_json` to `play` (#5)
 
 - Drop json support, adopt yaml only format for scenarios (#5)
@@ -24,11 +26,15 @@ Changelog
 - engine's ``parametrizer_class`` attribute no more available (
   use ``parametrizer.Parametrizer`` by default now)
 
-- Add examples folder
+Bug fix:
 
 - Fix invalid markup on PyPI (#55)
 
 - Fix invalid escape sequences (#62).
+
+Documentation and trivial changes:
+
+- Add examples folder
 
 
 1.4.2 (2018-05-17)
