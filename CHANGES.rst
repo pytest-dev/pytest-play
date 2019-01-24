@@ -8,7 +8,9 @@ Changelog
 
 - Drop json support, adopt yaml only format for scenarios (#5)
 
-- Drop ini format for metadata files, use YAML (#5)
+- Drop ``.ini`` file for metadata, if you need them you can add
+  a YAML document on top of the scenario ``.yml`` file. You no more
+  need multiple files for decorating your scenarios now
 
 - `play.execute` no more accepts raw data string), consumes a list of commands.
   Introduced `play.execute_raw` accepting raw data string.

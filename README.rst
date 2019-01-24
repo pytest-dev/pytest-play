@@ -88,7 +88,6 @@ containing a login scenario::
   $ tree
   .
   ├── env-ALPHA.yml    (OPTIONAL)
-  ├── test_login.metadata   (OPTIONAL)
   └── test_login.yml
 
 and you might have some global variables in a settings file specific for a target environment::  
@@ -97,9 +96,21 @@ and you might have some global variables in a settings file specific for a targe
   pytest-play:
     base_url: https://www.yoursite.com
 
-The test scenario with action and assertions (play_selenium_ external plugin needed)::
+The test scenario with action, assertions and optional metadata
+(play_selenium_ external plugin needed)::
   
   $ cat test_login.yml
+  ---
+  # this is an OPTIONAL document
+  markers:
+    - login
+  test_data:
+    - username: siteadmin
+      password: siteadmin
+    - username: editor
+      password: editor
+    - username: reader
+      password: reader
   ---
   - comment: visit base url
     type: get
@@ -132,30 +143,57 @@ The test scenario with action and assertions (play_selenium_ external plugin nee
       value: ".icon-user"
     type: waitForElementVisible
 
-For each script or scenario you might have an optional file with the same name with ``.metadata`` extension for
-metadata (keywords aka markers so you can filter tests to be executed invoking pytest with marker expressions,
-decoupled test data, etc).
+The first optional YAML document contains some metadata with keywords aka ``markers``
+so you can filter tests to be executed invoking pytest with marker expressions,
+decoupled test data, etc.
 
 The same ``test_login.yml`` scenario will be executed 3 times with different
-decoupled test data defined inside its ``.metadata`` file::
-
-  $ cat test_login.metadata
-  ---
-  markers:
-    - login
-  test_data:
-    - username: siteadmin
-      password: siteadmin
-    - username: editor
-      password: editor
-    - username: reader
-      password: reader
+decoupled test data ``test_data`` defined inside its first optional YAML
+document (the block between the 2 ``---`` lines).
 
 So write once and execute many times with different test data!
 
-You can see a basic example here:
+You can see a hello world example here:
 
 * https://github.com/davidemoro/pytest-play-plone-example
+
+As told before the metadata document is optional so you might have 1 or 2
+documents in your YAML file. You can find more info about `Metadata format`_.
+
+Here you can see the same example without the metadata section for sake of
+completeness::
+
+  ---
+  - comment: visit base url
+    type: get
+    url: "http://YOURSITE"
+  - comment: click on login link
+    locator:
+      type: id
+      value: personaltools-login
+    type: clickElement
+  - comment: provide a username
+    locator:
+      type: id
+      value: __ac_name
+    text: "YOURUSERNAME"
+    type: setElementText
+  - comment: provide a password
+    locator:
+      type: id
+      value: __ac_password
+    text: "YOURPASSWORD"
+    type: setElementText
+  - comment: click on login submit button
+    locator:
+      type: css
+      value: ".pattern-modal-buttons > input[name=submit]"
+    type: clickElement
+  - comment: wait for page loaded
+    locator:
+      type: css
+      value: ".icon-user"
+    type: waitForElementVisible
 
 Programmatically
 ================
@@ -418,18 +456,21 @@ If you want you can generate a new command provider thanks to:
 
 * https://github.com/davidemoro/cookiecutter-play-plugin
 
-Metadata files
---------------
+Metadata format
+---------------
 
-You can also add some scenario metadata for
-a ``test_XXX.yml`` creating a ``test_XXX.metadata`` file with YAML syntax::
+You can also add some scenario metadata placing another YAML document on top of the scenario
+defined on the ``test_XXX.yml`` with the following format::
 
+    ---
     markers:
       - marker1
       - marker2
     test_data:
       - username: foo
       - username: bar
+    ---
+    # omitted scenario steps in this example...
 
 Option details:
 
