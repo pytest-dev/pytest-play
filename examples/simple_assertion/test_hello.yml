@@ -1,0 +1,9 @@
+---
+test_data:
+  - age: 18
+  - age: 20
+---
+- type: assert
+  provider: python
+  expression: $age >= 18
+  comment: hello world test
