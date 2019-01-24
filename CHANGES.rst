@@ -10,7 +10,7 @@ Changelog
 
 - Drop ``.ini`` file for metadata, if you need them you can add
   a YAML document on top of the scenario ``.yml`` file. You no more
-  need multiple files for decorating your scenarios now
+  need multiple files for decorating your scenarios now (#65)
 
 - `play.execute` no more accepts raw data string), consumes a list of commands.
   Introduced `play.execute_raw` accepting raw data string.
