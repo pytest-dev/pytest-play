@@ -7,20 +7,16 @@ import pytest
 def test_autoexecute_yml_markers_skipped(testdir, cli_options):
     yml_file = testdir.makefile(".yml", """
 ---
+markers:
+  - marker1
+  - marker2
+---
 - provider: python
   type: assert
   expression: "1"
     """)
-    metadata_file = testdir.makefile(".metadata", """
----
-markers:
-  - marker1
-  - marker2
-    """)
     assert yml_file.basename.startswith('test_')
     assert yml_file.basename.endswith('.yml')
-    assert metadata_file.basename.startswith('test_')
-    assert metadata_file.basename.endswith('.metadata')
 
     result = testdir.runpytest(*cli_options)
 
@@ -32,20 +28,16 @@ markers:
 def test_autoexecute_yml_markers_passed(testdir):
     yml_file = testdir.makefile(".yml", """
 ---
+markers:
+  - marker1
+  - marker2
+---
 - provider: python
   type: assert
   expression: "1"
     """)
-    metadata_file = testdir.makefile(".metadata", """
----
-markers:
-  - marker1
-  - marker2
-    """)
     assert yml_file.basename.startswith('test_')
     assert yml_file.basename.endswith('.yml')
-    assert metadata_file.basename.startswith('test_')
-    assert metadata_file.basename.endswith('.metadata')
 
     result = testdir.runpytest('-m marker1')
 
@@ -55,20 +47,16 @@ markers:
 def test_autoexecute_yml_markers_strict_passed(testdir):
     yml_file = testdir.makefile(".yml", """
 ---
+markers:
+  - marker1
+  - marker2
+---
 - provider: python
   type: assert
   expression: "1"
     """)
-    metadata_file = testdir.makefile(".metadata", """
----
-markers:
-  - marker1
-  - marker2
-    """)
     assert yml_file.basename.startswith('test_')
     assert yml_file.basename.endswith('.yml')
-    assert metadata_file.basename.startswith('test_')
-    assert metadata_file.basename.endswith('.metadata')
 
     result = testdir.runpytest('-m marker1 --strict')
 

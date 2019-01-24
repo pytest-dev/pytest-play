@@ -118,7 +118,7 @@ class PlayEngine(object):
         """ Execute raw yaml-like file contents """
         if extra_variables:
             self.update_variables(extra_variables)
-        self.execute(yaml.safe_load(data))
+        self.execute(list(yaml.safe_load_all(data))[-1])
 
     def execute(self, data, extra_variables={}):
         """ Execute parsed yaml-like file contents """
