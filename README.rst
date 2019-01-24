@@ -310,7 +310,8 @@ Wait until condition
 ====================
 
 The ``wait_until_not`` command waits until the wait expression is `False` (this example
-contains a SQL query so the external plugin called play_sql_ is needed)::
+contains a SQL query so the external plugin called play_sql_ is needed plus
+the appropriate SQL driver depending on database type)::
 
     - provider: python
       type: wait_until_not
@@ -391,20 +392,6 @@ Browser based commands
 The ``pytest-play`` core no more includes browser based commands. Moved to play_selenium_
 external plugin.
 
-
-How to install pytest-play
---------------------------
-
-You can see ``pytest-play`` in action creating a pytest project
-using the cookiecutter-qa_ scaffolding tool:
-
-* play.yml_
-* test_play.py_
-
-
-This is the easiest way, otherwise you'll need to setup a pytest
-project by your own and install ``pytest-play``.
-
 pytest-play is pluggable and extensible
 ---------------------------------------
 
@@ -413,7 +400,8 @@ pytest-play is pluggable and extensible
 For example you might want to support your own commands, support non UI
 commands like making raw POST/GET/etc calls, simulate IoT devices
 activities, provide easy interaction with complex UI widgets like
-calendar widgets and so on.
+calendar widgets, send commands to a device using the serial port implementing
+a binary protocol and so on.
 
 How to register a new command provider
 ======================================
