@@ -1,0 +1,7 @@
+---
+- type: include
+  provider: include
+  path: includeme.yml
+- type: assert
+  provider: python
+  expression: "'leopard' in variables['animals']"

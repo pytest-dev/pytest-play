@@ -24,6 +24,8 @@ Changelog
 - engine's ``parametrizer_class`` attribute no more available (
   use ``parametrizer.Parametrizer`` by default now)
 
+- Add examples folder
+
 - Fix invalid markup on PyPI (#55)
 
 - Fix invalid escape sequences (#62).

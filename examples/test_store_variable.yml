@@ -1,0 +1,8 @@
+---
+- type: store_variable
+  provider: python
+  name: foo
+  expression: "'bar'"
+- type: assert
+  provider: python
+  expression: "'$foo' == 'bar'"
