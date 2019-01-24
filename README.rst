@@ -1,8 +1,5 @@
-selenium
-===========
 pytest-play
 ===========
-
 
 .. image:: https://travis-ci.org/pytest-dev/pytest-play.svg?branch=master
     :target: https://travis-ci.org/pytest-dev/pytest-play
