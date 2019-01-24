@@ -32,21 +32,6 @@ class YAMLFile(pytest.File):
         super(YAMLFile, self).__init__(fspath, parent=parent, config=config)
         self.obj = self
 
-    def _get_metadata_path(self):
-        """ Returns metadata path """
-        dirname = self.fspath.dirname
-        basename = os.path.splitext(self.fspath.basename)[0]
-        metadata_file_name = '{0}.metadata'.format(basename)
-        metadata_file_path = os.path.join(dirname, metadata_file_name)
-        return metadata_file_path
-
-    def _get_markers(self, conf):
-        """ Setup markers """
-        raw_markers = conf.get('markers', [])
-        markers = [marker for marker in raw_markers
-                   if marker]
-        return markers
-
     def _add_markers(self, yml_item, markers):
         for marker in markers:
             if get_marker(self, marker) is None:
@@ -58,22 +43,22 @@ class YAMLFile(pytest.File):
                             'dynamic marker'))
             yml_item.add_marker(marker)
 
-    def _get_test_data(self, conf):
-        """ Return an array of test data if available """
-        return conf.get('test_data', '')
-
     def collect(self):
 
-        metadata_file_path = self._get_metadata_path()
         test_data = []
         markers = []
-        if os.path.isfile(metadata_file_path):
-            # a pytest-play metadata file exists for the given item
-            with open(metadata_file_path) as metadata_file:
-                config = yaml.safe_load(metadata_file)
-
-                markers = self._get_markers(config)
-                test_data = self._get_test_data(config)
+        metadata = None
+        with open(self.fspath, 'r') as yaml_file:
+            documents = list(yaml.safe_load_all(yaml_file))
+            len_documents = len(documents)
+            assert len_documents <= 2
+            if len_documents > 1:
+                metadata = documents[0]
+        if metadata:
+            # a pytest-play metadata exists for the given item
+            markers = [marker for marker in metadata.get(
+                'markers', []) if marker]
+            test_data = metadata.get('test_data', None)
         if not test_data:
             yml_item = YAMLItem(self.nodeid, parent=self, config=self.config)
             self._add_markers(yml_item, markers)
