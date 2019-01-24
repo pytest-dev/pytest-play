@@ -101,7 +101,6 @@ The test scenario with action, assertions and optional metadata
   
   $ cat test_login.yml
   ---
-  # this is an OPTIONAL document
   markers:
     - login
   test_data:
