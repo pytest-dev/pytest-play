@@ -17,15 +17,16 @@ def read(fname):
 install_requires = [
     'pytest>=3.0.7',
     'pytest-variables[yaml]',
-    'pytest-pypom-navigation',
-    'pytest-splinter',
     'zope.interface',
+    'zope.component',
     'RestrictedPython>=4.0.b2',
+    'parametrizer',
 ]
 
 tests_require = [
     'pytest-cov',
     'mock',
+    'py',
 ]
 
 docs_require = [
@@ -35,14 +36,14 @@ docs_require = [
 
 setup(
     name='pytest-play',
-    version='1.4.3.dev0',
+    version='2.0.0.dev0',
     author='Davide Moro',
     author_email='davide.moro@gmail.com',
     maintainer='Davide Moro',
     maintainer_email='davide.moro@gmail.com',
     license='Apache Software License 2.0',
     url='https://github.com/davidemoro/pytest-play',
-    description='pytest plugin that let you play a json file '
+    description='pytest plugin that let you play a YAML file '
                 'describing some actions and assertions.',
     long_description=open("README.rst").read() + "\n" +
     open("CHANGES.rst").read(),
@@ -67,7 +68,6 @@ setup(
     ],
     entry_points={
         'playcommands': [
-            'default = pytest_play.providers:SplinterCommandProvider',
             'include = pytest_play.providers:IncludeProvider',
             'python = pytest_play.providers:PythonProvider',
         ],

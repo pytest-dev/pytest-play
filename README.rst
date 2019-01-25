@@ -1,7 +1,5 @@
-===========
 pytest-play
 ===========
-
 
 .. image:: https://travis-ci.org/pytest-dev/pytest-play.svg?branch=master
     :target: https://travis-ci.org/pytest-dev/pytest-play
@@ -14,31 +12,52 @@ pytest-play
 .. image:: https://codecov.io/gh/pytest-dev/pytest-play/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/pytest-dev/pytest-play
 
-``pytest-play`` is a pytest_ plugin that let you **play** a json file describing some actions and assertions.
-You can extend ``pytest-play`` with your own commands thanks to its pluggable architecture.
+``pytest-play`` is a codeless, generic, pluggable and extensible **automation tool**,
+not necessarily **test automation** only, based on the fantastic pytest_ test framework
+that let you define and execute YAML_ files containing scripts or test scenarios
+through actions and assertions that can be implemented and managed even by **non technical users**:
+
+* automation (not necessarily test automation). You can build a set of actions on a single file (e.g,
+  call a JSON based API endpoint, perform an action if a condition matches) or a test automation
+  project with many test scenarios.
+
+  For example you can create always fresh test data on demand supporting
+  manual testing activities, build a live simulator and so on
+
+* codeless, or better almost codeless. If you have to write assertions against action results or some
+  conditional expressions you need a very basic knowledge of Python or Javascript expressions
+  with a smooth learning curve (something like ``variables['foo'] == 'bar'``)
+
+* generic. It is not yet again another automation tool for browser automation only, API only, etc.
+  You can drive a browser, perform some API calls, make database queries and/or make assertions
+  using the same tool for different technologies
+
+  So there are several free or not free testing frameworks or automation tools and many times
+  they address just one single area testing needs and they are not extensible: API testing only,
+  UI testing only and so on. It could be fine if you are testing a web
+  only application like a CMS but if you are dealing with a reactive IoT application you might something more,
+  make cross actions or cross checks against different systems or build something of more complex upon
+  ``pytest-play``
+
+* powerful. It is not yet again another test automation tool, it only extends the pytest_ framework
+  with another paradigm and inherits a lot of good stuff (test data decoupled by test implementation
+  that let you write once and executed many times the same scenario thanks to native parametrization
+  support, reporting, integration with test management tools, many useful command line options, browsers and
+  remote Selenium grids integration, etc)
+
+* pluggable and extensible. Let's say you need to interact with a system not yet supported by a ``pytest-play``
+  plugin, you can write by your own or pay someone for you. In addition there is a scaffolding tool that
+  let you implement your own command: https://github.com/davidemoro/cookiecutter-play-plugin
+  
+* easy to use. Why YAML? Easy to read, easy to write, simple and standard syntax, easy to be validated and
+  no parentheses hell. Despite there are no recording tools (not yet) for browser interaction or API calls, the
+  documentation based on very common patterns let you copy, paste and edit command by command with no pain
+
+* free software. It's an open source project based on the large and friendly pytest_ community
 
 See at the bottom of the page the third party plugins that extends ``pytest-play``:
 
 * `Third party pytest-play plugins`_
-
-There are several testing frameworks. Sometimes they address just one single area testing needs: API testing only,
-UI testing only and so on. It could be fine if you are testing a web only application like a CMS but if you are
-dealing with a live IoT application you might need to simulate some device activities while testing your reactive UI (eg:
-last positions or alarms updates), make some cross level checks (not only check the UI but also API for example),
-quickly create some preconditions or contents needed by your UI scenarios for reactive
-applications (I am on the assets page, there is not asset X, you create an asset X, the asset X automatically
-appears in your asset listing), pure API testing (HTTP actions, assertions on response and database storage layer),
-create always fresh test data on demand supporting manual testing activities or build some device simulator activities during
-a demo or your exploratory testing sessions.
-
-So pytest-play_ is a all in one testing framework: you can build automated test scenarios that combine different kind of
-interactions for different testing levels.
-
-With pytest-play_ you will be able to create automated test suites with no or very little Python knowledge: a
-file ``test_XXX.json`` (e.g., ``test_something.json``. ``test_`` and ``.json`` matter) will be automatically
-recognized and executed without having to touch any ``*.py`` module. You can run a single scenario
-with ``pytest test_XXX.json`` or running the entire suite filtering by name or keyword markers.
-
 
 How it works
 ------------
@@ -46,7 +65,18 @@ How it works
 Depending on your needs and skills you can choose to use pytest-play programmatically
 writing some Python code or following a Python-less approach.
 
-Python-less (pure json)
+As said before with pytest-play_ you will be able to create codeless scripts or test scenarios
+with no or very little Python knowledge: a file ``test_XXX.yml`` (e.g., ``test_something.yml``,
+where ``test_`` and ``.yml`` matter) will be automatically recognized and executed without having
+to touch any ``*.py`` module. 
+
+You can run a single scenario with ``pytest test_XXX.yml`` or running the entire suite filtering
+by name or keyword markers.
+
+Despite ``pytest-play`` was born with native support for JSON format, ``pytest-play``>=2.0 versions will support
+YAML only for improved usability.
+
+Python-less (pure YAML)
 =======================
 
 Here you can see the contents of a ``pytest-play`` project without any Python files inside
@@ -54,90 +84,112 @@ containing a login scenario::
 
   $ tree
   .
-  ├── env-ALPHA.yml
-  ├── README.rst
-  ├── test_login.ini
-  └── test_login.json
+  ├── env-ALPHA.yml    (OPTIONAL)
+  └── test_login.yml
 
-with some default variables in a settings file specific for a target environment::  
+and you might have some global variables in a settings file specific for a target environment::  
   
   $ cat env-ALPHA.yml 
   pytest-play:
     base_url: https://www.yoursite.com
 
-The test scenario with action and assertions::
+The test scenario with action, assertions and optional metadata
+(play_selenium_ external plugin needed)::
   
-  $ cat test_login.json
-  {
-      "steps": [
-          {
-              "comment": "visit base url",
-              "type": "get",
-              "url": "$base_url"
-          },
-          {
-              "comment": "click on login link",
-              "locator": {
-                  "type": "id",
-                  "value": "personaltools-login"
-              },
-              "type": "clickElement"
-          },
-          {
-              "comment": "provide a username",
-              "locator": {
-                  "type": "id",
-                  "value": "__ac_name"
-              },
-              "text": "$username",
-              "type": "setElementText"
-          },
-          {
-              "comment": "provide a password",
-              "locator": {
-                  "type": "id",
-                  "value": "__ac_password"
-              },
-              "text": "$password",
-              "type": "setElementText"
-          },
-          {
-              "comment": "click on login submit button",
-              "locator": {
-                  "type": "css",
-                  "value": ".pattern-modal-buttons > input[name=submit]"
-              },
-              "type": "clickElement"
-          },
-          {
-              "comment": "wait for page loaded",
-              "locator": {
-                  "type": "css",
-                  "value": ".icon-user"
-              },
-              "type": "waitForElementVisible"
-          }
-      ]
-  }
+  $ cat test_login.yml
+  ---
+  markers:
+    - login
+  test_data:
+    - username: siteadmin
+      password: siteadmin
+    - username: editor
+      password: editor
+    - username: reader
+      password: reader
+  ---
+  - comment: visit base url
+    type: get
+    url: "$base_url"
+  - comment: click on login link
+    locator:
+      type: id
+      value: personaltools-login
+    type: clickElement
+  - comment: provide a username
+    locator:
+      type: id
+      value: __ac_name
+    text: "$username"
+    type: setElementText
+  - comment: provide a password
+    locator:
+      type: id
+      value: __ac_password
+    text: "$password"
+    type: setElementText
+  - comment: click on login submit button
+    locator:
+      type: css
+      value: ".pattern-modal-buttons > input[name=submit]"
+    type: clickElement
+  - comment: wait for page loaded
+    locator:
+      type: css
+      value: ".icon-user"
+    type: waitForElementVisible
 
-Some optional metadata for each json scenario. In this case we have one or more markers so
-you can filter tests to be executed invoking pytest with marker expressions. There is an
-example of test parametrization too.
-So the same ``test_login.json`` scenario will be executed 3 times with different
-decoupled test data::
+The first optional YAML document contains some metadata with keywords aka ``markers``
+so you can filter tests to be executed invoking pytest with marker expressions,
+decoupled test data, etc.
 
-  $ cat test_login.ini
-  [pytest]
-  markers =
-      login
-  test_data =
-      {"username": "siteadmin", "password": "siteadmin"}
-      {"username": "editor", "password": "editor"}
-      {"username": "reader", "password": "reader"}
+The same ``test_login.yml`` scenario will be executed 3 times with different
+decoupled test data ``test_data`` defined inside its first optional YAML
+document (the block between the 2 ``---`` lines).
 
-You can see a basic example here:
+So write once and execute many times with different test data!
+
+You can see a hello world example here:
 
 * https://github.com/davidemoro/pytest-play-plone-example
+
+As told before the metadata document is optional so you might have 1 or 2
+documents in your YAML file. You can find more info about `Metadata format`_.
+
+Here you can see the same example without the metadata section for sake of
+completeness::
+
+  ---
+  - comment: visit base url
+    type: get
+    url: "http://YOURSITE"
+  - comment: click on login link
+    locator:
+      type: id
+      value: personaltools-login
+    type: clickElement
+  - comment: provide a username
+    locator:
+      type: id
+      value: __ac_name
+    text: "YOURUSERNAME"
+    type: setElementText
+  - comment: provide a password
+    locator:
+      type: id
+      value: __ac_password
+    text: "YOURPASSWORD"
+    type: setElementText
+  - comment: click on login submit button
+    locator:
+      type: css
+      value: ".pattern-modal-buttons > input[name=submit]"
+    type: clickElement
+  - comment: wait for page loaded
+    locator:
+      type: css
+      value: ".icon-user"
+    type: waitForElementVisible
 
 Programmatically
 ================
@@ -146,10 +198,10 @@ You can invoke pytest-play programmatically too.
 
 You can define a test ``test_login.py`` like this::
 
-  def test_login(play_json):
-      data = play_json.get_file_contents(
-          'my', 'path', 'etc', 'login.json')
-      play_json.execute(data, extra_variables={})
+  def test_login(play):
+      data = play.get_file_contents(
+          'my', 'path', 'etc', 'login.yml')
+      play.execute_raw(data, extra_variables={})
 
 Or this programmatical approach might be used if you are
 implementing BDD based tests using ``pytest-bdd``.
@@ -188,12 +240,10 @@ How to reuse steps
 You can split your commands and reuse them using the ``include`` command avoiding
 duplication::
 
-    {
-        "steps": [
-            {"provider": "include", "type": "include", "path": "/some-path/included-scenario.json"},
-            ... other commands ...
-        ]
-    }
+    - provider: include
+      type: include
+      path: "/some-path/included-scenario.yml"
+
 
 You can create a variable for the base folder where your test scripts live.
 
@@ -203,94 +253,78 @@ Default commands
 Some commands require many verbose options you don't want to repeat (eg: authentication headers for play_requests_).
 
 Instead of replicating all the headers information you can initialize a ``pytest-play`` with the provider name as
-key and as a value the default command you want to omit::
+key and as a value the default command you want to omit (this example neets the external plugin play_selenium_)::
 
-    {
-        "steps": [{
-            "provider": "python",
-            "type": "store_variable",
-            "name": "bearer",
-            "expression": "'BEARER'"
-        },
-        {
-            "provider": "python",
-            "type": "store_variable",
-            "name": "play_requests",
-            "expression": "{'parameters': {'headers': {'Authorization': '$bearer'}}}"
-        },
-        {
-             "provider": "play_requests",
-             "type": "GET",
-             "comment": "this is an authenticated request!",
-             "url": "$base_url"
-        }
-    }
+    - provider: python
+      type: store_variable
+      name: bearer
+      expression: "'BEARER'"
+    - provider: python
+      type: store_variable
+      name: play_requests
+      expression: "{'parameters': {'headers': {'Authorization': '$bearer'}}}"
+    - provider: play_requests
+      type: GET
+      comment: this is an authenticated request!
+      url: "$base_url"
+
 
 Store variables
 ===============
 
 You can store a pytest-play_ variables::
 
-    {
-     'provider': 'python',
-     'type': 'store_variable',
-     'expression': '1+1',
-     'name': 'foo'
-    }
+    - provider: python
+      type: store_variable
+      expression: "1+1"
+      name: foo
 
 Make a Python assertion
 =======================
 
 You can make an assertion based on a Python expression::
 
-    {
-     'provider': 'python',
-     'type': 'assert',
-     'expression': 'variables["foo"] == 2'
-    }
+    - provider: python
+      type: assert
+      expression: variables['foo'] == 2
 
 Sleep
 =====
 
 Sleep for a given amount of seconds::
 
-    {
-     'provider': 'python',
-     'type': 'sleep',
-     'seconds': 2
-    }
+    - provider: python
+      type: sleep
+      seconds: 2
 
 Exec a Python expresssion
 =========================
 
 You can execute a Python expression::
 
-    {
-     'provider': 'python',
-     'type': 'exec',
-     'expression': '1+1'
-    }
+    - provider: python
+      type: exec
+      expression: "1+1"
 
 Wait until condition
 ====================
 
-The ``wait_until_not`` command waits until the wait expression is False::
+The ``wait_until_not`` command waits until the wait expression is `False` (this example
+contains a SQL query so the external plugin called play_sql_ is needed plus
+the appropriate SQL driver depending on database type)::
 
-    {
-     'provider': 'python',
-     'type': 'wait_until_not',
-     'expression': 'variables["expected_id"] is not None and variables["expected_id"][0] == $id',
-     'timeout': 5,
-     'poll': 0.1,
-     'subcommands': [{
-         'provider': 'play_sql',
-         'type': 'sql',
-         'database_url': 'postgresql://$db_user:$db_pwd@$db_host/$db_name',
-         'query': 'SELECT id FROM table WHERE id=$id ORDER BY id DESC;',
-         'variable': 'expected_id',
-         'expression': 'results.first()'
-     }]
-    }
+    - provider: python
+      type: wait_until_not
+      expression: variables['expected_id'] is not None and variables['expected_id'][0] == $id
+      timeout: 5
+      poll: 0.1
+      subcommands:
+      - provider: play_sql
+        type: sql
+        database_url: postgresql://$db_user:$db_pwd@$db_host/$db_name
+        query: SELECT id FROM table WHERE id=$id ORDER BY id DESC;
+        variable: expected_id
+        expression: results.first()
 
 assuming that the subcommand updates the execution results updating a ``pytest-play``
 variable (eg: ``expected_id``) where tipically the ``$id`` value comes
@@ -312,7 +346,7 @@ You can repeat a group of subcommands using a variable as a counter. Assuming yo
 have defined a ``countdown`` variable with 10 value, the wait until command will
 repeat the group of commands for 10 times::
 
-    play_json.execute_command({
+    play.execute_command({
         'provider': 'python',
         'type': 'wait_until',
         'expression': 'variables["countdown"] == 0',
@@ -326,6 +360,19 @@ repeat the group of commands for 10 times::
         }]
     })
 
+or::
+
+    - provider: python
+      type: wait_until
+      expression: variables['countdown'] == 0
+      timeout: 0
+      poll: 0
+      sub_commands:
+      - provider: python
+        type: store_variable
+        name: countdown
+        expression: variables['countdown'] - 1
+
 
 Conditional commands (Python)
 =============================
@@ -333,350 +380,17 @@ Conditional commands (Python)
 You can skip any command evaluating a Python based skip condition
 like the following::
 
-    {
-      "provider": "include",
-      "type": "include",
-      "path": "/some-path/assertions.json",
-      "skip_condition": "variables['cassandra_assertions'] is True"
-    }
+    - provider: include
+      type: include
+      path: "/some-path/assertions.yml"
+      skip_condition: variables['cassandra_assertions'] is True
 
 
 Browser based commands
 ----------------------
 
-Browser based commands here.
-``pytest-play`` supports by default browser interactions. For example it can be used for running selenium splinter_ scenarios driving your browser for your UI test or system tests.
-
-``pytest-play`` is also your friend when page object approach (considered best practice) is not possible. For example:
-
-* limited time, and/or
-* lack of programming skills
-
-Instead if you are interested in a page object pattern have a look at pypom_form_ or pypom_.
-
-``pytest-play`` supports automatic waiting that should help to keep your tests more reliable with implicit waits before
-moving on. By default it waits for node availability and visibility but it supports also some wait commands and
-wait until a given Javascript expression is ok. So it is at the same time user friendly and flexible.
-
- 
-Conditional commands (Javascript)
-=================================
-
-Based on a browser level expression (Javascript)::
-
-    {
-      "type": "clickElement",
-      "locator": {
-           "type": "css",
-           "value": "body"
-           },
-      "condition": "'$foo' === 'bar'"
-    }
-
-
-Supported locators
-==================
-
-Supported selector types:
-
-* css
-* xpath
-* tag
-* name
-* text
-* id
-* value
-
-Open a page
-===========
-
-With parametrization::
-
-    {
-      "type": "get",
-      "url": "$base_url"
-    }
-
-or with a regular url::
-
-    {
-      "type": "get",
-      "url": "https://google.com"
-    }
-
-Pause
-=====
-
-This command invokes a javascript expression that will
-pause the execution flow of your commands::
-
-
-    {
-      "type": "pause",
-      "waitTime": 1500
-    }
-
-If you need a pause/sleep for non UI tests you can use the
-``sleep`` command provided by the play_python_ plugin.
-
-Click an element
-================
-::
-
-    {
-      "type": "clickElement",
-      "locator": {
-           "type": "css",
-           "value": "body"
-           }
-    }
-
-Fill in a text
-==============
-::
-
-    {
-      "type": "setElementText",
-      "locator": {
-         "type": "css",
-         "value": "input.title"
-         },
-      "text": "text value"
-    }
-
-Interact with select input elements
-===================================
-
-Select by label::
-
-    {
-      "type": "select",
-      "locator": {
-           "type": "css",
-           "value": "select.city"
-      },
-      "text": "Turin"
-    }
-
-or select by value::
-
-    {
-      "type": "select",
-      "locator": {
-           "type": "css",
-           "value": "select.city"
-      },
-      "value": "1"
-    }
-
-Eval a Javascript expression
-============================
-
-::
-
-    {
-      "type": "eval",
-      "script": "alert("Hello world!")"
-    }
-
-Create a variable starting from a Javascript expression
-=======================================================
-
-The value of the Javascript expression will be stored in
-``pytest_play.variables`` under the name ``count``::
-
-    {
-      "type": "storeEval",
-      "variable": "count",
-      "script": "document.getElementById('count')[0].textContent"
-    }
-
-Assert if a Javascript expression matches
-=========================================
-
-If the result of the expression does not match an ``AssertionError``
-will be raised and the test will fail::
-
-    {
-      "type": "verifyEval",
-      "value": "3",
-      "script": "document.getElementById('count')[0].textContent"
-    }
-
-Verify that the text of one element contains a string
-=====================================================
-
-If the element text does not contain the provided text an
-``AssertionError`` will be raised and the test will fail::
-
-    {
-      "type": "verifyText",
-      "locator": {
-         "type": "css",
-         "value": ".my-item"
-      },
-      "text": "a text"
-    }
-
-Send keys to an element
-=======================
-
-All ``selenium.webdriver.common.keys.Keys`` are supported::
-
-    {
-      "type": "sendKeysToElement",
-      "locator": {
-         "type": "css",
-         "value": ".confirm"
-      },
-      "text": "ENTER"
-    }
-
-
-Supported keys::
-
-    KEYS = [
-        'ADD', 'ALT', 'ARROW_DOWN', 'ARROW_LEFT', 'ARROW_RIGHT',
-        'ARROW_UP', 'BACKSPACE', 'BACK_SPACE', 'CANCEL', 'CLEAR',
-        'COMMAND', 'CONTROL', 'DECIMAL', 'DELETE', 'DIVIDE',
-        'DOWN', 'END', 'ENTER', 'EQUALS', 'ESCAPE', 'F1', 'F10',
-        'F11', 'F12', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8',
-        'F9', 'HELP', 'HOME', 'INSERT', 'LEFT', 'LEFT_ALT',
-        'LEFT_CONTROL', 'LEFT_SHIFT', 'META', 'MULTIPLY',
-        'NULL', 'NUMPAD0', 'NUMPAD1', 'NUMPAD2', 'NUMPAD3',
-        'NUMPAD4', 'NUMPAD5', 'NUMPAD6', 'NUMPAD7', 'NUMPAD8',
-        'NUMPAD9', 'PAGE_DOWN', 'PAGE_UP', 'PAUSE', 'RETURN',
-        'RIGHT', 'SEMICOLON', 'SEPARATOR', 'SHIFT', 'SPACE',
-        'SUBTRACT', 'TAB', 'UP',
-    ]
-
-Wait until a Javascript expression matches
-==========================================
-
-Wait until the given expression matches or raise a 
-``selenium.common.exceptions.TimeoutException`` if takes too time.
-
-At this time of writing there is a global timeout (20s) but in future releases
-you will be able to override it on command basis::
-
-    {
-      "type": "waitUntilCondition",
-      "script": "document.body.getAttribute("class") === 'ready'"
-    }
-
-Wait for element present in DOM
-===============================
-
-Present::
-
-    {
-      "type": "waitForElementPresent",
-      "locator": {
-         "type": "css",
-         "value": "body"
-      }
-    }
-
-or not present::
-
-    {
-      "type": "waitForElementPresent",
-      "locator": {
-         "type": "css",
-         "value": "body"
-      },
-      "negated": true
-    }
-
-Wait for element visible
-========================
-
-Visible::
-
-    {
-      "type": "waitForElementVisible",
-      "locator": {
-         "type": "css",
-         "value": "body"
-      }
-    }
-
-or not visible::
-
-    {
-      "type": "waitForElementVisible",
-      "locator": {
-         "type": "css",
-         "value": "body"
-      },
-      "negated": true
-    }
-
-Assert element is present in DOM
-================================
-
-An ``AssertionError`` will be raised if assertion fails.
-
-Present::
-
-    {
-      "type": "assertElementPresent",
-      "locator": {
-         "type": "css",
-         "value": "div.elem"
-         }
-    }
-
-or not present::
-
-    {
-      "type": "assertElementPresent",
-      "locator": {
-         "type": "css",
-         "value": "div.elem"
-         },
-      "negated": true
-    }
-
-Assert element is visible
-=========================
-
-An ``AssertionError`` will be raised if assertion fails.
-
-Present::
-
-    {
-      "type": "assertElementVisible",
-      "locator": {
-         "type": "css",
-         "value": "div.elem"
-         }
-    }
-
-or not present::
-
-    {
-      "type": "assertElementVisible",
-      "locator": {
-         "type": "css",
-         "value": "div.elem"
-         },
-      "negated": true
-    }
-
-
-How to install pytest-play
---------------------------
-
-You can see ``pytest-play`` in action creating a pytest project
-using the cookiecutter-qa_ scaffolding tool:
-
-* play.json_
-* test_play.py_
-
-
-This is the easiest way, otherwise you'll need to setup a pytest
-project by your own and install ``pytest-play``.
+The ``pytest-play`` core no more includes browser based commands. Moved to play_selenium_
+external plugin.
 
 pytest-play is pluggable and extensible
 ---------------------------------------
@@ -686,7 +400,8 @@ pytest-play is pluggable and extensible
 For example you might want to support your own commands, support non UI
 commands like making raw POST/GET/etc calls, simulate IoT devices
 activities, provide easy interaction with complex UI widgets like
-calendar widgets and so on.
+calendar widgets, send commands to a device using the serial port implementing
+a binary protocol and so on.
 
 How to register a new command provider
 ======================================
@@ -725,19 +440,21 @@ If you want you can generate a new command provider thanks to:
 
 * https://github.com/davidemoro/cookiecutter-play-plugin
 
-JSON files metadata
--------------------
+Metadata format
+---------------
 
-You can describe a scenario in pure JSON. You can also add some scenario metadata for
-a ``test_XXX.json`` creating a ``test_XXX.ini`` file::
+You can also add some scenario metadata placing another YAML document on top of the scenario
+defined on the ``test_XXX.yml`` with the following format::
 
-    [pytest]
-    markers =
-        marker1
-        marker2
-    test_data =
-        {"username": "foo"}
-        {"username": "bar"}
+    ---
+    markers:
+      - marker1
+      - marker2
+    test_data:
+      - username: foo
+      - username: bar
+    ---
+    # omitted scenario steps in this example...
 
 Option details:
 
@@ -745,8 +462,10 @@ Option details:
   in pytest command line for filtering scenarios to be executed thanks to marker
   expressions like ``-m "marker1 and not slow"``
 
-* ``test_data``, enables parametrization of arguments for a json scenario. For example
-  if test data provides 2 json objects, your test scenario will be executed twice
+* ``test_data``, enables parametrization of your decoupletd test data and let you execute
+  the same scenario many times. For example
+  the example above will be executed twice (one time with "foo" username and another time
+  with "bar")
 
 New options will be added in the next feature (e.g., skip scenarios, xfail, xpass, etc).
 
@@ -766,11 +485,9 @@ Talks:
 Third party pytest-play plugins
 -------------------------------
 
-* play_mqtt_, ``pytest-play`` plugin for MQTT support. Thanks to ``play_mqtt``
-  you can test the integration between a mocked IoT device that sends
-  commands on MQTT and a reactive web application with UI checks.
-
-  You can also build a simulator that generates messages for you.
+* play_selenium_, ``pytest-play`` plugin driving browsers using Selenium/Splinter
+  under the hood. Selenium grid compatible and implicit auto wait actions
+  for more robust scenarios with less controls.
 
 * play_requests_, ``pytest-play`` plugin driving the famous Python ``requests``
   library for making ``HTTP`` calls.
@@ -782,6 +499,13 @@ Third party pytest-play plugins
 * play_dynamodb_, ``pytest-play`` support for AWS DynamoDB queries and assertions
 
 * play_websocket_, ``pytest-play`` support for websockets
+
+* play_mqtt_, ``pytest-play`` plugin for MQTT support. Thanks to ``play_mqtt``
+  you can test the integration between a mocked IoT device that sends
+  commands on MQTT and a reactive web application with UI checks.
+
+  You can also build a simulator that generates messages for you.
+
 
 Feel free to add your own public plugins with a pull request!
 
@@ -800,10 +524,10 @@ Twitter
 .. _`pypom`: http://pypom.readthedocs.io/en/latest/
 .. _`@davidemoro`: https://twitter.com/davidemoro
 .. _`cookiecutter-qa`: https://github.com/davidemoro/cookiecutter-qa
-.. _`play.json`: https://github.com/davidemoro/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/data/play.json
+.. _`play.yml`: https://github.com/davidemoro/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/data/play.yml
 .. _`test_play.py`: https://github.com/davidemoro/cookiecutter-qa/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/%7B%7Bcookiecutter.project_slug%7D%7D/tests/functional/test_play.py
 .. _`play_mqtt`: https://github.com/davidemoro/play_mqtt
-.. _`play_python`: https://github.com/davidemoro/play_python
+.. _`play_selenium`: https://github.com/davidemoro/play_selenium
 .. _`play_requests`: https://github.com/davidemoro/play_requests
 .. _`play_sql`: https://github.com/davidemoro/play_sql
 .. _`play_cassandra`: https://github.com/davidemoro/play_cassandra
@@ -812,3 +536,4 @@ Twitter
 .. _`RestrictedPython`: https://github.com/zopefoundation/RestrictedPython
 .. _`Serena Martinetti @ Pycon9 - Florence: Integration tests ready to use with pytest-play`: https://www.pycon.it/conference/talks/integration-tests-ready-to-use-with-pytest-play
 .. _`Davide Moro: Hello pytest-play!`: http://davidemoro.blogspot.it/2018/04/hello-pytest-play.html
+.. _`YAML`: https://en.wikipedia.org/wiki/YAML

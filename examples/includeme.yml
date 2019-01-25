@@ -1,0 +1,5 @@
+---
+- type: store_variable
+  provider: python
+  name: animals
+  expression: "['leopard', 'wolf']"

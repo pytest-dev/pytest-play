@@ -1,92 +1,86 @@
 # -*- coding: utf-8 -*-
-import warnings
-import json
-import os
-import configparser
-import re
-import pytest
-from _pytest.fixtures import FixtureRequest
-from collections import namedtuple
+import uuid            # pragma: no cover
+import yaml            # pragma: no cover
+import os              # pragma: no cover
+import re              # pragma: no cover
+import pytest          # pragma: no cover
+from _pytest.fixtures import (    # pragma: no cover
+    FixtureRequest,
+    FixtureLookupError,
+)
+from collections import namedtuple  # pragma: no cover
+
+
+def get_marker(node, name):
+    try:
+        marker = node.get_closest_marker(name)
+    except AttributeError:
+        # backwards compatibility with old pytest versions
+        marker = node.get_marker(name)
+    return marker
 
 
 def pytest_collect_file(parent, path):
-    """ Collect test_XXX.json files """
-    if path.ext == ".json" and path.basename.startswith("test_"):
-        return JSONFile(path, parent)
+    """ Collect test_XXX.yml files """
+    if path.ext in(".yaml", ".yml") and path.basename.startswith("test_"):
+        return YAMLFile(path, parent=parent)
 
 
-class JSONFile(pytest.File):
+class YAMLFile(pytest.File):
+    def __init__(self, fspath, parent=None, config=None,
+                 session=None, nodeid=None):
+        super(YAMLFile, self).__init__(fspath, parent=parent, config=config)
+        self.obj = self
 
-    def _get_metadata_path(self):
-        """ Returns metadata path """
-        dirname = self.fspath.dirname
-        basename = os.path.splitext(self.fspath.basename)[0]
-        ini_file_name = '{0}.ini'.format(basename)
-        ini_file_path = os.path.join(dirname, ini_file_name)
-        return ini_file_path
-
-    def _get_markers(self, pytest_conf):
-        """ Setup markers """
-        raw_markers = pytest_conf.get('markers', '')
-        markers = [marker for marker in raw_markers.splitlines()
-                   if marker]
-        return markers
-
-    def _add_markers(self, json_item, markers):
+    def _add_markers(self, yml_item, markers):
         for marker in markers:
-            if self.get_marker(marker) is None:
+            if get_marker(self, marker) is None:
                 if self.config.option.strict:
                     # register marker (strict mode)
-                    self.session.config.addinivalue_line(
+                    self.session.config.addmetadatavalue_line(
                         "markers", "{}: {}".format(
                             marker,
                             'dynamic marker'))
-            json_item.add_marker(marker)
-
-    def _get_test_data(self, pytest_conf):
-        """ Return an array of test data if available """
-        raw_test_data = pytest_conf.get('test_data', '')
-        test_data = []
-        for item in raw_test_data.splitlines():
-            if item:
-                test_data.append(json.loads(item))
-        return test_data
+            yml_item.add_marker(marker)
 
     def collect(self):
 
-        ini_file_path = self._get_metadata_path()
         test_data = []
         markers = []
-        if os.path.isfile(ini_file_path):
-            # a pytest-play ini file exists for the given item
-            config = configparser.ConfigParser()
-            config.read(ini_file_path)
-            if 'pytest' in config.sections():
-                pytest_conf = config['pytest']
-
-                markers = self._get_markers(pytest_conf)
-                test_data = self._get_test_data(pytest_conf)
+        metadata = None
+        with open(self.fspath, 'r') as yaml_file:
+            documents = list(yaml.safe_load_all(yaml_file))
+            len_documents = len(documents)
+            assert len_documents <= 2
+            if len_documents > 1:
+                metadata = documents[0]
+        if metadata:
+            # a pytest-play metadata exists for the given item
+            markers = [marker for marker in metadata.get(
+                'markers', []) if marker]
+            test_data = metadata.get('test_data', None)
         if not test_data:
-            json_item = JSONItem(self.nodeid, self, self.fspath)
-            self._add_markers(json_item, markers)
-            yield json_item
+            yml_item = YAMLItem(self.nodeid, parent=self, config=self.config)
+            self._add_markers(yml_item, markers)
+            yield yml_item
         else:
             for index, data in enumerate(test_data):
-                json_item = JSONItem('{0}{1}'.format(self.nodeid, index),
-                                     self,
-                                     self.fspath,
-                                     test_data=data)
-                self._add_markers(json_item, markers)
-                yield json_item
+                yml_item = YAMLItem('{0}{1}'.format(self.nodeid, index),
+                                    parent=self,
+                                    config=self.config,
+                                    test_data=data)
+                self._add_markers(yml_item, markers)
+                yield yml_item
 
 
-class JSONItem(pytest.Item):
-
-    def __init__(self, name, parent, path, test_data=None):
-        super(JSONItem, self).__init__(name, parent)
-        self.path = getattr(path, 'strpath', path)
+class YAMLItem(pytest.Item):
+    def __init__(self, name, parent=None, config=None, session=None,
+                 nodeid=None, test_data=None):
+        super(YAMLItem, self).__init__(
+            name, parent, config, session, nodeid=nodeid)
+        self.path = getattr(parent.fspath, 'strpath')
         self.fixture_request = None
-        self.play_json = None
+        self.play = None
         self.raw_data = None
         self.test_data = test_data is not None and test_data or {}
 
@@ -119,30 +113,14 @@ class JSONItem(pytest.Item):
         self.fixture_request = self._setup_fixtures()
 
     def _setup_play(self):
-        self.play_json = self.fixture_request.getfixturevalue('play_json')
+        self.play = self.fixture_request.getfixturevalue('play')
 
     def _setup_raw_data(self):
-        self.raw_data = self.play_json.get_file_contents(self.path)
+        self.raw_data = self.play.get_file_contents(self.path)
 
     def runtest(self):
-        data = self.play_json.get_file_contents(self.path)
-        self.play_json.execute(data, extra_variables=self.test_data)
-
-    def repr_failure(self, excinfo):
-        """ called when self.runtest() raises an exception. """
-        if isinstance(excinfo.value, JSONException):
-            return "\n".join([
-                "usecase execution failed",
-                "   spec failed: %r: %r" % excinfo.value.args[1:3],
-                "   no further details known at this point."
-            ])
-
-    def reportinfo(self):
-        return self.fspath, 0, "usecase: %s" % self.name
-
-
-class JSONException(Exception):
-    """ custom exception for error reporting. """
+        data = self.play.get_file_contents(self.path)
+        self.play.execute_raw(data, extra_variables=self.test_data)
 
 
 @pytest.fixture
@@ -153,24 +131,30 @@ def play_engine_class():
 
 
 @pytest.fixture
-def play_json(request, play_engine_class, bdd_vars, variables, skin):
+def play(request, play_engine_class, variables):
     """
-        How to use json_executor::
+        How to use yml_executor::
 
-            def test_experimental(play_json):
-                data = play_json.get_file_contents(
-                    '/my/path/etc', 'login.json')
-                play_json.execute(data)
+            def test_experimental(play):
+                data = play.get_file_contents(
+                    '/my/path/etc', 'login.yml')
+                play.execute_raw(data)
     """
-    warnings.warn(
-        DeprecationWarning(
-            "play_json fixture DEPRECATED, will be removed in version "
-            ">=2.0.0). See issue #5"))
-    context = bdd_vars.copy()
+    context = None
+    skin = None
+    try:
+        bdd_vars = request.getfixturevalue('bdd_vars')
+        context = bdd_vars.copy()
+        skin = request.getfixturevalue('skin')
+    except FixtureLookupError:
+        context = context is not None and context or {
+            'test_run_identifier': "QA-{0}".format(str(uuid.uuid1()))}
+        skin = skin is not None and skin or 'skin1'
+
     if 'pytest-play' in variables:
         for name, value in variables['pytest-play'].items():
             context[name] = value
-    if 'skins' in variables:
+    if 'skins' in variables and skin is not None:
         skin_settings = variables['skins'][skin]
         if 'base_url' in skin_settings:
             context['base_url'] = skin_settings['base_url']
@@ -181,6 +165,6 @@ def play_json(request, play_engine_class, bdd_vars, variables, skin):
                 password_key = "{0}_pwd".format(credential_name)
                 context[username_key] = credential_settings['username']
                 context[password_key] = credential_settings['password']
-    play_json = play_engine_class(request, context)
-    yield play_json
-    play_json.teardown()
+    play = play_engine_class(request, context)
+    yield play
+    play.teardown()

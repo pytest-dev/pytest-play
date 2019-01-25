@@ -1,6 +1,5 @@
 import os
 import pytest
-import mock
 
 
 pytest_plugins = 'pytester'
@@ -14,11 +13,11 @@ def data_base_path():
 
 
 @pytest.fixture(scope='session')
-def variables(skin):
+def variables():
     return {
         'pytest-play': {'date_format': 'YYYYMMDD'},
         'skins': {
-            skin: {
+            'skin1': {
                 'base_url': 'http://',
                 'credentials': {
                     'Administrator': {
@@ -32,24 +31,12 @@ def variables(skin):
 
 
 @pytest.fixture
-def browser():
-    from zope.interface import alsoProvides
-    from pypom.splinter_driver import ISplinter
-    driver = mock.MagicMock()
-    alsoProvides(driver, ISplinter)
-    return driver
-
-
-@pytest.fixture
-def page_instance(browser):
-    return mock.MagicMock()
-
-
-@pytest.fixture
-def dummy_executor(page_instance, request):
-    from pytest_play.engine import PlayEngine
-    engine = PlayEngine(request, {'foo': 'bar'})
-    # initialize browser
-    engine.navigation.setPage(page_instance)
-    engine.navigation.get_page_instance = lambda *args, **kwargs: page_instance
-    return engine
+def dummy_executor(play):
+    play.variables.update(**{'foo': 'bar'})
+    assert play.variables['test_run_identifier'].startswith('QA-')
+    assert play.variables['date_format'] == 'YYYYMMDD'
+    assert play.variables['base_url'] == 'http://'
+    assert play.variables['Administrator_name'] == 'admin'
+    assert play.variables['Administrator_pwd'] == 'pwd'
+    assert play.variables['foo'] == 'bar'
+    return play
