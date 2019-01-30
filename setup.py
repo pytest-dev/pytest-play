@@ -19,7 +19,7 @@ install_requires = [
     'pytest-variables[yaml]',
     'zope.interface',
     'zope.component',
-    'RestrictedPython>=4.0.b2',
+    'RestrictedPython>=4.0b2',
     'parametrizer',
 ]
 
