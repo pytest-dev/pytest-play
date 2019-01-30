@@ -4,7 +4,16 @@ Changelog
 2.0.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Documentation:
+
+- Mention davidemoro/pytest-play docker container in README.
+  You can use pytest-play with a docker command like that now
+  ``docker run -i --rm -v $(pwd):/src davidemoro/pytest-play``
+
+Bugfix:
+
+- Fix error locking pipenv due to pytest-play requirement
+  constraint not existing (RestrictedPython>=4.0.b2 -> RestrictedPython>=4.0b2)
 
 
 2.0.0 (2019-01-25)
