@@ -55,6 +55,11 @@ through actions and assertions that can be implemented and managed even by **non
 
 * free software. It's an open source project based on the large and friendly pytest_ community
 
+* easy to install. The only prerequisite is Docker thanks to the ``davidemoro/pytest-play`` Docker Hub container.
+  Or better, with docker, no installation is required: you just need to type the following command
+  ``docker run -i --rm -v $(pwd):/src davidemoro/pytest-play`` inside your project folder
+  See https://hub.docker.com/r/davidemoro/pytest-play
+
 See at the bottom of the page the third party plugins that extends ``pytest-play``:
 
 * `Third party pytest-play plugins`_

@@ -4,7 +4,9 @@ Changelog
 2.0.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Mention davidemoro/pytest-play docker container in README.
+  You can use pytest-play with a docker command like that now
+  ``docker run -i --rm -v $(pwd):/src davidemoro/pytest-play``
 
 
 2.0.0 (2019-01-25)
