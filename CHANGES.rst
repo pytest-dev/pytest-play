@@ -4,7 +4,9 @@ Changelog
 2.0.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Documentation:
+
+- more examples
 
 
 2.0.1 (2019-01-30)
