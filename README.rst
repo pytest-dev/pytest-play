@@ -480,7 +480,9 @@ Articles and talks
 
 Articles:
 
-* `Davide Moro: Hello pytest-play!`_
+* `Hello pytest-play!`_
+
+* `API/REST testing like Chuck Norris with pytest play using YAML`_
 
 Talks:
 
@@ -540,5 +542,6 @@ Twitter
 .. _`play_websocket`: https://github.com/davidemoro/play_websocket
 .. _`RestrictedPython`: https://github.com/zopefoundation/RestrictedPython
 .. _`Serena Martinetti @ Pycon9 - Florence: Integration tests ready to use with pytest-play`: https://www.pycon.it/conference/talks/integration-tests-ready-to-use-with-pytest-play
-.. _`Davide Moro: Hello pytest-play!`: http://davidemoro.blogspot.it/2018/04/hello-pytest-play.html
+.. _`Hello pytest-play!`: http://davidemoro.blogspot.it/2018/04/hello-pytest-play.html
+.. _`API/REST testing like Chuck Norris with pytest play using YAML`: https://davidemoro.blogspot.com/2019/02/api-rest-testing-pytest-play-yaml-chuck-norris.html
 .. _`YAML`: https://en.wikipedia.org/wiki/YAML
