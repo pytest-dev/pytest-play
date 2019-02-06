@@ -115,34 +115,40 @@ The test scenario with action, assertions and optional metadata
   ---
   - comment: visit base url
     type: get
+    provider: selenium
     url: "$base_url"
   - comment: click on login link
     locator:
       type: id
       value: personaltools-login
     type: clickElement
+    provider: selenium
   - comment: provide a username
     locator:
       type: id
       value: __ac_name
     text: "$username"
     type: setElementText
+    provider: selenium
   - comment: provide a password
     locator:
       type: id
       value: __ac_password
     text: "$password"
     type: setElementText
+    provider: selenium
   - comment: click on login submit button
     locator:
       type: css
       value: ".pattern-modal-buttons > input[name=submit]"
     type: clickElement
+    provider: selenium
   - comment: wait for page loaded
     locator:
       type: css
       value: ".icon-user"
     type: waitForElementVisible
+    provider: selenium
 
 The first optional YAML document contains some metadata with keywords aka ``markers``
 so you can filter tests to be executed invoking pytest with marker expressions,
@@ -167,34 +173,40 @@ completeness::
   ---
   - comment: visit base url
     type: get
+    provider: selenium
     url: "http://YOURSITE"
   - comment: click on login link
+    type: clickElement
+    provider: selenium
     locator:
       type: id
       value: personaltools-login
-    type: clickElement
   - comment: provide a username
+    type: setElementText
+    provider: selenium
     locator:
       type: id
       value: __ac_name
     text: "YOURUSERNAME"
-    type: setElementText
   - comment: provide a password
+    type: setElementText
+    provider: selenium
     locator:
       type: id
       value: __ac_password
     text: "YOURPASSWORD"
-    type: setElementText
   - comment: click on login submit button
+    type: clickElement
+    provider: selenium
     locator:
       type: css
       value: ".pattern-modal-buttons > input[name=submit]"
-    type: clickElement
   - comment: wait for page loaded
+    type: waitForElementVisible
+    provider: selenium
     locator:
       type: css
       value: ".icon-user"
-    type: waitForElementVisible
 
 Programmatically
 ================

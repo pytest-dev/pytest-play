@@ -8,6 +8,8 @@ Documentation:
 
 - more examples
 
+- fix example based on selenium (missing ``provider: selenium``)
+
 
 2.0.1 (2019-01-30)
 ------------------
