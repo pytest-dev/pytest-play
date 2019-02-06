@@ -1,0 +1,17 @@
+test_data:
+  - category: dev
+  - category: movie
+---
+- comment: "query by category, save json response in 'categories' variable
+    (accessible in further steps using variables['categories']) and assert
+    200 status code"
+  type: GET
+  provider: play_requests
+  url: https://api.chucknorris.io/jokes/search?query=$category
+  variable: categories
+  variable_expression: response.json()
+  assert: response.status_code == 200
+- comment: "assert total number matches"
+  type: assert
+  provider: python
+  expression: "variables['categories']['total'] == len(variables['categories']['result'])"

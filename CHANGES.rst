@@ -4,7 +4,11 @@ Changelog
 2.0.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Documentation:
+
+- more examples
+
+- fix documentation bug on README (example based on selenium with missing ``provider: selenium``)
 
 
 2.0.1 (2019-01-30)
