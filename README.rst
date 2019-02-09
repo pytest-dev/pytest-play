@@ -496,6 +496,8 @@ Articles:
 
 * `API/REST testing like Chuck Norris with pytest play using YAML`_
 
+* `pytest-play automated docker hub publishing workflow`_
+
 Talks:
 
 * `Serena Martinetti @ Pycon9 - Florence: Integration tests ready to use with pytest-play`_ 
@@ -557,3 +559,4 @@ Twitter
 .. _`Hello pytest-play!`: http://davidemoro.blogspot.it/2018/04/hello-pytest-play.html
 .. _`API/REST testing like Chuck Norris with pytest play using YAML`: https://davidemoro.blogspot.com/2019/02/api-rest-testing-pytest-play-yaml-chuck-norris.html
 .. _`YAML`: https://en.wikipedia.org/wiki/YAML
+.. _`pytest-play automated docker hub publishing workflow`: https://davidemoro.blogspot.com/2019/02/automated-docker-hub-push-travisci-pyup-python.html
