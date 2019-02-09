@@ -4,7 +4,9 @@ Changelog
 2.0.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Documentation:
+
+- minor documentation changes
 
 
 2.0.2 (2019-02-06)
