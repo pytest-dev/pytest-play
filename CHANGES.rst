@@ -4,6 +4,11 @@ Changelog
 2.0.3 (unreleased)
 ------------------
 
+Feature:
+
+- support junit xml generation file with ``system-out`` element for
+  each test case execution (pytest ``--junit-xml`` option)
+
 Documentation:
 
 - minor documentation changes
