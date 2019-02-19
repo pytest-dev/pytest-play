@@ -7,7 +7,12 @@ Changelog
 Feature:
 
 - support junit xml generation file with ``system-out`` element for
-  each test case execution (pytest ``--junit-xml`` option)
+  each test case execution (pytest ``--junit-xml`` option).
+  ``system-out`` will tracked by default in junit report unless you use
+  the ``--capture=no`` or its alias ``-s``
+
+- track ``_elapsed`` time for each executed command ``--junit-xml`` report
+  if ``system-out`` is enabled
 
 Documentation:
 

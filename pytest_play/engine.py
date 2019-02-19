@@ -3,6 +3,7 @@ import os
 import logging
 import yaml
 import pkg_resources
+import time
 from zope import component
 from zope.interface import Interface
 from parametrizer import Parametrizer
@@ -130,6 +131,7 @@ class PlayEngine(object):
     @skip_condition
     def execute_command(self, command, **kwargs):
         """ Execute single command """
+        return_value = None
         command = self._merge_payload(
             self._yaml_loads(
                 yaml.dump(
@@ -154,11 +156,14 @@ class PlayEngine(object):
                 'Command not implemented', command_type, provider_name)
         self.logger.info('Executing command %r', command)
         try:
-            print(command)
-            return method(command, **kwargs)
+            start_time = time.time()
+            return_value = method(command, **kwargs)
+            elapsed = time.time() - start_time
+            print(dict(command, _elapsed=elapsed))
         except Exception:
             self.logger.error('FAILED command %r', command)
             raise
+        return return_value
 
     def update_variables(self, extra_variables):
         """ Update variables """
