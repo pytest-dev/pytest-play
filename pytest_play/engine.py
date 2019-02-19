@@ -31,6 +31,10 @@ class PlayEngine(object):
         self.register_plugins()
         self._teardown = []
 
+    @property
+    def record_property(self):
+        return self.request.getfixturevalue('record_property')
+
     def register_teardown_callback(self, callback):
         """ Register teardown callback """
         if callback not in self._teardown:
@@ -160,6 +164,16 @@ class PlayEngine(object):
             return_value = method(command, **kwargs)
             elapsed = time.time() - start_time
             print(dict(command, _elapsed=elapsed))
+            if self.request.config.getoption(
+                    '--junit-xml') and 'key' in command:
+                # if key in commands, track elapsed time (e.g.,
+                # time needed from the previous click on the login
+                # button until you are able to interact successfully
+                # with the application). This way you can track
+                # this time so that will be included in a machine
+                # interpretable report if --junit-xml cli option
+                # has been used
+                self.record_property(command['key'], elapsed)
         except Exception:
             self.logger.error('FAILED command %r', command)
             raise
