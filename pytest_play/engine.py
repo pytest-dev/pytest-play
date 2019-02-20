@@ -164,7 +164,7 @@ class PlayEngine(object):
             return_value = method(command, **kwargs)
             elapsed = time.time() - start_time
             print(dict(command, _elapsed=elapsed))
-            self.update_variables({'elapsed': elapsed})
+            self.update_variables({'_elapsed': elapsed})
             if 'property_name' in command:
                 self.update_variables({command['property_name']: elapsed})
                 if self.request.config.getoption('--junit-xml'):

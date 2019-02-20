@@ -335,6 +335,6 @@ def test_elapsed_variable(play):
     command = {'provider': 'python',
                'type': 'assert',
                'expression': 'True', }
-    assert 'elapsed' not in play.variables
+    assert '_elapsed' not in play.variables
     play.execute_command(command)
-    assert float(play.variables['elapsed']) > 0
+    assert float(play.variables['_elapsed']) > 0

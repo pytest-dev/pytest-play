@@ -26,9 +26,9 @@ Feature:
   variable so that you can make additional assertions
 
 - after every command execution a pytest-play variable will be added/updated
-  reporting the elapsed time (accessible using ``variables['elapsed']``).
+  reporting the elapsed time (accessible using ``variables['_elapsed']``).
 
-  So be aware that the ``elapsed`` variable name should be considered as a special
+  So be aware that the ``_elapsed`` variable name should be considered as a special
   variable and so you should not use this name for storing variables
 
 Documentation:
