@@ -6,5 +6,9 @@ test_data:
 - type: GET
   provider: play_requests
   url: https://api.chucknorris.io/jokes/categories
-  expression: "'dev' in response.json()"
-  key: categories_time
+  expression: "'$category' in response.json()"
+  property_name: categories_time
+- type: assert
+  provider: python
+  expression: "variables['categories_time'] < 2.5"
+  comment: you can make an assertion against the categories_time

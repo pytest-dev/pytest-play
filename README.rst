@@ -402,6 +402,21 @@ like the following::
       path: "/some-path/assertions.yml"
       skip_condition: variables['cassandra_assertions'] is True
 
+How to assert commands elapsed time
+===================================
+
+The engine updates a ``pytest-play`` variable called ``_elapsed``
+for each executed command. So you can write something that::
+
+    ---
+    - type: GET
+      provider: play_requests
+      url: https://api.chucknorris.io/jokes/categories
+      expression: "'dev' in response.json()"
+    - type: assert
+      provider: python
+      expression: "variables['_elapsed'] > 0"
+
 Generate a JUnit XML report
 ===========================
 
@@ -412,11 +427,19 @@ Use the ``--junit-xml`` command line option, e.g.::
 You'll get for each test case errors, commands executed in ``system-output`` (do not use ``-s`` or ``--capture=no`` otherwise you won't
 see commands in ``system-output``) and execution timing metrics (global, per test case and per single command thanks to ``_elapsed`` property tracked on every executed command shown in ``system-output``).
 
+Here you can see a standard ``results.xml`` file::
+
+    <?xml version="1.0" encoding="utf-8"?><testsuite errors="0" failures="0" name="pytest" skipped="0" tests="1" time="0.360"><testcase classname="test_assertion.yml" file="test_assertion.yml" name="test_assertion.yml" time="0.326"><system-out>{&apos;expression&apos;: &apos;1 == 1&apos;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0003077983856201172}
+    {&apos;expression&apos;: &apos;0 == 0&apos;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0002529621124267578}
+    </system-out></testcase></testsuite>
+
 Generate a custom JUnit XML report with custom properties and execution times metrics
 =====================================================================================
 
 You can track execution time metrics for monitoring and measure
 what is important to you. For example you can track using a machine interpretable format:
+
+* response times (e.g., how much time is needed for returning a ``POST`` json payload)
 
 * time that occurs between the invocation of an API and a reactive web application update or some asynchronous data appearing on an event store
 
@@ -424,7 +447,41 @@ what is important to you. For example you can track using a machine interpretabl
 
 * time that occurs between a login button and the page loaded an usable (e.g., how much time is needed after a browser action to click on a target button)
 
-**TODO: EXAMPLES here**
+For example, a ``test_categories.yml`` file executed with
+the command line option ``--junit-xml report.xml``::
+
+    test_data:
+      - category: dev
+      - category: movie
+      - category: food
+    ---
+    - type: GET
+      provider: play_requests
+      url: https://api.chucknorris.io/jokes/categories
+      expression: "'$category' in response.json()"
+      property_name: categories_time
+    - type: assert
+      provider: python
+      expression: "variables['categories_time'] < 2.5"
+      comment: you can make an assertion against the categories_time
+
+will generate an extended ``report.xml`` file with custom properties like that::
+
+    <?xml version="1.0" encoding="utf-8"?><testsuite errors="0" failures="0" name="pytest" skipped="0" tests="3" time="2.023"><testcase classname="test_categories.yml" file="test_categories.yml" name="test_categories.yml0" time="1.036"><properties><property name="categories_time" value="0.5207087993621826"/></properties><system-out>{&apos;expression&apos;: &quot;&apos;dev&apos; in response.json()&quot;, &apos;property_name&apos;: &apos;categories_time&apos;, &apos;provider&apos;: &apos;play_requests&apos;, &apos;type&apos;: &apos;GET&apos;, &apos;url&apos;: &apos;https://api.chucknorris.io/jokes/categories&apos;, &apos;_elapsed&apos;: 0.5207087993621826}
+    {&apos;comment&apos;: &apos;you can make an assertion against the categories_time&apos;, &apos;expression&apos;: &quot;variables[&apos;categories_time&apos;] &lt; 2.5&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0006732940673828125}
+    </system-out></testcase><testcase classname="test_categories.yml" file="test_categories.yml" name="test_categories.yml1" time="0.419"><properties><property name="categories_time" value="0.36014437675476074"/></properties><system-out>{&apos;expression&apos;: &quot;&apos;movie&apos; in response.json()&quot;, &apos;property_name&apos;: &apos;categories_time&apos;, &apos;provider&apos;: &apos;play_requests&apos;, &apos;type&apos;: &apos;GET&apos;, &apos;url&apos;: &apos;https://api.chucknorris.io/jokes/categories&apos;, &apos;_elapsed&apos;: 0.36014437675476074}
+    {&apos;comment&apos;: &apos;you can make an assertion against the categories_time&apos;, &apos;expression&apos;: &quot;variables[&apos;categories_time&apos;] &lt; 2.5&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0008015632629394531}
+    </system-out></testcase><testcase classname="test_categories.yml" file="test_categories.yml" name="test_categories.yml2" time="0.505"><properties><property name="categories_time" value="0.44560670852661133"/></properties><system-out>{&apos;expression&apos;: &quot;&apos;food&apos; in response.json()&quot;, &apos;property_name&apos;: &apos;categories_time&apos;, &apos;provider&apos;: &apos;play_requests&apos;, &apos;type&apos;: &apos;GET&apos;, &apos;url&apos;: &apos;https://api.chucknorris.io/jokes/categories&apos;, &apos;_elapsed&apos;: 0.44560670852661133}
+    {&apos;comment&apos;: &apos;you can make an assertion against the categories_time&apos;, &apos;expression&apos;: &quot;variables[&apos;categories_time&apos;] &lt; 2.5&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0005669593811035156}
+    </system-out></testcase></testsuite>
+
+and the custom property ``categories_time`` will be tracked for each
+test case execution.
+
+Generate a custom JUnit XML report with custom properties and execution times metrics (advanced)
+================================================================================================
+
+**TODO**
 
 Browser based commands
 ----------------------
