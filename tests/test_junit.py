@@ -72,6 +72,11 @@ def test_junit_xml_record_property(testdir):
       the end of the previous command and the completion of
       this command. The key means that we want to track this
       time under a custom junit xml property with id key (login)"
+- provider: python
+  type: assert
+  expression: "variables['login'] < 1"
+  comment: we want to assert that a variable login exists now with
+    the elapsed time
     """)
     assert yml_file.basename.startswith('test_')
     assert yml_file.basename.endswith('.yml')

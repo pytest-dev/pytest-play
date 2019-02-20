@@ -20,7 +20,10 @@ Feature:
   the completion of the following. Basically you can track under the ``property_name``
   `load_login` key the time occurred between the click on the submit button
   and the end of the current command (e.g., click on the menu or text input
-  being able to receive text) using a machine interpretable format
+  being able to receive text) using a machine interpretable format.
+
+  The ``property_name`` value elapsed time will be available as standard ``pytest-play``
+  variable so that you can make additional assertions
 
 Documentation:
 

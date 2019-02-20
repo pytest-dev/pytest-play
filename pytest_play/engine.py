@@ -164,16 +164,17 @@ class PlayEngine(object):
             return_value = method(command, **kwargs)
             elapsed = time.time() - start_time
             print(dict(command, _elapsed=elapsed))
-            if self.request.config.getoption(
-                    '--junit-xml') and 'property_name' in command:
-                # if key in commands, track elapsed time (e.g.,
-                # time needed from the previous click on the login
-                # button until you are able to interact successfully
-                # with the application). This way you can track
-                # this time so that will be included in a machine
-                # interpretable report if --junit-xml cli option
-                # has been used
-                self.record_property(command['property_name'], elapsed)
+            if 'property_name' in command:
+                self.update_variables({command['property_name']: elapsed})
+                if self.request.config.getoption('--junit-xml'):
+                    # if key in commands, track elapsed time (e.g.,
+                    # time needed from the previous click on the login
+                    # button until you are able to interact successfully
+                    # with the application). This way you can track
+                    # this time so that will be included in a machine
+                    # interpretable report if --junit-xml cli option
+                    # has been used
+                    self.record_property(command['property_name'], elapsed)
         except Exception:
             self.logger.error('FAILED command %r', command)
             raise
