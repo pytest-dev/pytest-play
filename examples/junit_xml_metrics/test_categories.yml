@@ -1,0 +1,10 @@
+test_data:
+  - category: dev
+  - category: movie
+  - category: food
+---
+- type: GET
+  provider: play_requests
+  url: https://api.chucknorris.io/jokes/categories
+  expression: "'dev' in response.json()"
+  key: categories_time

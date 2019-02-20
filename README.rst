@@ -486,6 +486,19 @@ Option details:
 
 New options will be added in the next feature (e.g., skip scenarios, xfail, xpass, etc).
 
+JUnit XML report
+----------------
+
+
+
+
+Examples
+--------
+
+* https://github.com/pytest-dev/pytest-play/tree/master/examples
+
+* https://github.com/davidemoro/pytest-play-docker/tree/master/tests
+
 
 Articles and talks
 ------------------

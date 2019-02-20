@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?><testsuite errors="0" failures="0" name="pytest" skipped="0" tests="1" time="0.134"><testcase classname="test_assertion.yml" file="test_assertion.yml" name="test_assertion.yml" time="0.097"><system-out>{&apos;expression&apos;: &apos;1 == 1&apos;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0003032684326171875}
-{&apos;expression&apos;: &apos;0 == 0&apos;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0002727508544921875}
-</system-out></testcase></testsuite>

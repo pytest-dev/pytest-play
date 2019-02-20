@@ -67,7 +67,7 @@ def test_junit_xml_record_property(testdir):
 - provider: python
   type: assert
   expression: "1"
-  key: login
+  property_name: login
   comment: "let's pretend that we want track the time between
       the end of the previous command and the completion of
       this command. The key means that we want to track this

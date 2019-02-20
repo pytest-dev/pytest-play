@@ -14,9 +14,10 @@ Feature:
 - track ``_elapsed`` time for each executed command ``--junit-xml`` report
   if ``system-out`` is enabled
 
-- track custom properties in ``--junit-xml`` report. For example you can track
+- track pytest custom properties in ``--junit-xml`` report for monitoring
+  and measure what is important to you. For example you can track as key metric
   the time of the time occurred between the end of the previous action and
-  the completion of the following. Basically you can track under the key
+  the completion of the following. Basically you can track under the ``property_name``
   `load_login` key the time occurred between the click on the submit button
   and the end of the current command (e.g., click on the menu or text input
   being able to receive text) using a machine interpretable format
