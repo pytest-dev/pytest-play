@@ -14,7 +14,7 @@ Feature:
 - track ``_elapsed`` time for each executed command ``--junit-xml`` report
   if ``system-out`` is enabled
 
-- track pytest custom properties in ``--junit-xml`` report for monitoring
+- track ``pytest`` custom properties in ``--junit-xml`` report for monitoring
   and measure what is important to you. For example you can track as key metric
   the time of the time occurred between the end of the previous action and
   the completion of the following. Basically you can track under the ``property_name``
@@ -25,7 +25,7 @@ Feature:
   The ``property_name`` value elapsed time will be available as standard ``pytest-play``
   variable so that you can make additional assertions
 
-- after every command execution a pytest-play variable will be added/updated
+- after every command execution a ``pytest-play`` variable will be added/updated
   reporting the elapsed time (accessible using ``variables['_elapsed']``).
 
   So be aware that the ``_elapsed`` variable name should be considered as a special

@@ -402,6 +402,29 @@ like the following::
       path: "/some-path/assertions.yml"
       skip_condition: variables['cassandra_assertions'] is True
 
+Generate a JUnit XML report
+===========================
+
+Use the ``--junit-xml`` command line option, e.g.::
+
+    --junit-xml results.xml
+
+You'll get for each test case errors, commands executed in ``system-output`` (do not use ``-s`` or ``--capture=no`` otherwise you won't
+see commands in ``system-output``) and execution timing metrics (global, per test case and per single command thanks to ``_elapsed`` property tracked on every executed command shown in ``system-output``).
+
+Generate a custom JUnit XML report with custom properties and execution times metrics
+=====================================================================================
+
+You can track execution time metrics for monitoring and measure
+what is important to you. For example you can track using a machine interpretable format:
+
+* time that occurs between the invocation of an API and a reactive web application update or some asynchronous data appearing on an event store
+
+* time that occurs between a user input on browser and results updated (e.g., a live search)
+
+* time that occurs between a login button and the page loaded an usable (e.g., how much time is needed after a browser action to click on a target button)
+
+**TODO: EXAMPLES here**
 
 Browser based commands
 ----------------------
@@ -486,18 +509,14 @@ Option details:
 
 New options will be added in the next feature (e.g., skip scenarios, xfail, xpass, etc).
 
-JUnit XML report
-----------------
-
-
-
-
 Examples
 --------
 
 * https://github.com/pytest-dev/pytest-play/tree/master/examples
 
 * https://github.com/davidemoro/pytest-play-docker/tree/master/tests
+
+* https://github.com/davidemoro/pytest-play-plone-example
 
 
 Articles and talks
