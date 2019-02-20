@@ -159,9 +159,15 @@ class PlayEngine(object):
             raise NotImplementedError(
                 'Command not implemented', command_type, provider_name)
         self.logger.info('Executing command %r', command)
+
+        start_time = time.time()
         try:
-            start_time = time.time()
             return_value = method(command, **kwargs)
+        except Exception:
+            self.logger.error('FAILED command %r', command)
+            # TODO: print variables status
+            raise
+        finally:
             elapsed = time.time() - start_time
             print(dict(command, _elapsed=elapsed))
             self.update_variables({'_elapsed': elapsed})
@@ -176,9 +182,6 @@ class PlayEngine(object):
                     # interpretable report if --junit-xml cli option
                     # has been used
                     self.record_property(command['property_name'], elapsed)
-        except Exception:
-            self.logger.error('FAILED command %r', command)
-            raise
         return return_value
 
     def update_variables(self, extra_variables):
