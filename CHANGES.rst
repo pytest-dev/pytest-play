@@ -34,6 +34,8 @@ Features:
 - improve debug in case of failed assertions or errored commands. Logged variables
   dump in standard logs and ``system-out`` reporting if available
 
+- improve debuggability in case of assertion errors (log failing expression)
+
 Documentation:
 
 - minor documentation changes

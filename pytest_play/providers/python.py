@@ -1,3 +1,4 @@
+import logging
 import json
 import re
 from time import (
@@ -7,6 +8,9 @@ from time import (
 from RestrictedPython import RestrictionCapableEval
 from pytest_play.providers import BaseProvider
 import datetime
+
+
+logger = logging.getLogger(__name__)
 
 
 class TimeoutException(Exception):
@@ -38,10 +42,18 @@ class PythonProvider(BaseProvider):
         """
         expression = command['expression']
         context = self._get_context(kwargs)
-        assert self._exec(
-            expression,
-            context,
-        )
+        try:
+            assert self._exec(
+                expression,
+                context,
+            )
+        except Exception as e:
+            msg = "FAILED expression: '{0}' (exception: {1})".format(
+                expression,
+                repr(e))
+            logger.error(msg)
+            print(msg)
+            raise e
 
     def command_store_variable(self, command, **kwargs):
         """ Store a variable based on a command containing a

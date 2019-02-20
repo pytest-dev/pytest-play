@@ -9,6 +9,9 @@ from zope.interface import Interface
 from parametrizer import Parametrizer
 
 
+logger = logging.getLogger(__name__)
+
+
 class ICommandProvider(Interface):
     """ Marker for pytest play command provider """
 
@@ -25,7 +28,6 @@ class PlayEngine(object):
         """
         self.request = request
         self.variables = variables
-        self.logger = logging.getLogger()
         self.gsm = component.getGlobalSiteManager()
 
         self.register_plugins()
@@ -146,7 +148,7 @@ class PlayEngine(object):
         command_provider = self.get_command_provider(provider_name)
 
         if command_provider is None:
-            self.logger.error('Not supported provider %r', command)
+            logger.error('Not supported provider %r', command)
             raise ValueError('Command not supported',
                              command_type,
                              provider_name)
@@ -155,17 +157,17 @@ class PlayEngine(object):
 
         method = getattr(command_provider, method_name, None)
         if method is None:
-            self.logger.error('Not supported command %r', command)
+            logger.error('Not supported command %r', command)
             raise NotImplementedError(
                 'Command not implemented', command_type, provider_name)
-        self.logger.info('Executing command %r', command)
+        logger.info('Executing command %r', command)
 
         start_time = time.time()
         try:
             return_value = method(command, **kwargs)
         except Exception:
-            self.logger.error('FAILED command %r', command)
-            self.logger.info('DUMP variables %r', self.variables)
+            logger.error('FAILED command %r', command)
+            logger.info('DUMP variables %r', self.variables)
             print(self.variables)
             raise
         finally:
@@ -188,7 +190,7 @@ class PlayEngine(object):
     def update_variables(self, extra_variables):
         """ Update variables """
         self.variables.update(extra_variables)
-        self.logger.debug("Variables updated %r", self.variables)
+        logger.debug("Variables updated %r", self.variables)
 
     # register commands
     def register_plugins(self):
