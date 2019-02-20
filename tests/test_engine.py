@@ -329,3 +329,12 @@ def test_record_property(play):
         'record_property') is None
     assert play.request.getfixturevalue.return_value.assert_called_once_with(
         'name', '1') is None
+
+
+def test_elapsed_variable(play):
+    command = {'provider': 'python',
+               'type': 'assert',
+               'expression': 'True', }
+    assert 'elapsed' not in play.variables
+    play.execute_command(command)
+    assert float(play.variables['elapsed']) > 0

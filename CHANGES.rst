@@ -25,6 +25,12 @@ Feature:
   The ``property_name`` value elapsed time will be available as standard ``pytest-play``
   variable so that you can make additional assertions
 
+- after every command execution a pytest-play variable will be added/updated
+  reporting the elapsed time (accessible using ``variables['elapsed']``).
+
+  So be aware that the ``elapsed`` variable name should be considered as a special
+  variable and so you should not use this name for storing variables
+
 Documentation:
 
 - minor documentation changes
