@@ -165,7 +165,8 @@ class PlayEngine(object):
             return_value = method(command, **kwargs)
         except Exception:
             self.logger.error('FAILED command %r', command)
-            # TODO: print variables status
+            self.logger.info('DUMP variables %r', self.variables)
+            print(self.variables)
             raise
         finally:
             elapsed = time.time() - start_time
@@ -174,8 +175,8 @@ class PlayEngine(object):
             if 'property_name' in command:
                 self.update_variables({command['property_name']: elapsed})
                 if self.request.config.getoption('--junit-xml'):
-                    # if key in commands, track elapsed time (e.g.,
-                    # time needed from the previous click on the login
+                    # if property_name key in commands, track elapsed time
+                    # (e.g., time needed from the previous click on the login
                     # button until you are able to interact successfully
                     # with the application). This way you can track
                     # this time so that will be included in a machine

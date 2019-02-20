@@ -4,7 +4,7 @@ Changelog
 2.0.3 (unreleased)
 ------------------
 
-Feature:
+Features:
 
 - support junit xml generation file with ``system-out`` element for
   each test case execution (pytest ``--junit-xml`` option).
@@ -30,6 +30,9 @@ Feature:
 
   So be aware that the ``_elapsed`` variable name should be considered as a special
   variable and so you should not use this name for storing variables
+
+- improve debug in case of failed assertions or errored commands. Logged variables
+  dump in standard logs and ``system-out`` reporting if available
 
 Documentation:
 
