@@ -36,6 +36,12 @@ Features:
 
 - improve debuggability in case of assertion errors (log failing expression)
 
+- added a new ``metrics`` provider that let you track custom metrics in conjunction
+  with ``--junit-xml`` option. You can track in a machine readable format response
+  times, dynamic custom expressions, time that occurs between different commands
+  (e.g., measure the time needed after a login to interact with the page, time before
+  an asynchronous update happens and so on)
+
 Documentation:
 
 - minor documentation changes

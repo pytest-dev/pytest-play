@@ -67,16 +67,12 @@ def test_junit_xml_record_property(testdir):
 - provider: python
   type: assert
   expression: "1"
-  property_name: login
-  comment: "let's pretend that we want track the time between
-      the end of the previous command and the completion of
-      this command. The key means that we want to track this
-      time under a custom junit xml property with id key (login)"
+- provider: metrics
+  type: record_elapsed
+  name: expensive_query
 - provider: python
   type: assert
-  expression: "variables['login'] < 1"
-  comment: we want to assert that a variable login exists now with
-    the elapsed time
+  expression: "variables['expensive_query'] < 1"
     """)
     assert yml_file.basename.startswith('test_')
     assert yml_file.basename.endswith('.yml')
@@ -90,7 +86,7 @@ def test_junit_xml_record_property(testdir):
     property_nodes = xmldoc.getElementsByTagName('property')
     assert len(property_nodes) == 1
     property_node = property_nodes[0]
-    assert property_node.getAttribute('name') == 'login'
+    assert property_node.getAttribute('name') == 'expensive_query'
     assert float(property_node.getAttribute('value')) > 0
 
 
