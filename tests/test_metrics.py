@@ -74,3 +74,22 @@ def test_record_property():
         .record_property \
         .assert_called_once_with(
             'elapsed_milliseconds', elapsed*1000) is None
+
+
+def test_record_elapsed_start():
+    import mock
+    mock_engine = mock.MagicMock()
+    mock_engine.variables = {}
+    from pytest_play import providers
+    provider = providers.MetricsProvider(mock_engine)
+    assert provider.engine is mock_engine
+    time_start = 1550770816.1716287
+    with mock.patch('pytest_play.providers.metrics.time') as time:
+        time.time.return_value = time_start
+        provider.command_record_elapsed_start({
+            'provider': 'metrics',
+            'type': 'record_elapsed_start',
+            'name': 'async_update',
+        })
+    assert mock_engine.update_variables.assert_called_once_with(
+        {'async_update': time_start}) is None
