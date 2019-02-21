@@ -29,13 +29,15 @@ class PlayEngine(object):
         self.request = request
         self.variables = variables
         self.gsm = component.getGlobalSiteManager()
+        self._record_property = self.request.getfixturevalue(
+            'record_property')
 
         self.register_plugins()
         self._teardown = []
 
-    @property
-    def record_property(self):
-        return self.request.getfixturevalue('record_property')
+    def record_property(self, name, value):
+        """ Record a property metrics """
+        return self._record_property(name, value)
 
     def register_teardown_callback(self, callback):
         """ Register teardown callback """

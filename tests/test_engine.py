@@ -321,13 +321,13 @@ def test_teardown(play):
     assert play._teardown[1].assert_called_once_with() is None
 
 
-def test_record_property(play):
+def test_record_property(play, record_property):
     import mock
     play.request = mock.MagicMock()
+    play._record_property is record_property
+    play._record_property = mock.MagicMock()
     play.record_property('name', '1')
-    assert play.request.getfixturevalue.assert_called_once_with(
-        'record_property') is None
-    assert play.request.getfixturevalue.return_value.assert_called_once_with(
+    assert play._record_property.assert_called_once_with(
         'name', '1') is None
 
 
