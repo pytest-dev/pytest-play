@@ -70,6 +70,7 @@ setup(
         'playcommands': [
             'include = pytest_play.providers:IncludeProvider',
             'python = pytest_play.providers:PythonProvider',
+            'metrics = pytest_play.providers:MetricsProvider',
         ],
         'pytest11': [
             'pytest-play = pytest_play.plugin',
