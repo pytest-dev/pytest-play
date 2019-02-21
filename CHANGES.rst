@@ -40,7 +40,9 @@ Features:
   with ``--junit-xml`` option. You can track in a machine readable format response
   times, dynamic custom expressions, time that occurs between different commands
   (e.g., measure the time needed after a login to interact with the page, time before
-  an asynchronous update happens and so on)
+  an asynchronous update happens and so on). Under the ``metrics`` provider you'll
+  find the ``record_property``, ``record_elapsed``, ``record_elapsed_start``  and
+  ``record_elapsed_stop`` commands
 
 Documentation:
 
