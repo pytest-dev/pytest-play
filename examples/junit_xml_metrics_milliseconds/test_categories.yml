@@ -8,9 +8,10 @@ test_data:
   url: https://api.chucknorris.io/jokes/categories
   expression: "'$category' in response.json()"
 - provider: metrics
-  type: record_elapsed
+  type: record_property
   name: categories_time
+  expression: "variables['_elapsed']*1000"
 - type: assert
   provider: python
-  expression: "variables['categories_time'] < 2.5"
+  expression: "variables['categories_time'] < 2500"
   comment: you can make an assertion against the categories_time

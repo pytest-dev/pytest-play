@@ -447,6 +447,9 @@ what is important to you. For example you can track using a machine interpretabl
 
 * time that occurs between a login button and the page loaded an usable (e.g., how much time is needed after a browser action to click on a target button)
 
+Track response time metric
+--------------------------
+
 For example, a ``test_categories.yml`` file executed with
 the command line option ``--junit-xml report.xml``::
 
@@ -459,7 +462,9 @@ the command line option ``--junit-xml report.xml``::
       provider: play_requests
       url: https://api.chucknorris.io/jokes/categories
       expression: "'$category' in response.json()"
-      property_name: categories_time
+    - provider: metrics
+      type: record_elapsed
+      name: categories_time
     - type: assert
       provider: python
       expression: "variables['categories_time'] < 2.5"
@@ -467,12 +472,15 @@ the command line option ``--junit-xml report.xml``::
 
 will generate an extended ``report.xml`` file with custom properties like that::
 
-    <?xml version="1.0" encoding="utf-8"?><testsuite errors="0" failures="0" name="pytest" skipped="0" tests="3" time="2.023"><testcase classname="test_categories.yml" file="test_categories.yml" name="test_categories.yml0" time="1.036"><properties><property name="categories_time" value="0.5207087993621826"/></properties><system-out>{&apos;expression&apos;: &quot;&apos;dev&apos; in response.json()&quot;, &apos;property_name&apos;: &apos;categories_time&apos;, &apos;provider&apos;: &apos;play_requests&apos;, &apos;type&apos;: &apos;GET&apos;, &apos;url&apos;: &apos;https://api.chucknorris.io/jokes/categories&apos;, &apos;_elapsed&apos;: 0.5207087993621826}
-    {&apos;comment&apos;: &apos;you can make an assertion against the categories_time&apos;, &apos;expression&apos;: &quot;variables[&apos;categories_time&apos;] &lt; 2.5&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0006732940673828125}
-    </system-out></testcase><testcase classname="test_categories.yml" file="test_categories.yml" name="test_categories.yml1" time="0.419"><properties><property name="categories_time" value="0.36014437675476074"/></properties><system-out>{&apos;expression&apos;: &quot;&apos;movie&apos; in response.json()&quot;, &apos;property_name&apos;: &apos;categories_time&apos;, &apos;provider&apos;: &apos;play_requests&apos;, &apos;type&apos;: &apos;GET&apos;, &apos;url&apos;: &apos;https://api.chucknorris.io/jokes/categories&apos;, &apos;_elapsed&apos;: 0.36014437675476074}
-    {&apos;comment&apos;: &apos;you can make an assertion against the categories_time&apos;, &apos;expression&apos;: &quot;variables[&apos;categories_time&apos;] &lt; 2.5&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0008015632629394531}
-    </system-out></testcase><testcase classname="test_categories.yml" file="test_categories.yml" name="test_categories.yml2" time="0.505"><properties><property name="categories_time" value="0.44560670852661133"/></properties><system-out>{&apos;expression&apos;: &quot;&apos;food&apos; in response.json()&quot;, &apos;property_name&apos;: &apos;categories_time&apos;, &apos;provider&apos;: &apos;play_requests&apos;, &apos;type&apos;: &apos;GET&apos;, &apos;url&apos;: &apos;https://api.chucknorris.io/jokes/categories&apos;, &apos;_elapsed&apos;: 0.44560670852661133}
-    {&apos;comment&apos;: &apos;you can make an assertion against the categories_time&apos;, &apos;expression&apos;: &quot;variables[&apos;categories_time&apos;] &lt; 2.5&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0005669593811035156}
+    <?xml version="1.0" encoding="utf-8"?><testsuite errors="0" failures="0" name="pytest" skipped="0" tests="3" time="2.031"><testcase classname="test_categories.yml" file="test_categories.yml" name="test_categories.yml0" time="0.968"><properties><property name="categories_time" value="0.5829994678497314"/></properties><system-out>{&apos;expression&apos;: &quot;&apos;dev&apos; in response.json()&quot;, &apos;provider&apos;: &apos;play_requests&apos;, &apos;type&apos;: &apos;GET&apos;, &apos;url&apos;: &apos;https://api.chucknorris.io/jokes/categories&apos;, &apos;_elapsed&apos;: 0.5829994678497314}
+    {&apos;name&apos;: &apos;categories_time&apos;, &apos;provider&apos;: &apos;metrics&apos;, &apos;type&apos;: &apos;record_elapsed&apos;, &apos;_elapsed&apos;: 3.3855438232421875e-05}
+    {&apos;comment&apos;: &apos;you can make an assertion against the categories_time&apos;, &apos;expression&apos;: &quot;variables[&apos;categories_time&apos;] &lt; 2.5&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0006382465362548828}
+    </system-out></testcase><testcase classname="test_categories.yml" file="test_categories.yml" name="test_categories.yml1" time="0.481"><properties><property name="categories_time" value="0.4184422492980957"/></properties><system-out>{&apos;expression&apos;: &quot;&apos;movie&apos; in response.json()&quot;, &apos;provider&apos;: &apos;play_requests&apos;, &apos;type&apos;: &apos;GET&apos;, &apos;url&apos;: &apos;https://api.chucknorris.io/jokes/categories&apos;, &apos;_elapsed&apos;: 0.4184422492980957}
+    {&apos;name&apos;: &apos;categories_time&apos;, &apos;provider&apos;: &apos;metrics&apos;, &apos;type&apos;: &apos;record_elapsed&apos;, &apos;_elapsed&apos;: 2.09808349609375e-05}
+    {&apos;comment&apos;: &apos;you can make an assertion against the categories_time&apos;, &apos;expression&apos;: &quot;variables[&apos;categories_time&apos;] &lt; 2.5&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.000553131103515625}
+    </system-out></testcase><testcase classname="test_categories.yml" file="test_categories.yml" name="test_categories.yml2" time="0.534"><properties><property name="categories_time" value="0.463592529296875"/></properties><system-out>{&apos;expression&apos;: &quot;&apos;food&apos; in response.json()&quot;, &apos;provider&apos;: &apos;play_requests&apos;, &apos;type&apos;: &apos;GET&apos;, &apos;url&apos;: &apos;https://api.chucknorris.io/jokes/categories&apos;, &apos;_elapsed&apos;: 0.463592529296875}
+    {&apos;name&apos;: &apos;categories_time&apos;, &apos;provider&apos;: &apos;metrics&apos;, &apos;type&apos;: &apos;record_elapsed&apos;, &apos;_elapsed&apos;: 2.09808349609375e-05}
+    {&apos;comment&apos;: &apos;you can make an assertion against the categories_time&apos;, &apos;expression&apos;: &quot;variables[&apos;categories_time&apos;] &lt; 2.5&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.00054931640625}
     </system-out></testcase></testsuite>
 
 and the custom property ``categories_time`` will be tracked for each

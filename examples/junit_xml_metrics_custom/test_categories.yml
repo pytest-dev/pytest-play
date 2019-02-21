@@ -1,0 +1,10 @@
+test_data:
+  - category: dev
+  - category: movie
+  - category: food
+---
+- provider: metrics
+  type: record_property
+  name: category
+  expression: 'variables["category"].upper()'
+  comment: you can track whatever you want
