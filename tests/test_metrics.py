@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """Tests for `pytest_play` package."""
+import pytest
 
 
 def test_record_elapsed():
@@ -27,6 +28,23 @@ def test_record_elapsed():
         .record_property \
         .assert_called_once_with(
             'previous_command', elapsed) is None
+
+
+def test_record_elapsed_key_error():
+    import mock
+    mock_engine = mock.MagicMock()
+    mock_engine.variables = {}
+    from pytest_play import providers
+    provider = providers.MetricsProvider(mock_engine)
+    assert provider.engine is mock_engine
+    with pytest.raises(KeyError):
+        provider.command_record_elapsed({
+            'provider': 'metrics',
+            'type': 'record_elapsed',
+            'name': 'previous_command',
+            'comment': 'record last command elapsed time '
+            'under key name previous command'
+        })
 
 
 def test_record_property():
