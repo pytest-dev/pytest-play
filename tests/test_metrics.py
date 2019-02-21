@@ -103,16 +103,16 @@ def test_record_elapsed_stop():
     from pytest_play import providers
     provider = providers.MetricsProvider(mock_engine)
     assert provider.engine is mock_engine
-    time_end = 1550770817.1716287
+    time_stop = 1550770817.1716287
     with mock.patch('pytest_play.providers.metrics.time') as time:
-        time.time.return_value = time_end
-        provider.command_record_elapsed_end({
+        time.time.return_value = time_stop
+        provider.command_record_elapsed_stop({
             'provider': 'metrics',
-            'type': 'record_elapsed_end',
+            'type': 'record_elapsed_stop',
             'name': 'async_update',
         })
     assert mock_engine.update_variables.assert_called_once_with(
-        {'async_update': time_end-time_start}) is None
+        {'async_update': time_stop-time_start}) is None
 
 
 def test_record_elapsed_stop_key_error():
@@ -123,8 +123,8 @@ def test_record_elapsed_stop_key_error():
     provider = providers.MetricsProvider(mock_engine)
     assert provider.engine is mock_engine
     with pytest.raises(KeyError):
-        provider.command_record_elapsed_end({
+        provider.command_record_elapsed_stop({
             'provider': 'metrics',
-            'type': 'record_elapsed_end',
+            'type': 'record_elapsed_stop',
             'name': 'async_update',
         })

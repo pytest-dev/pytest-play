@@ -29,7 +29,7 @@ class MetricsProvider(BaseProvider):
         name = command['name']
         self.engine.update_variables({name: time.time()})
 
-    def command_record_elapsed_end(self, command, **kwargs):
+    def command_record_elapsed_stop(self, command, **kwargs):
         """ record a time delta (end tracking time) """
         name = command['name']
         delta = time.time() - self.engine.variables[name]
