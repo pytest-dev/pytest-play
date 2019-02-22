@@ -4,6 +4,46 @@ Changelog
 2.0.3 (unreleased)
 ------------------
 
+Features:
+
+- support junit xml generation file with ``system-out`` element for
+  each test case execution (pytest ``--junit-xml`` option).
+  ``system-out`` will tracked by default in junit report unless you use
+  the ``--capture=no`` or its alias ``-s``
+
+- track ``_elapsed`` time for each executed command ``--junit-xml`` report
+  if ``system-out`` is enabled
+
+- track ``pytest`` custom properties in ``--junit-xml`` report for monitoring
+  and measure what is important to you. For example you can track as key metric
+  the time of the time occurred between the end of the previous action and
+  the completion of the following. Basically you can track under the ``property_name``
+  `load_login` key the time occurred between the click on the submit button
+  and the end of the current command (e.g., click on the menu or text input
+  being able to receive text) using a machine interpretable format.
+
+  The ``property_name`` value elapsed time will be available as standard ``pytest-play``
+  variable so that you can make additional assertions
+
+- after every command execution a ``pytest-play`` variable will be added/updated
+  reporting the elapsed time (accessible using ``variables['_elapsed']``).
+
+  So be aware that the ``_elapsed`` variable name should be considered as a special
+  variable and so you should not use this name for storing variables
+
+- improve debug in case of failed assertions or errored commands. Logged variables
+  dump in standard logs and ``system-out`` reporting if available
+
+- improve debuggability in case of assertion errors (log failing expression)
+
+- added a new ``metrics`` provider that let you track custom metrics in conjunction
+  with ``--junit-xml`` option. You can track in a machine readable format response
+  times, dynamic custom expressions, time that occurs between different commands
+  (e.g., measure the time needed after a login to interact with the page, time before
+  an asynchronous update happens and so on). Under the ``metrics`` provider you'll
+  find the ``record_property``, ``record_elapsed``, ``record_elapsed_start``  and
+  ``record_elapsed_stop`` commands
+
 Documentation:
 
 - minor documentation changes
