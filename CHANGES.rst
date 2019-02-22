@@ -1,7 +1,13 @@
 Changelog
 =========
 
-2.1.0 (unreleased)
+2.1.1 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
+2.1.0 (2019-02-22)
 ------------------
 
 Features:
