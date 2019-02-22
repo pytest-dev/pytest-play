@@ -1,0 +1,27 @@
+---
+- provider: selenium
+  type: get
+  url: https://www.plone-demo.info/
+- provider: metrics
+  type: record_elapsed_start
+  name: load_time
+- provider: selenium
+  type: setElementText
+  text: plone 5
+  locator:
+    type: id
+    value: searchGadget
+- provider: metrics
+  type: record_elapsed_stop
+  name: load_time
+- provider: metrics
+  type: record_elapsed_start
+  name: live_search_time
+- provider: selenium
+  type: waitForElementVisible
+  locator:
+    type: css
+    value: li[data-url$="https://www.plone-demo.info/front-page"]
+- provider: metrics
+  type: record_elapsed_stop
+  name: live_search_time

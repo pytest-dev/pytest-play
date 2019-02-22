@@ -402,6 +402,200 @@ like the following::
       path: "/some-path/assertions.yml"
       skip_condition: variables['cassandra_assertions'] is True
 
+How to assert commands elapsed time
+===================================
+
+The engine updates a ``pytest-play`` variable called ``_elapsed``
+for each executed command. So you can write something that::
+
+    ---
+    - type: GET
+      provider: play_requests
+      url: https://api.chucknorris.io/jokes/categories
+      expression: "'dev' in response.json()"
+    - type: assert
+      provider: python
+      expression: "variables['_elapsed'] > 0"
+
+Generate a JUnit XML report
+===========================
+
+Use the ``--junit-xml`` command line option, e.g.::
+
+    --junit-xml results.xml
+
+You'll get for each test case errors, commands executed in ``system-output`` (do not use ``-s`` or ``--capture=no`` otherwise you won't
+see commands in ``system-output``) and execution timing metrics (global, per test case and per single command thanks to ``_elapsed`` property tracked on every executed command shown in ``system-output``).
+
+Here you can see a standard ``results.xml`` file::
+
+    <?xml version="1.0" encoding="utf-8"?><testsuite errors="0" failures="0" name="pytest" skipped="0" tests="1" time="0.360"><testcase classname="test_assertion.yml" file="test_assertion.yml" name="test_assertion.yml" time="0.326"><system-out>{&apos;expression&apos;: &apos;1 == 1&apos;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0003077983856201172}
+    {&apos;expression&apos;: &apos;0 == 0&apos;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0002529621124267578}
+    </system-out></testcase></testsuite>
+
+Generate a custom JUnit XML report with custom properties and execution times metrics
+=====================================================================================
+
+You can track execution time metrics for monitoring and measure
+what is important to you. For example you can track using a machine interpretable format:
+
+* response times (e.g., how much time is needed for returning a ``POST`` json payload)
+
+* time that occurs between the invocation of an API and a reactive web application update or some asynchronous data appearing on an event store
+
+* time that occurs between a user input on browser and results updated (e.g., a live search)
+
+* time that occurs between a login button and the page loaded an usable (e.g., how much time is needed after a browser action to click on a target button)
+
+Track response time metric in JUnit XML report
+----------------------------------------------
+
+For example, a ``test_categories.yml`` file executed with
+the command line option ``--junit-xml report.xml`` (requires play_requests_ plugin)::
+
+    test_data:
+      - category: dev
+      - category: movie
+      - category: food
+    ---
+    - type: GET
+      provider: play_requests
+      url: https://api.chucknorris.io/jokes/categories
+      expression: "'$category' in response.json()"
+    - provider: metrics
+      type: record_elapsed
+      name: categories_time
+    - type: assert
+      provider: python
+      expression: "variables['categories_time'] < 2.5"
+      comment: you can make an assertion against the categories_time
+
+will generate an extended ``report.xml`` file with custom properties like that::
+
+    <?xml version="1.0" encoding="utf-8"?><testsuite errors="0" failures="0" name="pytest" skipped="0" tests="3" time="2.031"><testcase classname="test_categories.yml" file="test_categories.yml" name="test_categories.yml0" time="0.968"><properties><property name="categories_time" value="0.5829994678497314"/></properties><system-out>{&apos;expression&apos;: &quot;&apos;dev&apos; in response.json()&quot;, &apos;provider&apos;: &apos;play_requests&apos;, &apos;type&apos;: &apos;GET&apos;, &apos;url&apos;: &apos;https://api.chucknorris.io/jokes/categories&apos;, &apos;_elapsed&apos;: 0.5829994678497314}
+    {&apos;name&apos;: &apos;categories_time&apos;, &apos;provider&apos;: &apos;metrics&apos;, &apos;type&apos;: &apos;record_elapsed&apos;, &apos;_elapsed&apos;: 3.3855438232421875e-05}
+    {&apos;comment&apos;: &apos;you can make an assertion against the categories_time&apos;, &apos;expression&apos;: &quot;variables[&apos;categories_time&apos;] &lt; 2.5&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0006382465362548828}
+    </system-out></testcase><testcase classname="test_categories.yml" file="test_categories.yml" name="test_categories.yml1" time="0.481"><properties><property name="categories_time" value="0.4184422492980957"/></properties><system-out>{&apos;expression&apos;: &quot;&apos;movie&apos; in response.json()&quot;, &apos;provider&apos;: &apos;play_requests&apos;, &apos;type&apos;: &apos;GET&apos;, &apos;url&apos;: &apos;https://api.chucknorris.io/jokes/categories&apos;, &apos;_elapsed&apos;: 0.4184422492980957}
+    {&apos;name&apos;: &apos;categories_time&apos;, &apos;provider&apos;: &apos;metrics&apos;, &apos;type&apos;: &apos;record_elapsed&apos;, &apos;_elapsed&apos;: 2.09808349609375e-05}
+    {&apos;comment&apos;: &apos;you can make an assertion against the categories_time&apos;, &apos;expression&apos;: &quot;variables[&apos;categories_time&apos;] &lt; 2.5&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.000553131103515625}
+    </system-out></testcase><testcase classname="test_categories.yml" file="test_categories.yml" name="test_categories.yml2" time="0.534"><properties><property name="categories_time" value="0.463592529296875"/></properties><system-out>{&apos;expression&apos;: &quot;&apos;food&apos; in response.json()&quot;, &apos;provider&apos;: &apos;play_requests&apos;, &apos;type&apos;: &apos;GET&apos;, &apos;url&apos;: &apos;https://api.chucknorris.io/jokes/categories&apos;, &apos;_elapsed&apos;: 0.463592529296875}
+    {&apos;name&apos;: &apos;categories_time&apos;, &apos;provider&apos;: &apos;metrics&apos;, &apos;type&apos;: &apos;record_elapsed&apos;, &apos;_elapsed&apos;: 2.09808349609375e-05}
+    {&apos;comment&apos;: &apos;you can make an assertion against the categories_time&apos;, &apos;expression&apos;: &quot;variables[&apos;categories_time&apos;] &lt; 2.5&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.00054931640625}
+    </system-out></testcase></testsuite>
+
+and the custom property ``categories_time`` will be tracked for each
+test case execution, for example::
+
+    <properties>
+        <property name="categories_time" value="0.5829994678497314"/>
+    </properties>
+
+Advanced metrics in JUnit XML report
+------------------------------------
+
+In this example we want to measures how long it takes a page to become interactive
+(page responding to user interactions) and evaluate update time for a live search feature.
+Let's see the ``test_search.yml`` example (requires play_selenium_)::
+
+    ---
+    - provider: selenium
+      type: get
+      url: https://www.plone-demo.info/
+    - provider: metrics
+      type: record_elapsed_start
+      name: load_time
+    - provider: selenium
+      type: setElementText
+      text: plone 5
+      locator:
+        type: id
+        value: searchGadget
+    - provider: metrics
+      type: record_elapsed_stop
+      name: load_time
+    - provider: metrics
+      type: record_elapsed_start
+      name: live_search_time
+    - provider: selenium
+      type: waitForElementVisible
+      locator:
+        type: css
+        value: li[data-url$="https://www.plone-demo.info/front-page"]
+    - provider: metrics
+      type: record_elapsed_stop
+      name: live_search_time
+
+If you execute this scenario with the ``--junit-xml results.xml``
+option you'll get a ``results.xml`` file similar to this one::
+
+    <?xml version="1.0" encoding="utf-8"?><testsuite errors="0" failures="0" name="pytest" skipped="0" tests="1" time="13.650"><testcase classname="test_search.yml" file="test_search.yml" name="test_search.yml" time="13.580"><properties><property name="load_time" value="1.1175920963287354"/><property name="live_search_time" value="1.0871295928955078"/></properties><system-out>{&apos;provider&apos;: &apos;selenium&apos;, &apos;type&apos;: &apos;get&apos;, &apos;url&apos;: &apos;https://www.plone-demo.info/&apos;, &apos;_elapsed&apos;: 9.593282461166382}
+    {&apos;name&apos;: &apos;load_time&apos;, &apos;provider&apos;: &apos;metrics&apos;, &apos;type&apos;: &apos;record_elapsed_start&apos;, &apos;_elapsed&apos;: 1.1682510375976562e-05}
+    {&apos;locator&apos;: {&apos;type&apos;: &apos;id&apos;, &apos;value&apos;: &apos;searchGadget&apos;}, &apos;provider&apos;: &apos;selenium&apos;, &apos;text&apos;: &apos;plone 5&apos;, &apos;type&apos;: &apos;setElementText&apos;, &apos;_elapsed&apos;: 1.1019845008850098}
+    {&apos;name&apos;: &apos;load_time&apos;, &apos;provider&apos;: &apos;metrics&apos;, &apos;type&apos;: &apos;record_elapsed_stop&apos;, &apos;_elapsed&apos;: 1.9788742065429688e-05}
+    {&apos;name&apos;: &apos;live_search_time&apos;, &apos;provider&apos;: &apos;metrics&apos;, &apos;type&apos;: &apos;record_elapsed_start&apos;, &apos;_elapsed&apos;: 1.0013580322265625e-05}
+    {&apos;locator&apos;: {&apos;type&apos;: &apos;css&apos;, &apos;value&apos;: &apos;li[data-url$=&quot;https://www.plone-demo.info/front-page&quot;]&apos;}, &apos;provider&apos;: &apos;selenium&apos;, &apos;type&apos;: &apos;waitForElementVisible&apos;, &apos;_elapsed&apos;: 1.060795545578003}
+    {&apos;name&apos;: &apos;live_search_time&apos;, &apos;provider&apos;: &apos;metrics&apos;, &apos;type&apos;: &apos;record_elapsed_stop&apos;, &apos;_elapsed&apos;: 2.3603439331054688e-05}
+    </system-out></testcase></testsuite>
+
+and in this case you'll find out that the key metric ``load_time``
+was ``1.11`` seconds and the ``live_search_time`` was ``1.09`` seconds as
+you can see here::
+
+    <properties>
+        <property name="load_time" value="1.1175920963287354"/>
+        <property name="live_search_time" value="1.0871295928955078"/>
+    </properties>
+
+So thanks to JUnit XML reporting you can track response times (not only browser based timings)
+using a machine readable format to be ingested by third party systems with an acceptable approximation
+if you cannot track timings directly on the systems under test.
+
+Track any property in JUnit XML reports using expressions
+---------------------------------------------------------
+
+Let's see a ``test_categories.yml`` (play_selenium_ required)::
+
+    test_data:
+      - category: dev
+      - category: movie
+      - category: food
+    ---
+    - type: GET
+      provider: play_requests
+      url: https://api.chucknorris.io/jokes/categories
+      expression: "'$category' in response.json()"
+    - provider: metrics
+      type: record_property
+      name: categories_time
+      expression: "variables['_elapsed']*1000"
+    - type: assert
+      provider: python
+      expression: "variables['categories_time'] < 2500"
+      comment: you can make an assertion against the categories_time
+
+generates some custom properties (``categories_time`` in milliseconds using a python expression)
+using the ``--junit-xml results.xml`` cli option::
+
+    <?xml version="1.0" encoding="utf-8"?><testsuite errors="0" failures="0" name="pytest" skipped="0" tests="3" time="2.312"><testcase classname="test_categories.yml" file="test_categories.yml" name="test_categories.yml0" time="1.034"><properties><property name="categories_time" value="610.3124618530273"/></properties><system-out>{&apos;expression&apos;: &quot;&apos;dev&apos; in response.json()&quot;, &apos;provider&apos;: &apos;play_requests&apos;, &apos;type&apos;: &apos;GET&apos;, &apos;url&apos;: &apos;https://api.chucknorris.io/jokes/categories&apos;, &apos;_elapsed&apos;: 0.6103124618530273}
+    {&apos;expression&apos;: &quot;variables[&apos;_elapsed&apos;]*1000&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;exec&apos;, &apos;_elapsed&apos;: 0.0006859302520751953}
+    {&apos;expression&apos;: &quot;variables[&apos;_elapsed&apos;]*1000&quot;, &apos;name&apos;: &apos;categories_time&apos;, &apos;provider&apos;: &apos;metrics&apos;, &apos;type&apos;: &apos;record_property&apos;, &apos;_elapsed&apos;: 0.006484270095825195}
+    {&apos;comment&apos;: &apos;you can make an assertion against the categories_time&apos;, &apos;expression&apos;: &quot;variables[&apos;categories_time&apos;] &lt; 2500&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0005526542663574219}
+    </system-out></testcase><testcase classname="test_categories.yml" file="test_categories.yml" name="test_categories.yml1" time="0.550"><properties><property name="categories_time" value="443.72105598449707"/></properties><system-out>{&apos;expression&apos;: &quot;&apos;movie&apos; in response.json()&quot;, &apos;provider&apos;: &apos;play_requests&apos;, &apos;type&apos;: &apos;GET&apos;, &apos;url&apos;: &apos;https://api.chucknorris.io/jokes/categories&apos;, &apos;_elapsed&apos;: 0.44372105598449707}
+    {&apos;expression&apos;: &quot;variables[&apos;_elapsed&apos;]*1000&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;exec&apos;, &apos;_elapsed&apos;: 0.0009415149688720703}
+    {&apos;expression&apos;: &quot;variables[&apos;_elapsed&apos;]*1000&quot;, &apos;name&apos;: &apos;categories_time&apos;, &apos;provider&apos;: &apos;metrics&apos;, &apos;type&apos;: &apos;record_property&apos;, &apos;_elapsed&apos;: 0.01613616943359375}
+    {&apos;comment&apos;: &apos;you can make an assertion against the categories_time&apos;, &apos;expression&apos;: &quot;variables[&apos;categories_time&apos;] &lt; 2500&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0011241436004638672}
+    </system-out></testcase><testcase classname="test_categories.yml" file="test_categories.yml" name="test_categories.yml2" time="0.676"><properties><property name="categories_time" value="576.5485763549805"/></properties><system-out>{&apos;expression&apos;: &quot;&apos;food&apos; in response.json()&quot;, &apos;provider&apos;: &apos;play_requests&apos;, &apos;type&apos;: &apos;GET&apos;, &apos;url&apos;: &apos;https://api.chucknorris.io/jokes/categories&apos;, &apos;_elapsed&apos;: 0.5765485763549805}
+    {&apos;expression&apos;: &quot;variables[&apos;_elapsed&apos;]*1000&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;exec&apos;, &apos;_elapsed&apos;: 0.0006375312805175781}
+    {&apos;expression&apos;: &quot;variables[&apos;_elapsed&apos;]*1000&quot;, &apos;name&apos;: &apos;categories_time&apos;, &apos;provider&apos;: &apos;metrics&apos;, &apos;type&apos;: &apos;record_property&apos;, &apos;_elapsed&apos;: 0.006584644317626953}
+    {&apos;comment&apos;: &apos;you can make an assertion against the categories_time&apos;, &apos;expression&apos;: &quot;variables[&apos;categories_time&apos;] &lt; 2500&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0005452632904052734}
+    </system-out></testcase></testsuite>
+
+obtaining the metrics you want to track for each execution, for example::
+
+    <properties><property name="categories_time" value="610.3124618530273"/></properties>
+
+so you might track the category as well for each test execution
+or whatever you want.
 
 Browser based commands
 ----------------------
@@ -486,6 +680,15 @@ Option details:
 
 New options will be added in the next feature (e.g., skip scenarios, xfail, xpass, etc).
 
+Examples
+--------
+
+* https://github.com/pytest-dev/pytest-play/tree/master/examples
+
+* https://github.com/davidemoro/pytest-play-docker/tree/master/tests
+
+* https://github.com/davidemoro/pytest-play-plone-example
+
 
 Articles and talks
 ------------------
@@ -495,6 +698,8 @@ Articles:
 * `Hello pytest-play!`_
 
 * `API/REST testing like Chuck Norris with pytest play using YAML`_
+
+* `pytest-play automated docker hub publishing workflow`_
 
 Talks:
 
@@ -557,3 +762,4 @@ Twitter
 .. _`Hello pytest-play!`: http://davidemoro.blogspot.it/2018/04/hello-pytest-play.html
 .. _`API/REST testing like Chuck Norris with pytest play using YAML`: https://davidemoro.blogspot.com/2019/02/api-rest-testing-pytest-play-yaml-chuck-norris.html
 .. _`YAML`: https://en.wikipedia.org/wiki/YAML
+.. _`pytest-play automated docker hub publishing workflow`: https://davidemoro.blogspot.com/2019/02/automated-docker-hub-push-travisci-pyup-python.html

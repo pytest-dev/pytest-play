@@ -319,3 +319,22 @@ def test_teardown(play):
     play.teardown()
     assert play._teardown[0].assert_called_once_with() is None
     assert play._teardown[1].assert_called_once_with() is None
+
+
+def test_record_property(play, record_property):
+    import mock
+    play.request = mock.MagicMock()
+    play._record_property is record_property
+    play._record_property = mock.MagicMock()
+    play.record_property('name', '1')
+    assert play._record_property.assert_called_once_with(
+        'name', '1') is None
+
+
+def test_elapsed_variable(play):
+    command = {'provider': 'python',
+               'type': 'assert',
+               'expression': 'True', }
+    assert '_elapsed' not in play.variables
+    play.execute_command(command)
+    assert float(play.variables['_elapsed']) > 0

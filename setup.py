@@ -36,7 +36,7 @@ docs_require = [
 
 setup(
     name='pytest-play',
-    version='2.0.3.dev0',
+    version='2.1.0.dev0',
     author='Davide Moro',
     author_email='davide.moro@gmail.com',
     maintainer='Davide Moro',
@@ -52,17 +52,15 @@ setup(
     zip_safe=False,
     install_requires=install_requires,
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Framework :: Pytest',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Testing',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: Implementation :: PyPy',
         'Operating System :: OS Independent',
         'License :: OSI Approved :: Apache Software License',
     ],
@@ -70,6 +68,7 @@ setup(
         'playcommands': [
             'include = pytest_play.providers:IncludeProvider',
             'python = pytest_play.providers:PythonProvider',
+            'metrics = pytest_play.providers:MetricsProvider',
         ],
         'pytest11': [
             'pytest-play = pytest_play.plugin',

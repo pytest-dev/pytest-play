@@ -3,9 +3,13 @@ import os
 import logging
 import yaml
 import pkg_resources
+import time
 from zope import component
 from zope.interface import Interface
 from parametrizer import Parametrizer
+
+
+logger = logging.getLogger(__name__)
 
 
 class ICommandProvider(Interface):
@@ -24,11 +28,16 @@ class PlayEngine(object):
         """
         self.request = request
         self.variables = variables
-        self.logger = logging.getLogger()
         self.gsm = component.getGlobalSiteManager()
+        self._record_property = self.request.getfixturevalue(
+            'record_property')
 
         self.register_plugins()
         self._teardown = []
+
+    def record_property(self, name, value):
+        """ Record a property metrics """
+        return self._record_property(name, value)
 
     def register_teardown_callback(self, callback):
         """ Register teardown callback """
@@ -130,6 +139,7 @@ class PlayEngine(object):
     @skip_condition
     def execute_command(self, command, **kwargs):
         """ Execute single command """
+        return_value = None
         command = self._merge_payload(
             self._yaml_loads(
                 yaml.dump(
@@ -140,7 +150,7 @@ class PlayEngine(object):
         command_provider = self.get_command_provider(provider_name)
 
         if command_provider is None:
-            self.logger.error('Not supported provider %r', command)
+            logger.error('Not supported provider %r', command)
             raise ValueError('Command not supported',
                              command_type,
                              provider_name)
@@ -149,20 +159,29 @@ class PlayEngine(object):
 
         method = getattr(command_provider, method_name, None)
         if method is None:
-            self.logger.error('Not supported command %r', command)
+            logger.error('Not supported command %r', command)
             raise NotImplementedError(
                 'Command not implemented', command_type, provider_name)
-        self.logger.info('Executing command %r', command)
+        logger.info('Executing command %r', command)
+
+        start_time = time.time()
         try:
-            return method(command, **kwargs)
+            return_value = method(command, **kwargs)
         except Exception:
-            self.logger.error('FAILED command %r', command)
+            logger.error('FAILED command %r', command)
+            logger.info('DUMP variables %r', self.variables)
+            print(self.variables)
             raise
+        finally:
+            elapsed = time.time() - start_time
+            print(dict(command, _elapsed=elapsed))
+            self.update_variables({'_elapsed': elapsed})
+        return return_value
 
     def update_variables(self, extra_variables):
         """ Update variables """
         self.variables.update(extra_variables)
-        self.logger.debug("Variables updated %r", self.variables)
+        logger.debug("Variables updated %r", self.variables)
 
     # register commands
     def register_plugins(self):
