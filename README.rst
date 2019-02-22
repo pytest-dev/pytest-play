@@ -484,7 +484,11 @@ will generate an extended ``report.xml`` file with custom properties like that::
     </system-out></testcase></testsuite>
 
 and the custom property ``categories_time`` will be tracked for each
-test case execution.
+test case execution, for example::
+
+    <properties>
+        <property name="categories_time" value="0.5829994678497314"/>
+    </properties>
 
 Advanced metrics in JUnit XML report
 ------------------------------------
@@ -534,7 +538,13 @@ option you'll get a ``results.xml`` file similar to this one::
     </system-out></testcase></testsuite>
 
 and in this case you'll find out that the key metric ``load_time``
-was ``1.11`` seconds and the ``live_search_time`` was ``1.09`` seconds.  
+was ``1.11`` seconds and the ``live_search_time`` was ``1.09`` seconds as
+you can see here::
+
+    <properties>
+        <property name="load_time" value="1.1175920963287354"/>
+        <property name="live_search_time" value="1.0871295928955078"/>
+    </properties>
 
 So thanks to JUnit XML reporting you can track response times (not only browser based timings)
 using a machine readable format to be ingested by third party systems with an acceptable approximation
@@ -579,6 +589,10 @@ using the ``--junit-xml results.xml`` cli option::
     {&apos;expression&apos;: &quot;variables[&apos;_elapsed&apos;]*1000&quot;, &apos;name&apos;: &apos;categories_time&apos;, &apos;provider&apos;: &apos;metrics&apos;, &apos;type&apos;: &apos;record_property&apos;, &apos;_elapsed&apos;: 0.006584644317626953}
     {&apos;comment&apos;: &apos;you can make an assertion against the categories_time&apos;, &apos;expression&apos;: &quot;variables[&apos;categories_time&apos;] &lt; 2500&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;assert&apos;, &apos;_elapsed&apos;: 0.0005452632904052734}
     </system-out></testcase></testsuite>
+
+obtaining the metrics you want to track for each execution, for example::
+
+    <properties><property name="categories_time" value="610.3124618530273"/></properties>
 
 so you might track the category as well for each test execution
 or whatever you want.
