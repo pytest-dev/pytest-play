@@ -451,7 +451,7 @@ Track response time metric in JUnit XML report
 ----------------------------------------------
 
 For example, a ``test_categories.yml`` file executed with
-the command line option ``--junit-xml report.xml``::
+the command line option ``--junit-xml report.xml`` (requires play_requests_ plugin)::
 
     test_data:
       - category: dev
@@ -491,7 +491,7 @@ Advanced metrics in JUnit XML report
 
 In this example we want to measures how long it takes a page to become interactive
 (page responding to user interactions) and evaluate update time for a live search feature.
-Let's see the ``test_search.yml`` example::
+Let's see the ``test_search.yml`` example (requires play_selenium_)::
 
     ---
     - provider: selenium
@@ -543,7 +543,7 @@ if you cannot track timings directly on the systems under test.
 Track any property in JUnit XML reports using expressions
 ---------------------------------------------------------
 
-test_categories.yml::
+Let's see a ``test_categories.yml`` (play_selenium_ required)::
 
     test_data:
       - category: dev
@@ -563,7 +563,8 @@ test_categories.yml::
       expression: "variables['categories_time'] < 2500"
       comment: you can make an assertion against the categories_time
 
-generates custom properties (categories_time in milliseconds using a python expression)::
+generates some custom properties (``categories_time`` in milliseconds using a python expression)
+using the ``--junit-xml results.xml`` cli option::
 
     <?xml version="1.0" encoding="utf-8"?><testsuite errors="0" failures="0" name="pytest" skipped="0" tests="3" time="2.312"><testcase classname="test_categories.yml" file="test_categories.yml" name="test_categories.yml0" time="1.034"><properties><property name="categories_time" value="610.3124618530273"/></properties><system-out>{&apos;expression&apos;: &quot;&apos;dev&apos; in response.json()&quot;, &apos;provider&apos;: &apos;play_requests&apos;, &apos;type&apos;: &apos;GET&apos;, &apos;url&apos;: &apos;https://api.chucknorris.io/jokes/categories&apos;, &apos;_elapsed&apos;: 0.6103124618530273}
     {&apos;expression&apos;: &quot;variables[&apos;_elapsed&apos;]*1000&quot;, &apos;provider&apos;: &apos;python&apos;, &apos;type&apos;: &apos;exec&apos;, &apos;_elapsed&apos;: 0.0006859302520751953}
