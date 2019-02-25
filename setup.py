@@ -23,6 +23,10 @@ install_requires = [
     'parametrizer',
 ]
 
+statsd_require = [
+    'statsd',
+]
+
 tests_require = [
     'pytest-cov',
     'mock',
@@ -75,6 +79,7 @@ setup(
         ],
     },
     extras_require={
+        'statsd': statsd_require,
         'tests': tests_require,
         'docs': docs_require,
     },

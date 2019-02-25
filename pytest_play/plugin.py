@@ -9,6 +9,42 @@ from _pytest.fixtures import (    # pragma: no cover
     FixtureLookupError,
 )
 from collections import namedtuple  # pragma: no cover
+try:
+    import statsd
+    statsd
+except ImportError:
+    STATSD = False
+else:
+    STATSD = True
+
+
+def pytest_addoption(parser):
+    """
+    :param parser:
+    :return:
+    """
+
+    if STATSD is True:
+        try:
+            import pytest_statsd
+            pytest_statsd
+        except ImportError:
+            group = parser.getgroup('terminal reporting')
+            group.addoption(
+                '--stats-d', action='store_true',
+                help='send test results to graphite')
+            group.addoption(
+                '--stats-host', action='store', dest='stats_host',
+                metavar='host', default='localhost',
+                help='statsd host. default is \'localhost\'')
+            group.addoption(
+                '--stats-port', action='store', dest='stats_port',
+                metavar='port', default=8125,
+                help='statsd port. default is 8125')
+            group.addoption(
+                '--stats-prefix', action='store', dest='stats_prefix',
+                metavar='prefix', default=None,
+                help='prefix to give all stats')
 
 
 def get_marker(node, name):
