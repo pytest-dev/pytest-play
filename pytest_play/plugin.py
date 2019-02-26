@@ -9,13 +9,10 @@ from _pytest.fixtures import (    # pragma: no cover
     FixtureLookupError,
 )
 from collections import namedtuple  # pragma: no cover
-try:
-    import statsd
-    statsd
-except ImportError:
-    STATSD = False
-else:
-    STATSD = True
+from pytest_play.config import (
+    STATSD,
+    PYTEST_STATSD,
+)
 
 
 def pytest_addoption(parser):
@@ -25,10 +22,7 @@ def pytest_addoption(parser):
     """
 
     if STATSD is True:
-        try:
-            import pytest_statsd
-            pytest_statsd
-        except ImportError:
+        if not PYTEST_STATSD:
             group = parser.getgroup('terminal reporting')
             group.addoption(
                 '--stats-d', action='store_true',
