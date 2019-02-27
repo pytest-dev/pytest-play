@@ -14,12 +14,12 @@ class MetricsProvider(BaseProvider):
     @property
     def statsd_client(self):
         import statsd
-        host = self.request.config.getoption('stats_host')
-        port = self.request.config.getoption('stats_port')
-        prefix = self.request.config.getoption('stats_prefix')
+        host = self.engine.request.config.getoption('stats_host')
+        port = self.engine.request.config.getoption('stats_port')
+        prefix = self.engine.request.config.getoption('stats_prefix')
         return statsd.StatsClient(host, port, prefix=prefix)
 
-    def record_property(self, name, value, metric_type=None):
+    def record_property(self, name, value, metric_type='timing'):
         """ Record a property metrics """
         self._record_property(name, value)
         if STATSD:
