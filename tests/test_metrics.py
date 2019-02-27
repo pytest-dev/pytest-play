@@ -147,7 +147,7 @@ def test_record_property_statsd_no_metric_type():
         assert statsd_client.return_value.timing.called is False
 
 
-def test_record_property_statsd_metric_type():
+def test_record_property_statsd_metric_type_timing():
     import mock
     mock_engine = mock.MagicMock()
     elapsed = 0.125
@@ -180,6 +180,43 @@ def test_record_property_statsd_metric_type():
             .assert_called_once_with(
                 'elapsed_milliseconds', elapsed*1000) is None
         assert statsd_client.return_value.timing \
+            .assert_called_once_with(
+                'elapsed_milliseconds', elapsed*1000) is None
+
+
+def test_record_property_statsd_metric_type_gauge():
+    import mock
+    mock_engine = mock.MagicMock()
+    elapsed = 0.125
+    mock_engine.variables = {'_elapsed': elapsed}
+    mock_record_property = mock.MagicMock()
+    from pytest_play import providers
+    with mock.patch(
+            'pytest_play.providers.metrics.MetricsProvider.statsd_client',
+            new_callable=mock.PropertyMock) as statsd_client:
+        provider = providers.MetricsProvider(mock_engine)
+        provider._record_property = mock_record_property
+        assert provider.engine is mock_engine
+        mock_engine.execute_command.return_value = elapsed*1000
+        provider.command_record_property({
+            'provider': 'metrics',
+            'type': 'record_property',
+            'name': 'elapsed_milliseconds',
+            'expression': 'variables["_elapsed"]*1000',
+            'metric_type': 'gauge',
+        })
+        assert mock_engine.execute_command.assert_called_once_with(
+            {'provider': 'python',
+             'type': 'exec',
+             'expression': 'variables["_elapsed"]*1000'}) is None
+        assert mock_engine \
+            .update_variables \
+            .assert_called_once_with(
+                {'elapsed_milliseconds': elapsed*1000}) is None
+        assert mock_record_property \
+            .assert_called_once_with(
+                'elapsed_milliseconds', elapsed*1000) is None
+        assert statsd_client.return_value.gauge \
             .assert_called_once_with(
                 'elapsed_milliseconds', elapsed*1000) is None
 
