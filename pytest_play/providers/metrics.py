@@ -21,7 +21,6 @@ class MetricsProvider(BaseProvider):
 
     def _record_property_statsd(
             self, name, value, metric_type=None, meas_unit=None):
-        # TODO: validation type float for timing
         if STATSD:
             statsd_client = self.statsd_client
             method = None
@@ -29,16 +28,18 @@ class MetricsProvider(BaseProvider):
                 method = statsd_client.timing
                 if meas_unit == 's':
                     value = value * 1000
+                assert float(value)
             elif metric_type == 'gauge':
                 method = statsd_client.gauge
+                assert float(value)
             if method is not None:
                 method(name, value)
 
     def record_property(self, name, value, metric_type=None, meas_unit=None):
         """ Record a property metrics """
-        self._record_property(name, value)
         self._record_property_statsd(
             name, value, metric_type=metric_type, meas_unit=meas_unit)
+        self._record_property(name, value)
 
     def command_record_property(self, command, **kwargs):
         """ record a property (dynamic expression) """
@@ -49,8 +50,8 @@ class MetricsProvider(BaseProvider):
             {'provider': 'python',
              'type': 'exec',
              'expression': expression})
-        self.engine.update_variables({name: value})
         self.record_property(name, value, metric_type=metric_type)
+        self.engine.update_variables({name: value})
 
     def command_record_elapsed(self, command, **kwargs):
         """ record a property (previous command elapsed) """
