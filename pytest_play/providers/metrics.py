@@ -19,9 +19,7 @@ class MetricsProvider(BaseProvider):
         prefix = self.engine.request.config.getoption('stats_prefix')
         return statsd.StatsClient(host, port, prefix=prefix)
 
-    def record_property(self, name, value, metric_type='timing'):
-        """ Record a property metrics """
-        self._record_property(name, value)
+    def _record_property_statsd(self, name, value, metric_type='timing'):
         if STATSD:
             statsd_client = self.statsd_client
             method = None
@@ -31,6 +29,11 @@ class MetricsProvider(BaseProvider):
                 method = statsd_client.gauge
             if method is not None:
                 method(name, value)
+
+    def record_property(self, name, value, metric_type='timing'):
+        """ Record a property metrics """
+        self._record_property(name, value)
+        self._record_property_statsd(name, value)
 
     def command_record_property(self, command, **kwargs):
         """ record a property (dynamic expression) """
