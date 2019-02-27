@@ -41,13 +41,13 @@ class MetricsProvider(BaseProvider):
         """ record a property (dynamic expression) """
         name = command['name']
         expression = command['expression']
+        metric_type = command.get('metric_type', None)
         value = self.engine.execute_command(
             {'provider': 'python',
              'type': 'exec',
              'expression': expression})
         self.engine.update_variables({name: value})
-        # TODO: set metric_timing
-        self.record_property(name, value)
+        self.record_property(name, value, metric_type=metric_type)
 
     def command_record_elapsed(self, command, **kwargs):
         """ record a property (previous command elapsed) """
