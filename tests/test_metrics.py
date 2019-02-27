@@ -33,7 +33,8 @@ def test_record_elapsed():
             'previous_command', elapsed) is None
     assert mock_record_property_statsd \
         .assert_called_once_with(
-            'previous_command', elapsed, metric_type='timing') is None
+            'previous_command', elapsed, metric_type='timing',
+            meas_unit='s') is None
 
 
 def test_record_elapsed_statsd():
@@ -76,7 +77,6 @@ def test_record_elapsed_key_error():
         })
 
 
-@pytest.mark.xfail
 def test_record_property():
     import mock
     mock_engine = mock.MagicMock()
@@ -110,7 +110,7 @@ def test_record_property():
     assert mock_record_property_statsd \
         .assert_called_once_with(
             'elapsed_milliseconds', elapsed*1000,
-            metric_type='timing') is None
+            metric_type=None, meas_unit=None) is None
 
 
 @pytest.mark.xfail
