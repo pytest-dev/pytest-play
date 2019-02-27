@@ -19,21 +19,23 @@ class MetricsProvider(BaseProvider):
         prefix = self.engine.request.config.getoption('stats_prefix')
         return statsd.StatsClient(host, port, prefix=prefix)
 
-    def _record_property_statsd(self, name, value, metric_type='timing'):
+    def _record_property_statsd(self, name, value, metric_type=None):
+        # TODO: validation type float for timing
         if STATSD:
             statsd_client = self.statsd_client
             method = None
             if metric_type == 'timing':
                 method = statsd_client.timing
+                value = value * 1000
             elif metric_type == 'gauge':
                 method = statsd_client.gauge
             if method is not None:
                 method(name, value)
 
-    def record_property(self, name, value, metric_type='timing'):
+    def record_property(self, name, value, metric_type=None):
         """ Record a property metrics """
         self._record_property(name, value)
-        self._record_property_statsd(name, value)
+        self._record_property_statsd(name, value, metric_type=metric_type)
 
     def command_record_property(self, command, **kwargs):
         """ record a property (dynamic expression) """
@@ -44,6 +46,7 @@ class MetricsProvider(BaseProvider):
              'type': 'exec',
              'expression': expression})
         self.engine.update_variables({name: value})
+        # TODO: set metric_timing
         self.record_property(name, value)
 
     def command_record_elapsed(self, command, **kwargs):
@@ -51,7 +54,7 @@ class MetricsProvider(BaseProvider):
         name = command['name']
         value = self.engine.variables['_elapsed']
         self.engine.update_variables({name: value})
-        self.record_property(name, value)
+        self.record_property(name, value, metric_type='timing')
 
     def command_record_elapsed_start(self, command, **kwargs):
         """ record a time delta (start tracking time) """
@@ -63,4 +66,4 @@ class MetricsProvider(BaseProvider):
         name = command['name']
         delta = time.time() - self.engine.variables[name]
         self.engine.update_variables({name: delta})
-        self.record_property(name, delta)
+        self.record_property(name, delta, metric_type='timing')
