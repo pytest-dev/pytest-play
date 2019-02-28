@@ -47,8 +47,9 @@ setup(
     maintainer_email='davide.moro@gmail.com',
     license='Apache Software License 2.0',
     url='https://github.com/davidemoro/pytest-play',
-    description='pytest plugin that let you play a YAML file '
-                'describing some actions and assertions.',
+    description='pytest plugin that let you automate actions '
+                'and assertions with test metrics reporting '
+                'executing plain YAML files',
     long_description=open("README.rst").read() + "\n" +
     open("CHANGES.rst").read(),
     packages=find_packages(),
