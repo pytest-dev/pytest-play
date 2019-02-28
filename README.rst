@@ -683,21 +683,21 @@ Some additional information regarding the ``record_property`` command:
 Monitor HTTP response times
 ---------------------------
 
-Monitor API response time:
+Monitor API response time (see https://github.com/pytest-dev/pytest-play/tree/features/examples/statsd_graphite_monitoring):
 
-.. image:: https://raw.githubusercontent.com/pytest-dev/pytest-play/statsd/docs/_static/statsd_graphite_monitoring.gif
+.. image:: https://raw.githubusercontent.com/pytest-dev/pytest-play/features/docs/_static/statsd_graphite_monitoring.gif
     :alt: Chuck Norris API response time
 
 Browser metrics
 ---------------
 
-Monitor:
+Monitor browser metrics using Selenium from an end user perspective (see https://github.com/pytest-dev/pytest-play/tree/statsd/examples/statsd_graphite_monitoring_selenium):
 
 * from page load to page usable
 
 * live search responsiveness
 
-.. image:: https://raw.githubusercontent.com/pytest-dev/pytest-play/statsd/docs/_static/statsd_graphite_monitoring_selenium.gif
+.. image:: https://raw.githubusercontent.com/pytest-dev/pytest-play/features/docs/_static/statsd_graphite_monitoring_selenium.gif
     :alt: Time for first interaction after load and live search rendering timings
 
 Browser based commands
