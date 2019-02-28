@@ -219,7 +219,7 @@ def test_record_property_statsd_metric_type_timing():
 
 
 @pytest.mark.parametrize("metric_type", ['timing', 'gauge', ])
-def test_record_property_statsd_metric_type_timing_negative(metric_type):
+def test_record_property_statsd_metric_type_negative(metric_type):
     import mock
     mock_engine = mock.MagicMock()
     mock_record_property = mock.MagicMock()
@@ -243,6 +243,40 @@ def test_record_property_statsd_metric_type_timing_negative(metric_type):
             {'provider': 'python',
              'type': 'exec',
              'expression': '"a string"'}) is None
+        assert mock_engine \
+            .update_variables \
+            .called is False
+        assert mock_record_property \
+            .called is False
+        assert statsd_client.return_value.timing \
+            .called is False
+
+
+@pytest.mark.parametrize("metric_type", ['TIMING', ])
+def test_record_property_statsd_metric_type_negative_invalid(metric_type):
+    import mock
+    mock_engine = mock.MagicMock()
+    mock_record_property = mock.MagicMock()
+    from pytest_play import providers
+    with mock.patch(
+            'pytest_play.providers.metrics.MetricsProvider.statsd_client',
+            new_callable=mock.PropertyMock) as statsd_client:
+        provider = providers.MetricsProvider(mock_engine)
+        provider._record_property = mock_record_property
+        assert provider.engine is mock_engine
+        mock_engine.execute_command.return_value = "1"
+        with pytest.raises(ValueError):
+            provider.command_record_property({
+                'provider': 'metrics',
+                'type': 'record_property',
+                'name': 'elapsed_milliseconds',
+                'expression': '"1"',
+                'metric_type': metric_type,
+            })
+        assert mock_engine.execute_command.assert_called_once_with(
+            {'provider': 'python',
+             'type': 'exec',
+             'expression': '"1"'}) is None
         assert mock_engine \
             .update_variables \
             .called is False

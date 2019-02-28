@@ -680,6 +680,9 @@ Some additional information regarding the ``record_property`` command:
 
 * non allowed ``metric_type`` values will be considered as an error
 
+* if you provide ``timing`` as ``metric_type``, it's up to you providing a numeric value
+  expressed in ``milliseconds``
+
 Monitor HTTP response times
 ---------------------------
 

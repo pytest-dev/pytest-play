@@ -22,18 +22,21 @@ class MetricsProvider(BaseProvider):
     def _record_property_statsd(
             self, name, value, metric_type=None, meas_unit=None):
         if STATSD:
-            statsd_client = self.statsd_client
-            method = None
-            if metric_type == 'timing':
-                method = statsd_client.timing
-                if meas_unit == 's':
-                    value = value * 1000
-                assert float(value)
-            elif metric_type == 'gauge':
-                method = statsd_client.gauge
-                assert float(value)
-            if method is not None:
-                method(name, value)
+            if metric_type is not None:
+                statsd_client = self.statsd_client
+                method = None
+                if metric_type == 'timing':
+                    method = statsd_client.timing
+                    if meas_unit == 's':
+                        value = value * 1000
+                    assert float(value)
+                elif metric_type == 'gauge':
+                    method = statsd_client.gauge
+                    assert float(value)
+                else:
+                    raise ValueError("metric_type not valid: ", metric_type)
+                if method is not None:
+                    method(name, value)
 
     def record_property(self, name, value, metric_type=None, meas_unit=None):
         """ Record a property metrics """
