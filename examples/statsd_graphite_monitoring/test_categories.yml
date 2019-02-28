@@ -1,0 +1,16 @@
+test_data:
+  - category: dev
+  - category: movie
+  - category: food
+---
+- type: GET
+  provider: play_requests
+  url: https://api.chucknorris.io/jokes/categories
+  expression: "'$category' in response.json()"
+- provider: metrics
+  type: record_elapsed
+  name: categories_time
+- type: assert
+  provider: python
+  expression: "variables['categories_time'] < 2.5"
+  comment: you can make an assertion against the categories_time

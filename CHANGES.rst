@@ -4,8 +4,16 @@ Changelog
 2.1.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- ``statsd`` integration (optional requirement) for advanced test metrics using statsd/graphite.
+  If you install pytest play with the optional statsd support with ``pytest-play[statsd]``
+  you will get the additional dependency ``statsd`` client and you can use the same cli
+  options defined by the ``pytest-statsd`` plugin (e.g.,
+  ``--stats-d [--stats-prefix myproject --stats-host http://myserver.com --stats-port 3000]``).
 
+  Note well: despite the above cli options are the same defined by the ``pytest-statsd`` plugin,
+  at this time of writing ``pytest-statsd`` is not a ``pytest-play`` dependency
+  so you won't get stats about number of failures, passing, etc but only stats tracked by
+  ``pytest-play``. If you need them you can install ``pytest-statsd`` (it plays well with ``pytest-play``)
 
 2.1.0 (2019-02-22)
 ------------------
