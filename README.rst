@@ -633,7 +633,7 @@ default):::
 
     pip install pytest-play[statsd]
 
-Usage::
+Usage (cli options compatible with ``pytest-statsd``)::
 
     --stats-d [--stats-prefix play --stats-host http://myserver.com --stats-port 3000]
 
