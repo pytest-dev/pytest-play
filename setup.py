@@ -23,6 +23,10 @@ install_requires = [
     'parametrizer',
 ]
 
+statsd_require = [
+    'statsd',
+]
+
 tests_require = [
     'pytest-cov',
     'mock',
@@ -36,15 +40,16 @@ docs_require = [
 
 setup(
     name='pytest-play',
-    version='2.1.1.dev0',
+    version='2.2.0.dev0',
     author='Davide Moro',
     author_email='davide.moro@gmail.com',
     maintainer='Davide Moro',
     maintainer_email='davide.moro@gmail.com',
     license='Apache Software License 2.0',
     url='https://github.com/davidemoro/pytest-play',
-    description='pytest plugin that let you play a YAML file '
-                'describing some actions and assertions.',
+    description='pytest plugin that let you automate actions '
+                'and assertions with test metrics reporting '
+                'executing plain YAML files',
     long_description=open("README.rst").read() + "\n" +
     open("CHANGES.rst").read(),
     packages=find_packages(),
@@ -75,6 +80,7 @@ setup(
         ],
     },
     extras_require={
+        'statsd': statsd_require,
         'tests': tests_require,
         'docs': docs_require,
     },

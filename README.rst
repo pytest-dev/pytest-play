@@ -597,6 +597,126 @@ obtaining the metrics you want to track for each execution, for example::
 so you might track the category as well for each test execution
 or whatever you want.
 
+Monitoring test metrics with statsd/graphite
+============================================
+
+If you like the measure everything approach you can track and monitor interesting
+custom test metrics from an end user perspective during normal test executions or
+heavy load/stress tests thanks to the statsd_/graphite_ integration.
+
+Measuring important key metrics is important for many reasons:
+
+* compare performance between different versions under same conditions using past
+  tracked stats for the same metric (no more say the system *seems slower* today)
+
+* predict the system behaviour with many items on frontend (e.g., evaluate
+  the browser dealing with thousands and thousands of items managed by an infinite
+  scroll plugin)
+
+* predict the system behaviour under load
+
+You can install ``statsd``/``graphite`` in minutes using Docker:
+
+* https://graphite.readthedocs.io/en/latest/install.html
+
+Basically you can track on ``statsd``/``graphite`` every **numeric** metric using
+the same commands used for tracking metrics on JUnit XML reports as we will see.
+
+In addition, but not required, installing the third party plugin called pytest-statsd_.
+you can track on ``statsd``/``graphite``:
+
+* execution times
+* number of executed tests per status (pass, fail, error, etc)
+
+Prerequisites (you need to install the optional statsd client not installed by
+default):::
+
+    pip install pytest-play[statsd]
+
+Usage (cli options compatible with ``pytest-statsd``)::
+
+    --stats-d [--stats-prefix play --stats-host http://myserver.com --stats-port 3000]
+
+where:
+
+* ``--stats-d``, enable ``statsd``
+
+* ``--stats-prefix`` (optional), if you plan on having multiple projects sending
+  results to the same server.
+  For example if you provide ``play`` as prefix you'll get a time metric under
+  the ``stats.timers.play.YOURMETRIC.mean`` key (or instead of ``.mean`` you can use ``.upper``,
+  ``upper_90``, etc)
+
+* ``--stats-host``, by default ``localhost``
+
+* ``--stats-port``, by default ``8125``
+
+Now you can track timing metrics using the ``record_elapsed`` or
+``record_elapsed_start``/``record_elapsed_stop`` commands seen before (pytest-play will
+send for you time values to ``statsd`` converted to ``milliseconds`` as requested by ``statsd``).
+
+If you want to track custom metrics using the ``record_property`` command you have to provide
+an additional parameter called ``metric_type``. For example::
+
+    - provider: metrics
+      type: record_property
+      name: categories_time
+      expression: "variables['_elapsed']*1000"
+      metric_type: timing
+    - provider: metrics
+      type: record_property
+      name: fridge_temperature
+      expression: "4"
+      metric_type: gauge
+
+Some additional information regarding the ``record_property`` command:
+
+* if you don't provide the ``metric_type`` option in ``record_property`` commands values
+  will not be transmitted to ``statsd`` (eventually they will be tracked on JUnit XML report
+  if ``--junit-xml`` option was provided)
+
+* if you provide an allowed ``metric_type`` value (``timing`` or ``gauge``) non numeric values
+  will be considered as an error (``ValueError`` exception raised)
+
+* non allowed ``metric_type`` values will be considered as an error
+
+* if you provide ``timing`` as ``metric_type``, it's up to you providing a numeric value
+  expressed in ``milliseconds``
+
+Monitor HTTP response times
+---------------------------
+
+Monitor API response time (see https://github.com/pytest-dev/pytest-play/tree/features/examples/statsd_graphite_monitoring):
+
+.. image:: https://raw.githubusercontent.com/pytest-dev/pytest-play/features/docs/_static/statsd_graphite_monitoring.gif
+    :alt: Chuck Norris API response time
+
+Browser metrics
+---------------
+
+Monitor browser metrics using Selenium from an end user perspective (see https://github.com/pytest-dev/pytest-play/tree/statsd/examples/statsd_graphite_monitoring_selenium):
+
+* from page load to page usable
+
+* live search responsiveness
+
+.. image:: https://raw.githubusercontent.com/pytest-dev/pytest-play/features/docs/_static/statsd_graphite_monitoring_selenium.gif
+    :alt: Time for first interaction after load and live search rendering timings
+
+Record metrics programmatically
+-------------------------------
+
+If you don't want to use ``pytest-play`` but you need to record test metrics
+you can use ``pytest-play`` as a library:::
+
+    def test_programmatically(play):
+        play.execute_command({
+            'provider': 'metrics',
+            'type': 'record_property',
+            'name': 'oil_temperature',
+            'expression': '60',
+            'metric_type': 'gauge'})
+
 Browser based commands
 ----------------------
 
@@ -763,3 +883,6 @@ Twitter
 .. _`API/REST testing like Chuck Norris with pytest play using YAML`: https://davidemoro.blogspot.com/2019/02/api-rest-testing-pytest-play-yaml-chuck-norris.html
 .. _`YAML`: https://en.wikipedia.org/wiki/YAML
 .. _`pytest-play automated docker hub publishing workflow`: https://davidemoro.blogspot.com/2019/02/automated-docker-hub-push-travisci-pyup-python.html
+.. _`statsd`: https://github.com/statsd/statsd
+.. _`graphite`: https://github.com/graphite-project/graphite-web
+.. _`pytest-statsd`: https://github.com/jlane9/pytest-statsd
