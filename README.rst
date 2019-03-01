@@ -703,6 +703,20 @@ Monitor browser metrics using Selenium from an end user perspective (see https:/
 .. image:: https://raw.githubusercontent.com/pytest-dev/pytest-play/features/docs/_static/statsd_graphite_monitoring_selenium.gif
     :alt: Time for first interaction after load and live search rendering timings
 
+Record metrics programmatically
+-------------------------------
+
+If you don't want to use ``pytest-play`` but you need to record test metrics
+you can use ``pytest-play`` as a library:::
+
+    def test_programmatically(play):
+        play.execute_command({
+            'provider': 'metrics',
+            'type': 'record_property',
+            'name': 'oil_temperature',
+            'expression': '60',
+            'metric_type': 'gauge'})
+
 Browser based commands
 ----------------------
 
