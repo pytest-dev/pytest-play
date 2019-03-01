@@ -1,7 +1,13 @@
 Changelog
 =========
 
-2.2.0 (unreleased)
+2.2.1 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
+2.2.0 (2019-03-01)
 ------------------
 
 - ``statsd`` integration (optional requirement) for advanced test metrics using statsd/graphite.
