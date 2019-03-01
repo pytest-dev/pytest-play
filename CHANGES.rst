@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.1.1 (unreleased)
+2.2.0 (unreleased)
 ------------------
 
 - ``statsd`` integration (optional requirement) for advanced test metrics using statsd/graphite.
