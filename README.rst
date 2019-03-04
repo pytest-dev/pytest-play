@@ -821,6 +821,8 @@ Articles:
 
 * `pytest-play automated docker hub publishing workflow`_
 
+* `Test automation framework thoughts and examples with Python, pytest and Jenkins`_
+
 Talks:
 
 * `Serena Martinetti @ Pycon9 - Florence: Integration tests ready to use with pytest-play`_ 
@@ -886,3 +888,4 @@ Twitter
 .. _`statsd`: https://github.com/statsd/statsd
 .. _`graphite`: https://github.com/graphite-project/graphite-web
 .. _`pytest-statsd`: https://github.com/jlane9/pytest-statsd
+.. _`Test automation framework thoughts and examples with Python, pytest and Jenkins`: https://davidemoro.blogspot.com/2018/03/test-automation-python-pytest-jenkins.html
