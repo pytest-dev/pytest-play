@@ -724,7 +724,7 @@ You can reuse all your pytest-play scenario and turn them to
 performance tests using bzt/Taurus (so it is compatible with BlazeMeter_
 too and all its goodies).
 
-Add a bzt/Taurus YAML file with no "test\_" prefix like that (full example here in
+Add a bzt/Taurus YAML file with no ``test_`` prefix like that (full example here in
 bzt_performance_)::
 
     settings:
@@ -756,7 +756,11 @@ You will see bzt up and running playing our scenarios:
     :alt: Taurus/bzt running pytest-play scenarios
 
 You can uncomment ``additional-args`` to pass other ``pytest`` command line options (for example enable ``statsd``
-metrics).
+metrics monitoring or any other cli option).
+
+More info about bzt/Taurus here:
+
+* http://gettaurus.org/
 
 Browser based commands
 ----------------------
