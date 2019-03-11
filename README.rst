@@ -755,8 +755,8 @@ You will see bzt up and running playing our scenarios:
 .. image:: https://raw.githubusercontent.com/pytest-dev/pytest-play/features/docs/_static/pytest_play_performance.png
     :alt: Taurus/bzt running pytest-play scenarios
 
-You can uncomment ``additional-args`` to pass other ``pytest`` command line options (for example enable ``statsd``
-metrics monitoring or any other cli option).
+You can uncomment ``additional-args`` to pass other ``pytest`` command line options (e.g., enable ``statsd``
+for key user metrics monitoring or any other cli option).
 
 More info about bzt/Taurus here:
 
