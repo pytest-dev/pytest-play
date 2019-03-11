@@ -755,6 +755,9 @@ You will see bzt up and running playing our scenarios:
 .. image:: https://raw.githubusercontent.com/pytest-dev/pytest-play/features/docs/_static/pytest_play_performance.png
     :alt: Taurus/bzt running pytest-play scenarios
 
+You can uncomment ``additional-args`` to pass other ``pytest`` command line options (for example enable ``statsd``
+metrics).
+
 Browser based commands
 ----------------------
 
@@ -928,3 +931,4 @@ Twitter
 .. _`pytest-statsd`: https://github.com/jlane9/pytest-statsd
 .. _`Test automation framework thoughts and examples with Python, pytest and Jenkins`: https://davidemoro.blogspot.com/2018/03/test-automation-python-pytest-jenkins.html
 .. _`BlazeMeter`: https://www.blazemeter.com/
+.. _`bzt_performance`: https://github.com/pytest-dev/pytest-play/tree/features/examples/bzt_performance
