@@ -4,7 +4,9 @@ Changelog
 2.2.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Documentation:
+
+- add more examples (bzt/Taurus and performance tests using pytest-play)
 
 
 2.2.0 (2019-03-01)

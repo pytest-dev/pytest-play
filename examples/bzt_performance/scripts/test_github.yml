@@ -1,0 +1,5 @@
+---
+- type: GET
+  provider: play_requests
+  url: https://github.com/pytest-dev/pytest-play
+  assertion: response.status_code == 200
