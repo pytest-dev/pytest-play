@@ -4,6 +4,10 @@ Changelog
 2.2.1 (unreleased)
 ------------------
 
+Bugfix:
+
+- fix ``--setup-plan`` invokation
+
 Documentation:
 
 - add more examples (bzt/Taurus and performance tests using pytest-play)
