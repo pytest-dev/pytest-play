@@ -4,6 +4,10 @@ Changelog
 2.2.1 (unreleased)
 ------------------
 
+Minor changes:
+
+- add ``int`` and ``float`` builtins available in Python expressions
+
 Bugfix:
 
 - fix ``--setup-plan`` invokation

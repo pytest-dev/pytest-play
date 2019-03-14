@@ -32,6 +32,8 @@ class PythonProvider(BaseProvider):
             'filter': filter,
             'map': map,
             'sorted': sorted,
+            'int': int,
+            'float': float,
             }
         context.update(extra_context)
         return context
