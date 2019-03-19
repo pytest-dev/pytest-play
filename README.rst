@@ -762,6 +762,43 @@ More info about bzt/Taurus here:
 
 * http://gettaurus.org/
 
+Dynamic expressions in payloads without declaring variables
+===========================================================
+
+If you have to send a certain payload to a REST endpoint or a MQTT message
+containing a dynamic value you can store a variable with ``store_variable``
+and use ``$variable_name`` in your payload when needed.
+Storing variables is cool if you will reuse later that value but if just have to
+generate a dynamic value, let's say a timestamp in milliseconds,
+you can use the ``{! EXPRESSION !}`` format.
+
+For example (play_mqtt_ plugin required):
+
+::
+
+    ---
+    - comment: python expressions in mqtt payload (without declaring variables)
+      provider: mqtt
+      type: publish
+      host: "$mqtt_host"
+      port: "$mqtt_port"
+      endpoint: "$mqtt_endpoint/$device_serial_number"
+      payload: '{
+            "measure_id":   [124],
+            "obj_id_L":     [0],
+            "measureType":  ["float"],
+            "start_time":   {! int(datetime.datetime.utcnow().timestamp()*1000) !},
+            "bin_value":    [1]
+        }'
+
+where instead of the expression::
+
+    {! int(datetime.datetime.utcnow().timestamp()*1000) !},
+
+will be printed::
+
+    1553007973702
+
 Browser based commands
 ----------------------
 
