@@ -1,13 +1,10 @@
 import logging
-import json
-import re
 from time import (
     sleep,
     time,
 )
 from RestrictedPython import RestrictionCapableEval
 from pytest_play.providers import BaseProvider
-import datetime
 
 
 logger = logging.getLogger(__name__)
@@ -21,20 +18,7 @@ class PythonProvider(BaseProvider):
     """ Python command provider """
 
     def _get_context(self, extra_context):
-        context = {
-            'variables': self.engine.variables,
-            'len': len,
-            'list': list,
-            'match': re.match,
-            'datetime': datetime,
-            'loads': json.loads,
-            'dumps': json.dumps,
-            'filter': filter,
-            'map': map,
-            'sorted': sorted,
-            'int': int,
-            'float': float,
-            }
+        context = self.engine.context
         context.update(extra_context)
         return context
 

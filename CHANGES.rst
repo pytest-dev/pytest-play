@@ -8,6 +8,9 @@ Minor changes:
 
 - add ``int`` and ``float`` builtins available in Python expressions
 
+- make python expressions more flexible for future improvements (internal change that doesn't
+  affect compatibility)
+
 Bugfix:
 
 - fix ``--setup-plan`` invokation

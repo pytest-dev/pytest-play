@@ -20,13 +20,10 @@ import pytest
     'datetime.datetime.now() > (datetime.datetime.now() - '
     'datetime.timedelta(seconds=1))'
 ])
-def test_assertion(expression):
-    import mock
-    mock_engine = mock.MagicMock()
-    mock_engine.variables = {'foo': 'baz'}
+def test_assertion(expression, play):
+    play.variables = {'foo': 'baz'}
     from pytest_play import providers
-    provider = providers.PythonProvider(mock_engine)
-    assert provider.engine is mock_engine
+    provider = providers.PythonProvider(play)
     provider.command_assert({
         'provider': 'python',
         'type': 'assert',
@@ -34,13 +31,10 @@ def test_assertion(expression):
     })
 
 
-def test_assertion_ko():
-    import mock
-    mock_engine = mock.MagicMock()
-    mock_engine.variables = {'foo': 'baz'}
+def test_assertion_ko(play):
+    play.variables = {'foo': 'baz'}
     from pytest_play import providers
-    provider = providers.PythonProvider(mock_engine)
-    assert provider.engine is mock_engine
+    provider = providers.PythonProvider(play)
     with pytest.raises(AssertionError):
         provider.command_assert({
             'provider': 'python',
@@ -60,13 +54,10 @@ def test_assertion_ko():
     'prova = lambda: 1',
     'os = 1',
 ])
-def test_assertion_bad(expression):
-    import mock
-    mock_engine = mock.MagicMock()
-    mock_engine.variables = {'foo': 'baz'}
+def test_assertion_bad(expression, play):
+    play.variables = {'foo': 'baz'}
     from pytest_play import providers
-    provider = providers.PythonProvider(mock_engine)
-    assert provider.engine is mock_engine
+    provider = providers.PythonProvider(play)
     with pytest.raises(Exception):
         provider.command_assert({
             'provider': 'python',
@@ -75,31 +66,25 @@ def test_assertion_bad(expression):
         })
 
 
-def test_store_variable():
-    import mock
-    mock_engine = mock.MagicMock()
-    mock_engine.variables = {'foo': 'baz'}
+def test_store_variable(play):
+    play.variables = {'foo': 'baz'}
     from pytest_play import providers
-    provider = providers.PythonProvider(mock_engine)
-    assert provider.engine is mock_engine
+    provider = providers.PythonProvider(play)
     provider.command_store_variable({
         'provider': 'python',
         'type': 'store_variable',
         'expression': '1+1',
         'name': 'sum2'
     })
-    assert 'sum2' in mock_engine.variables
-    assert mock_engine.variables['foo'] == 'baz'
-    assert mock_engine.variables['sum2'] == 2
+    assert 'sum2' in play.variables
+    assert play.variables['foo'] == 'baz'
+    assert play.variables['sum2'] == 2
 
 
-def test_exec():
-    import mock
-    mock_engine = mock.MagicMock()
-    mock_engine.variables = {'foo': 'baz'}
+def test_exec(play):
+    play.variables = {'foo': 'baz'}
     from pytest_play import providers
-    provider = providers.PythonProvider(mock_engine)
-    assert provider.engine is mock_engine
+    provider = providers.PythonProvider(play)
     assert provider.command_exec({
         'provider': 'python',
         'type': 'exec',
@@ -110,30 +95,24 @@ def test_exec():
 @pytest.mark.parametrize('expression', [
     'variable == 200',
 ])
-def test_assertion_kwargs(expression):
-    import mock
-    mock_engine = mock.MagicMock()
-    mock_engine.variables = {'foo': 'baz'}
-    assert 'variable' not in mock_engine.variables
+def test_assertion_kwargs(expression, play):
+    play.variables = {'foo': 'baz'}
+    assert 'variable' not in play.variables
     from pytest_play import providers
-    provider = providers.PythonProvider(mock_engine)
-    assert provider.engine is mock_engine
+    provider = providers.PythonProvider(play)
     provider.command_assert({
         'provider': 'python',
         'type': 'assert',
         'expression': expression
         },
         variable=200)
-    assert 'variable' not in mock_engine.variables
+    assert 'variable' not in play.variables
 
 
-def test_sleep():
-    import mock
-    mock_engine = mock.MagicMock()
-    mock_engine.variables = {}
+def test_sleep(play):
+    play.variables = {}
     from pytest_play import providers
-    provider = providers.PythonProvider(mock_engine)
-    assert provider.engine is mock_engine
+    provider = providers.PythonProvider(play)
     from datetime import (
         datetime,
         timedelta,
@@ -150,13 +129,10 @@ def test_sleep():
 
 
 @pytest.mark.parametrize("sleep_time", [0.1, "0.1"])
-def test_sleep_float(sleep_time):
-    import mock
-    mock_engine = mock.MagicMock()
-    mock_engine.variables = {}
+def test_sleep_float(sleep_time, play):
+    play.variables = {}
     from pytest_play import providers
-    provider = providers.PythonProvider(mock_engine)
-    assert provider.engine is mock_engine
+    provider = providers.PythonProvider(play)
     provider.command_sleep({
         'provider': 'python',
         'type': 'sleep',
