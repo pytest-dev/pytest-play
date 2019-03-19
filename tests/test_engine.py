@@ -26,8 +26,15 @@ def test_register_teardown(play, data_base_path):
     assert callback.assert_called_once_with() is None
 
 
-def test_executor_parametrizer(dummy_executor):
-    assert dummy_executor.parametrizer.parametrize('$foo') == 'bar'
+def test_executor_parametrize(dummy_executor):
+    assert dummy_executor.parametrize('$foo') == 'bar'
+
+
+@pytest.mark.parametrize("expr,expected", [
+    ('{! variables["foo"].upper() !}', 'BAR')])
+def test_executor_parametrize_expression(dummy_executor, expr, expected):
+    assert dummy_executor.parametrize(
+        expr) == expected
 
 
 def test_execute(dummy_executor):

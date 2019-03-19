@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
+import json
+import re
+import datetime
 import logging
 import yaml
 import pkg_resources
@@ -18,6 +21,20 @@ class ICommandProvider(Interface):
 
 class PlayEngine(object):
     """ YAML executor """
+
+    _context = {
+        'len': len,
+        'list': list,
+        'match': re.match,
+        'datetime': datetime,
+        'loads': json.loads,
+        'dumps': json.dumps,
+        'filter': filter,
+        'map': map,
+        'sorted': sorted,
+        'int': int,
+        'float': float,
+        }
 
     def __init__(self, request, variables):
         """ The executor should be initialized with:
@@ -58,12 +75,25 @@ class PlayEngine(object):
     @property
     def parametrizer(self):
         """ Parametrizer engine """
+        # TODO: add deprecation warning
         return Parametrizer(self.variables)
+
+    @property
+    def context(self):
+        context = self._context
+        context['variables'] = self.variables
+        return context
+
+    def parametrize(self, data):
+        """ Parametrize data """
+        return Parametrizer(
+            self.context['variables'],
+            context=self.context).parametrize(data)
 
     def _yaml_loads(self, data):
         """ returns parametrized yaml dumps """
         return yaml.safe_load(
-            self.parametrizer.parametrize(data))
+            self.parametrize(data))
 
     def _merge_payload(self, command):
         """ Merge command with the default command available in
@@ -106,7 +136,7 @@ class PlayEngine(object):
             condition = command.get('skip_condition', None)
             skip = False
             if condition is not None:
-                expr = args[0].parametrizer.parametrize(condition)
+                expr = args[0].parametrize(condition)
                 if args[0].execute_command(
                     {'provider': 'python',
                      'type': 'exec',

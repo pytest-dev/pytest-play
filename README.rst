@@ -717,6 +717,51 @@ you can use ``pytest-play`` as a library:::
             'expression': '60',
             'metric_type': 'gauge'})
 
+Performance tests with pytest-play and bzt/Taurus (BlazeMeter)
+==============================================================
+
+You can reuse all your pytest-play scenario and turn them to
+performance tests using bzt/Taurus (so it is compatible with BlazeMeter_
+too and all its goodies).
+
+Add a bzt/Taurus YAML file with no ``test_`` prefix like that (full example here in
+bzt_performance_)::
+
+    settings:
+      artifacts-dir: /tmp/%Y-%m-%d_%H-%M-%S.%f
+    
+    execution:
+    - executor: pytest
+      scenario: pytest-run
+      iterations: 1
+    
+    scenarios:
+      pytest-run:
+        # additional-args: --stats-d --stats-prefix play
+        script: scripts/
+    
+    services:
+    - module: shellexec
+      prepare:
+      - pip3 install -r https://raw.githubusercontent.com/davidemoro/pytest-play-docker/master/requirements.txt
+
+and run the following command::
+
+    docker run --rm -it -v $(pwd):/src --user root --entrypoint "bzt" davidemoro/pytest-play bzt.yml
+
+You will see bzt up and running playing our scenarios:
+
+
+.. image:: https://raw.githubusercontent.com/pytest-dev/pytest-play/features/docs/_static/pytest_play_performance.png
+    :alt: Taurus/bzt running pytest-play scenarios
+
+You can uncomment ``additional-args`` to pass other ``pytest`` command line options (e.g., enable ``statsd``
+for key user metrics monitoring or any other cli option).
+
+More info about bzt/Taurus here:
+
+* http://gettaurus.org/
+
 Browser based commands
 ----------------------
 
@@ -821,6 +866,8 @@ Articles:
 
 * `pytest-play automated docker hub publishing workflow`_
 
+* `Test automation framework thoughts and examples with Python, pytest and Jenkins`_
+
 Talks:
 
 * `Serena Martinetti @ Pycon9 - Florence: Integration tests ready to use with pytest-play`_ 
@@ -886,3 +933,6 @@ Twitter
 .. _`statsd`: https://github.com/statsd/statsd
 .. _`graphite`: https://github.com/graphite-project/graphite-web
 .. _`pytest-statsd`: https://github.com/jlane9/pytest-statsd
+.. _`Test automation framework thoughts and examples with Python, pytest and Jenkins`: https://davidemoro.blogspot.com/2018/03/test-automation-python-pytest-jenkins.html
+.. _`BlazeMeter`: https://www.blazemeter.com/
+.. _`bzt_performance`: https://github.com/pytest-dev/pytest-play/tree/features/examples/bzt_performance

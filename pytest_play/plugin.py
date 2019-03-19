@@ -146,7 +146,8 @@ class YAMLItem(pytest.Item):
         self.play = self.fixture_request.getfixturevalue('play')
 
     def _setup_raw_data(self):
-        self.raw_data = self.play.get_file_contents(self.path)
+        self.raw_data = self.play and self.play.get_file_contents(
+            self.path)
 
     def runtest(self):
         data = self.play.get_file_contents(self.path)

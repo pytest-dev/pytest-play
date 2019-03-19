@@ -4,7 +4,20 @@ Changelog
 2.2.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Minor changes:
+
+- add ``int`` and ``float`` builtins available in Python expressions
+
+- make python expressions more flexible for future improvements (internal change that doesn't
+  affect compatibility)
+
+Bugfix:
+
+- fix ``--setup-plan`` invokation
+
+Documentation:
+
+- add more examples (bzt/Taurus and performance tests using pytest-play)
 
 
 2.2.0 (2019-03-01)

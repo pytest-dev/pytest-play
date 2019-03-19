@@ -20,7 +20,7 @@ install_requires = [
     'zope.interface',
     'zope.component',
     'RestrictedPython>=4.0b2',
-    'parametrizer',
+    'parametrizer>=0.0.3',
 ]
 
 statsd_require = [
