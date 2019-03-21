@@ -694,7 +694,7 @@ Monitor API response time (see https://github.com/pytest-dev/pytest-play/tree/fe
 Browser metrics
 ---------------
 
-Monitor browser metrics using Selenium from an end user perspective (see https://github.com/pytest-dev/pytest-play/tree/statsd/examples/statsd_graphite_monitoring_selenium):
+Monitor browser metrics using Selenium from an end user perspective (see https://github.com/pytest-dev/pytest-play/tree/features/examples/statsd_graphite_monitoring_selenium):
 
 * from page load to page usable
 
