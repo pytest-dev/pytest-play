@@ -91,7 +91,7 @@ test_data:
     assert yml_file.basename.startswith('test_')
     assert yml_file.basename.endswith('.yml')
 
-    result = testdir.runpytest('-k yml0')
+    result = testdir.runpytest('-k test_data0')
 
     result.assert_outcomes(passed=1, failed=0)
 
