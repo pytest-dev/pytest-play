@@ -8,12 +8,12 @@ from _pytest import fixtures
 from _pytest.fixtures import (    # pragma: no cover
     FixtureLookupError,
 )
-from _pytest.python import (
+from _pytest.python import (  # pragma: no cover
     Metafunc,
     FunctionDefinition,
 )
 from collections import namedtuple  # pragma: no cover
-from pytest_play.config import (
+from pytest_play.config import (  # pragma: no cover
     STATSD,
     PYTEST_STATSD,
 )
