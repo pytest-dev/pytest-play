@@ -173,9 +173,6 @@ class YAMLItem(pytest.Item):
         self.obj = self
         self.funcargs = {}
 
-    def _isyieldedfunction(self):
-        return getattr(self, "_args", None) is not None
-
     def __call__(self):
         pass
 
