@@ -4,7 +4,7 @@ import yaml            # pragma: no cover
 import os              # pragma: no cover
 import re              # pragma: no cover
 import pytest          # pragma: no cover
-from _pytest import fixtures
+from _pytest import fixtures      # pragma: no cover
 from _pytest.fixtures import (    # pragma: no cover
     FixtureLookupError,
 )
