@@ -170,6 +170,7 @@ class YAMLItem(pytest.Item):
         if keywords:
             self.keywords.update(keywords)
         self.originalname = originalname
+        # not working with callobj, to investigate
         self.obj = self
         self.funcargs = {}
 
