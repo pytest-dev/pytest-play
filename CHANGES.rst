@@ -4,7 +4,19 @@ Changelog
 2.2.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Minor changes:
+
+- remove internal property parameter on engine
+
+Bugfix:
+
+- add compatibility with ``pytest-repeat``'s ``--count`` command line option
+
+Documentation:
+
+- mention how to generate dynamic values using ``{! expr !}`` expressions
+  (e.g., dynamic payloads in REST or MQTT without having to store variables
+  when not needed)
 
 
 2.2.1 (2019-03-19)

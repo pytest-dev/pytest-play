@@ -4,12 +4,16 @@ import yaml            # pragma: no cover
 import os              # pragma: no cover
 import re              # pragma: no cover
 import pytest          # pragma: no cover
+from _pytest import fixtures      # pragma: no cover
 from _pytest.fixtures import (    # pragma: no cover
-    FixtureRequest,
     FixtureLookupError,
 )
+from _pytest.python import (  # pragma: no cover
+    Metafunc,
+    FunctionDefinition,
+)
 from collections import namedtuple  # pragma: no cover
-from pytest_play.config import (
+from pytest_play.config import (  # pragma: no cover
     STATSD,
     PYTEST_STATSD,
 )
@@ -53,14 +57,10 @@ def get_marker(node, name):
 def pytest_collect_file(parent, path):
     """ Collect test_XXX.yml files """
     if path.ext in(".yaml", ".yml") and path.basename.startswith("test_"):
-        return YAMLFile(path, parent=parent)
+        return YAMLFile(path.strpath, parent=parent)
 
 
 class YAMLFile(pytest.File):
-    def __init__(self, fspath, parent=None, config=None,
-                 session=None, nodeid=None):
-        super(YAMLFile, self).__init__(fspath, parent=parent, config=config)
-        self.obj = self
 
     def _add_markers(self, yml_item, markers):
         for marker in markers:
@@ -74,10 +74,11 @@ class YAMLFile(pytest.File):
             yml_item.add_marker(marker)
 
     def collect(self):
-
+        values = []
         test_data = []
         markers = []
         metadata = None
+
         with open(self.fspath, 'r') as yaml_file:
             documents = list(yaml.safe_load_all(yaml_file))
             len_documents = len(documents)
@@ -89,30 +90,92 @@ class YAMLFile(pytest.File):
             markers = [marker for marker in metadata.get(
                 'markers', []) if marker]
             test_data = metadata.get('test_data', None)
+
+        def funcobj(): pass
+
+        def pfuncobj(test_data): pass
+        parametrized_funcobj = pytest.mark.parametrize(
+            "test_data", test_data)(pfuncobj)
         if not test_data:
-            yml_item = YAMLItem(self.nodeid, parent=self, config=self.config)
-            self._add_markers(yml_item, markers)
-            yield yml_item
+            func = funcobj
         else:
-            for index, data in enumerate(test_data):
-                yml_item = YAMLItem('{0}{1}'.format(self.nodeid, index),
-                                    parent=self,
-                                    config=self.config,
-                                    test_data=data)
-                self._add_markers(yml_item, markers)
-                yield yml_item
+            func = parametrized_funcobj
+        res = self._makeitem(self.nodeid, func)
+        if not isinstance(res, list):
+            res = [res]
+        values.extend(res)
+        if markers:
+            for item in values:
+                self._add_markers(item, markers)
+        values.sort(key=lambda item: item.reportinfo()[:2])
+        return values
+
+    def _makeitem(self, name, obj):
+        return self.ihook.pytest_pycollect_makeitem(
+            collector=self,
+            name=name,
+            obj=obj)
+
+    def istestfunction(self, obj, name):
+        return True
+
+    def _genfunctions(self, name, funcobj):
+        fm = self.session._fixturemanager
+        cls = None
+        definition = FunctionDefinition(
+            self.nodeid,
+            parent=self,
+            callobj=funcobj)
+        fixtureinfo = fm.getfixtureinfo(definition, funcobj, cls)
+
+        metafunc = Metafunc(
+            definition, fixtureinfo, self.config, cls=cls, module=None)
+        self.ihook.pytest_generate_tests(metafunc=metafunc)
+        if not metafunc._calls:
+            yield YAMLItem(name, parent=self)
+        else:
+            # add funcargs() as fixturedefs to fixtureinfo.arg2fixturedefs
+            fixtures.add_funcarg_pseudo_fixture_def(self, metafunc, fm)
+            fixtureinfo.prune_dependency_tree()
+
+            for callspec in metafunc._calls:
+                subname = "%s[%s]" % (name, callspec.id)
+                yield YAMLItem(
+                    subname,
+                    parent=self,
+                    callspec=callspec,
+                    keywords={callspec.id: True},
+                    originalname=name)
 
 
 class YAMLItem(pytest.Item):
-    def __init__(self, name, parent=None, config=None, session=None,
-                 nodeid=None, test_data=None):
+
+    def __init__(
+            self, name, parent=None, config=None, session=None,
+            nodeid=None, callspec=None, keywords=None,
+            originalname=None):
         super(YAMLItem, self).__init__(
-            name, parent, config, session, nodeid=nodeid)
+            name, parent=parent, config=config, session=session,
+            nodeid=nodeid)
         self.path = getattr(parent.fspath, 'strpath')
-        self.fixture_request = None
         self.play = None
         self.raw_data = None
-        self.test_data = test_data is not None and test_data or {}
+        self.test_data = {}
+        self.keywords = {}
+        if callspec is not None:
+            self.callspec = callspec
+            self.test_data = callspec.params.get('test_data', {})
+            for mark in callspec.marks:
+                self.keywords[mark.name] = mark
+        if keywords:
+            self.keywords.update(keywords)
+        self.originalname = originalname
+        # not working with callobj, to investigate
+        self.obj = self
+        self.funcargs = {}
+
+    def __call__(self):
+        pass
 
     @property
     def module(self):
@@ -123,27 +186,13 @@ class YAMLItem(pytest.Item):
             [])
 
     def setup(self):
-        self._setup_request()
+        super(YAMLItem, self).setup()
+        fixtures.fillfixtures(self)
         self._setup_play()
         self._setup_raw_data()
 
-    def _setup_fixtures(self):
-        def func():
-            pass
-
-        self.funcargs = {}
-        fm = self.session._fixturemanager
-        self._fixtureinfo = fm.getfixtureinfo(node=self, func=func,
-                                              cls=None, funcargs=False)
-        fixture_request = FixtureRequest(self)
-        fixture_request._fillfixtures()
-        return fixture_request
-
-    def _setup_request(self):
-        self.fixture_request = self._setup_fixtures()
-
     def _setup_play(self):
-        self.play = self.fixture_request.getfixturevalue('play')
+        self.play = self._request.getfixturevalue('play')
 
     def _setup_raw_data(self):
         self.raw_data = self.play and self.play.get_file_contents(
