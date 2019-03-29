@@ -4,6 +4,10 @@ Changelog
 2.2.2 (unreleased)
 ------------------
 
+Bugfix:
+
+- add compatibility with ``pytest-repeat``'s ``--count`` command line option
+
 Documentation:
 
 - mention how to generate dynamic values using ``{! expr !}`` expressions
