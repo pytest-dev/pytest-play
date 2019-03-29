@@ -73,12 +73,6 @@ class PlayEngine(object):
         return data
 
     @property
-    def parametrizer(self):
-        """ Parametrizer engine """
-        # TODO: add deprecation warning
-        return Parametrizer(self.variables)
-
-    @property
     def context(self):
         context = self._context
         context['variables'] = self.variables

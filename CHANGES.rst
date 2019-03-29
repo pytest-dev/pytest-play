@@ -4,6 +4,10 @@ Changelog
 2.2.2 (unreleased)
 ------------------
 
+Minor changes:
+
+- remove internal property parameter on engine
+
 Bugfix:
 
 - add compatibility with ``pytest-repeat``'s ``--count`` command line option
