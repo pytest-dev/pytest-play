@@ -8,6 +8,8 @@ Features and improvements:
 
 - ``wait_until`` and ``wait_until_not`` now accept commands with no ``sub_commands`` property
 
+- implement new ``while`` command in python provider (while expression is true)
+
 2.2.2 (2019-03-29)
 ------------------
 

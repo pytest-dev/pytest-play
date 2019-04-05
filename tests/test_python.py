@@ -140,6 +140,85 @@ def test_sleep_float(sleep_time, play):
     })
 
 
+def test_while(play):
+    play.variables = {'countdown': 10}
+    play.execute_command({
+        'provider': 'python',
+        'type': 'while',
+        'expression': 'variables["countdown"] >= 0',
+        'timeout': 2.3,
+        'poll': 0.1,
+        'sub_commands': [{
+            'provider': 'python',
+            'type': 'store_variable',
+            'name': 'countdown',
+            'expression': 'variables["countdown"] - 1'
+        }]
+    })
+    assert play.variables['countdown'] == -1
+
+
+def test_while_no_poll(play):
+    play.variables = {'countdown': 10}
+    play.execute_command({
+        'provider': 'python',
+        'type': 'while',
+        'expression': 'variables["countdown"] >= 0',
+        'timeout': 2.3,
+        'sub_commands': [{
+            'provider': 'python',
+            'type': 'store_variable',
+            'name': 'countdown',
+            'expression': 'variables["countdown"] - 1'
+        }]
+    })
+    assert play.variables['countdown'] == -1
+
+
+def test_while_no_poll_no_timeout(play):
+    play.variables = {'countdown': 10}
+    play.execute_command({
+        'provider': 'python',
+        'type': 'while',
+        'expression': 'variables["countdown"] >= 0',
+        'sub_commands': [{
+            'provider': 'python',
+            'type': 'assert',
+            'expression': 'variables["countdown"] >= 0'}, {
+            'provider': 'python',
+            'type': 'store_variable',
+            'name': 'countdown',
+            'expression': 'variables["countdown"] - 1'
+        }]
+    })
+    assert play.variables['countdown'] == -1
+
+
+def test_while_no_sub_commands(play):
+    play.variables = {'countdown': 0}
+    play.execute_command({
+        'provider': 'python',
+        'type': 'while',
+        'expression': 'variables["countdown"] > 0',
+        'timeout': 2.3,
+        'poll': 0.1,
+    })
+    assert play.variables['countdown'] == 0
+
+
+def test_while_timeout(play):
+    from pytest_play.providers.python import TimeoutException
+    play.variables = {'countdown': 10}
+    with pytest.raises(TimeoutException):
+        play.execute_command({
+            'provider': 'python',
+            'type': 'while',
+            'expression': 'variables["countdown"] > 0',
+            'timeout': 0.5,
+            'poll': 0.1,
+        })
+
+
 def test_wait_until_countdown(play):
     play.variables = {'countdown': 10}
     from datetime import (
