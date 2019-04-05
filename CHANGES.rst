@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.2.3 (unreleased)
+2.3.0 (2019-04-05)
 ------------------
 
 Features and improvements:
