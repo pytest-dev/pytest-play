@@ -323,72 +323,29 @@ You can execute a Python expression::
       type: exec
       expression: "1+1"
 
-Wait until condition
-====================
+While condition and looping
+===========================
 
-The ``wait_until_not`` command waits until the wait expression is `False` (this example
-contains a SQL query so the external plugin called play_sql_ is needed plus
-the appropriate SQL driver depending on database type)::
+If you need to loop over a series of commands or wait something you can use
+the ``while`` command. It will execute the sequence of sub commands, if any,
+while the resulting expression condition is true. Assuming you have a ``countdown``
+variable containing a integer ``10``, the block of commands whill be executed 10 times::
 
+    ---
     - provider: python
-      type: wait_until_not
-      expression: variables['expected_id'] is not None and variables['expected_id'][0] == $id
-      timeout: 5
+      type: while
+      expression: variables['countdown'] >= 0
+      timeout: 2.3
       poll: 0.1
-      subcommands:
-      - provider: play_sql
-        type: sql
-        database_url: postgresql://$db_user:$db_pwd@$db_host/$db_name
-        query: SELECT id FROM table WHERE id=$id ORDER BY id DESC;
-        variable: expected_id
-        expression: results.first()
-
-assuming that the subcommand updates the execution results updating a ``pytest-play``
-variable (eg: ``expected_id``) where tipically the ``$id`` value comes
-from a previously executed command that causes an asynchrounous update on a relational
-database soon or later (eg: a play_requests_ command making a ``HTTP POST`` call
-or a ``MQTT`` message coming from a simulated IoT device with play_mqtt_).
-
-The wait command will try (and retry) to execute the subcommand with a poll frequency
-``poll`` (default: 0.1 seconds) until the provided ``timeout`` expressed
-in seconds expires or an exception occurs.
-
-You can use the opposite command named ``wait_until`` that waits until the wait
-expression is not False.
-
-Loop commands
-=============
-
-You can repeat a group of subcommands using a variable as a counter. Assuming you
-have defined a ``countdown`` variable with 10 value, the wait until command will
-repeat the group of commands for 10 times::
-
-    play.execute_command({
-        'provider': 'python',
-        'type': 'wait_until',
-        'expression': 'variables["countdown"] == 0',
-        'timeout': 0,
-        'poll': 0,
-        'sub_commands': [{
-            'provider': 'python',
-            'type': 'store_variable',
-            'name': 'countdown',
-            'expression': 'variables["countdown"] - 1'
-        }]
-    })
-
-or::
-
-    - provider: python
-      type: wait_until
-      expression: variables['countdown'] == 0
-      timeout: 0
-      poll: 0
       sub_commands:
       - provider: python
         type: store_variable
         name: countdown
         expression: variables['countdown'] - 1
+
+The ``while`` command supersedes the other legacy commands ``wait_until``
+(stops when the condition becomes true) or ``wait_until_not``.
+commands.
 
 
 Conditional commands (Python)

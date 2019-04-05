@@ -69,6 +69,28 @@ class PythonProvider(BaseProvider):
         wait_time = float(command['seconds'])
         sleep(wait_time)
 
+    def command_while(self, command, **kwargs):
+        """ While expression is true-ish
+        """
+        timeout = command.get('timeout', 10)
+        poll = command.get('poll', 0.1)
+        expression = command['expression']
+        sub_commands = command.get('sub_commands', [])
+
+        end_time = time() + timeout
+        while self.engine.execute_command({
+                'provider': 'python',
+                'type': 'exec',
+                'expression': expression,
+                }):
+            for sub_cmd in sub_commands:
+                self.engine.execute_command(sub_cmd)
+            if timeout:
+                if time() > end_time:
+                    raise TimeoutException(command, timeout)
+            if poll:
+                sleep(poll)
+
     def command_wait_until(self, command, **kwargs):
         """ Wait until an expression is not False
         """
