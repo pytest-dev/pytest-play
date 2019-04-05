@@ -75,10 +75,11 @@ class PythonProvider(BaseProvider):
         timeout = command.get('timeout', 10)
         poll = command.get('poll', 0.1)
         expression = command['expression']
+        sub_commands = command.get('sub_commands', [])
 
         end_time = time() + timeout
         while True:
-            for sub_cmd in command['sub_commands']:
+            for sub_cmd in sub_commands:
                 self.engine.execute_command(sub_cmd)
             if self.engine.execute_command({
                     'provider': 'python',
@@ -99,10 +100,11 @@ class PythonProvider(BaseProvider):
         timeout = command.get('timeout', 10)
         poll = command.get('poll', 0.1)
         expression = command['expression']
+        sub_commands = command.get('sub_commands', [])
 
         end_time = time() + timeout
         while True:
-            for sub_cmd in command['sub_commands']:
+            for sub_cmd in sub_commands:
                 self.engine.execute_command(sub_cmd)
             if not self.engine.execute_command({
                     'provider': 'python',

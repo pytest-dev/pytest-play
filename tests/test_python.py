@@ -182,6 +182,28 @@ def test_wait_until_countdown_no_poll(play):
     })
 
 
+def test_wait_until_no_sub_commands(play):
+    play.variables = {'countdown': 0}
+    play.execute_command({
+        'provider': 'python',
+        'type': 'wait_until',
+        'expression': 'variables["countdown"] == 0',
+        'timeout': 0,
+        'poll': 0,
+    })
+
+
+def test_wait_until_not_no_sub_commands(play):
+    play.variables = {'countdown': 10}
+    play.execute_command({
+        'provider': 'python',
+        'type': 'wait_until_not',
+        'expression': 'variables["countdown"] == 0',
+        'timeout': 0,
+        'poll': 0,
+    })
+
+
 def test_wait_until_countdown_timeout(play):
     from pytest_play.providers.python import TimeoutException
     play.variables = {'countdown': 20}

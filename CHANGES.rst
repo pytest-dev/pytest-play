@@ -4,8 +4,7 @@ Changelog
 2.2.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- ``wait_until`` and ``wait_until_not`` now accept commands with no ``sub_commands`` property
 
 2.2.2 (2019-03-29)
 ------------------
