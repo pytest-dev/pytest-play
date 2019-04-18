@@ -862,6 +862,8 @@ Articles:
 
 * `Test automation framework thoughts and examples with Python, pytest and Jenkins`_
 
+* `Testing metrics thoughts and examples: how to turn lights on and off through MQTT with pytest-play`_
+
 Talks:
 
 * `Serena Martinetti @ Pycon9 - Florence: Integration tests ready to use with pytest-play`_ 
@@ -928,5 +930,6 @@ Twitter
 .. _`graphite`: https://github.com/graphite-project/graphite-web
 .. _`pytest-statsd`: https://github.com/jlane9/pytest-statsd
 .. _`Test automation framework thoughts and examples with Python, pytest and Jenkins`: https://davidemoro.blogspot.com/2018/03/test-automation-python-pytest-jenkins.html
+.. _`Testing metrics thoughts and examples: how to turn lights on and off through MQTT with pytest-play`: https://davidemoro.blogspot.com/2019/04/testing-metrics-thoughts-and-examples.html
 .. _`BlazeMeter`: https://www.blazemeter.com/
 .. _`bzt_performance`: https://github.com/pytest-dev/pytest-play/tree/features/examples/bzt_performance

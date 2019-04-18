@@ -4,7 +4,9 @@ Changelog
 2.3.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Documentation:
+
+- update articles section
 
 
 2.3.0 (2019-04-05)
