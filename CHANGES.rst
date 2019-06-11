@@ -6,7 +6,7 @@ Changelog
 
 Documentation:
 
-- update articles section
+- update media section (articles and talks)
 
 
 2.3.0 (2019-04-05)
