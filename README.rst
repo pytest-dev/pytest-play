@@ -862,10 +862,13 @@ Articles:
 
 * `Test automation framework thoughts and examples with Python, pytest and Jenkins`_
 
+* `Testing metrics thoughts and examples: how to turn lights on and off through MQTT with pytest-play`_
+
 Talks:
 
 * `Serena Martinetti @ Pycon9 - Florence: Integration tests ready to use with pytest-play`_ 
 
+* `Davide Moro @ STF2019 - Milan: Automazione e monitoraggio metriche di test in ambito IoT con pytest-play`_
 
 Third party pytest-play plugins
 -------------------------------
@@ -920,6 +923,7 @@ Twitter
 .. _`play_websocket`: https://github.com/davidemoro/play_websocket
 .. _`RestrictedPython`: https://github.com/zopefoundation/RestrictedPython
 .. _`Serena Martinetti @ Pycon9 - Florence: Integration tests ready to use with pytest-play`: https://www.pycon.it/conference/talks/integration-tests-ready-to-use-with-pytest-play
+.. _`Davide Moro @ STF2019 - Milan: Automazione e monitoraggio metriche di test in ambito IoT con pytest-play`: https://speakerdeck.com/davidemoro/automazione-e-monitoraggio-metriche-di-test-in-ambito-iot-con-pytest-play
 .. _`Hello pytest-play!`: http://davidemoro.blogspot.it/2018/04/hello-pytest-play.html
 .. _`API/REST testing like Chuck Norris with pytest play using YAML`: https://davidemoro.blogspot.com/2019/02/api-rest-testing-pytest-play-yaml-chuck-norris.html
 .. _`YAML`: https://en.wikipedia.org/wiki/YAML
@@ -928,5 +932,6 @@ Twitter
 .. _`graphite`: https://github.com/graphite-project/graphite-web
 .. _`pytest-statsd`: https://github.com/jlane9/pytest-statsd
 .. _`Test automation framework thoughts and examples with Python, pytest and Jenkins`: https://davidemoro.blogspot.com/2018/03/test-automation-python-pytest-jenkins.html
+.. _`Testing metrics thoughts and examples: how to turn lights on and off through MQTT with pytest-play`: https://davidemoro.blogspot.com/2019/04/testing-metrics-thoughts-and-examples.html
 .. _`BlazeMeter`: https://www.blazemeter.com/
 .. _`bzt_performance`: https://github.com/pytest-dev/pytest-play/tree/features/examples/bzt_performance

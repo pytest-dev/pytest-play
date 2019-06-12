@@ -4,8 +4,13 @@ Changelog
 2.3.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Bugfix:
 
+- fix compatibility with pytest 4.6. Rif #86
+
+Documentation:
+
+- update media section (articles and talks)
 
 2.3.0 (2019-04-05)
 ------------------
