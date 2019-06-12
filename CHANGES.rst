@@ -1,7 +1,13 @@
 Changelog
 =========
 
-2.3.1 (unreleased)
+2.3.2 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
+2.3.1 (2019-06-12)
 ------------------
 
 Bugfix:
