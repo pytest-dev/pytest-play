@@ -65,12 +65,10 @@ class YAMLFile(pytest.File):
     def _add_markers(self, yml_item, markers):
         for marker in markers:
             if get_marker(self, marker) is None:
-                if self.config.option.strict:
-                    # register marker (strict mode)
-                    self.session.config.addmetadatavalue_line(
-                        "markers", "{}: {}".format(
-                            marker,
-                            'dynamic marker'))
+                self.session.config.addinivalue_line(
+                    "markers", "{}: {}".format(
+                        marker,
+                        'dynamic marker'))
             yml_item.add_marker(marker)
 
     def collect(self):
