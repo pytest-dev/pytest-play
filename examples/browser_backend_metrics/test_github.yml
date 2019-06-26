@@ -1,0 +1,23 @@
+---
+- provider: selenium
+  type: get
+  url: https://github.com/pytest-dev/pytest-play
+- provider: selenium
+  type: waitUntilCondition
+  script: document.readyState === 'complete'
+- provider: selenium
+  type: storeEval
+  variable: be_time
+  script: window.performance.timing.responseStart - window.performance.timing.navigationStart
+- provider: selenium
+  type: storeEval
+  variable: fe_time
+  script: window.performance.timing.domComplete - window.performance.timing.responseStart
+- provider: metrics
+  type: record_property
+  name: be_time
+  expression: variables['be_time']
+- provider: metrics
+  type: record_property
+  name: fe_time
+  expression: variables['fe_time']
