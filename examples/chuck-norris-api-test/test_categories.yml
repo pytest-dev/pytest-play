@@ -6,4 +6,4 @@ test_data:
 - type: GET
   provider: play_requests
   url: https://api.chucknorris.io/jokes/categories
-  expression: "'dev' in response.json()"
+  expression: "'$category' in response.json()"

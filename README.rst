@@ -870,6 +870,11 @@ Talks:
 
 * `Davide Moro @ STF2019 - Milan: Automazione e monitoraggio metriche di test in ambito IoT con pytest-play`_
 
+Videos:
+
+* `A pytest-play hack (1)`_
+* `A pytest-play hack (2). API/REST`_
+
 Third party pytest-play plugins
 -------------------------------
 
@@ -935,3 +940,5 @@ Twitter
 .. _`Testing metrics thoughts and examples: how to turn lights on and off through MQTT with pytest-play`: https://davidemoro.blogspot.com/2019/04/testing-metrics-thoughts-and-examples.html
 .. _`BlazeMeter`: https://www.blazemeter.com/
 .. _`bzt_performance`: https://github.com/pytest-dev/pytest-play/tree/features/examples/bzt_performance
+.. _`A pytest-play hack (1)`: https://youtu.be/6nZ5iz9el9w
+.. _`A pytest-play hack (2). API/REST`: https://youtu.be/jcZHYWSB5S8

@@ -8,6 +8,10 @@ Documentation:
 
 - add more examples
 
+- fix ``chuck-norris-api-test/test_categories.yml`` example
+
+- add new media links
+
 2.3.1 (2019-06-12)
 ------------------
 
